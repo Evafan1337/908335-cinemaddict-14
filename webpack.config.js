@@ -11,4 +11,4 @@ module.exports = {
   	contentBase: path.resolve(__dirname, 'public'),
   	watchContentBase: true
   }
-}; 
+};
