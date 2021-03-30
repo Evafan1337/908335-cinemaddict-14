@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Саша Ершов](https://up.htmlacademy.ru/ecmascript/14/user/908335).
-* Наставник: `Неизвестно`.
+* Наставник: [Антон Попов](https://htmlacademy.ru/profile/joker).
 
 ---
 
