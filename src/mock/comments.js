@@ -1,44 +1,6 @@
 import {nanoid} from 'nanoid';
-import {getRandomInteger} from "./random";
-
-/**
- * Функция генерации комментария
- * Определяет объект comment и случайным образом выбирает из него один элемент
- * @return {object}
- */
-const generateComment = () => {
-  const comments = [
-    {
-      text: `Interesting setting and a good cast`,
-      author: `Tim Macoveev`,
-      emotion: `smile`
-    },
-    {
-      text: `Booooooooooring`,
-      author: `John Doe`,
-      emotion: `sleeping`
-    },
-    {
-      text: `Very very old. Meh`,
-      author: `Elis`,
-      emotion: `puke`
-    },
-    {
-      text: `Almost two hours? Seriously?`,
-      author: `Alex`,
-      emotion: `angry`
-    },
-    {
-      text: `Very very old. Meh`,
-      author: `Suzan`,
-      emotion: `sleeping`
-    }
-  ];
-
-  const randomIndex = getRandomInteger(0, comments.length - 1);
-
-  return comments[randomIndex];
-};
+import {getRandomInteger} from './utils';
+import {generateComment} from './utils';
 
 /**
  * Функция создания объекта комментария

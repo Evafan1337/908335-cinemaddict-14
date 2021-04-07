@@ -7,20 +7,11 @@ import {generateFilm} from "./mock/film";
 import {createLoadmoreTemplate} from "./view/loadmore";
 import {createTemplatePopupFilm} from "./view/popup";
 import {createEmptyFilms} from "./view/empty-films";
+import {render} from './utils'
 
 const FILM_COUNT = 48;
 const FILM_PER_PAGE = 5;
 const FILM_RATED_COUNT = 2;
-
-/**
- * Функция рендера компонента
- * @param {object} container - HTML элемент в который будет "вложен" элемент template
- * @param {string} template - HTML элемент в формате строки, который будет вложен в container
- * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
- */
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 //	Создаются массивы длинной FILM_COUNT
 const films = new Array(FILM_COUNT).fill().map(generateFilm);
@@ -63,16 +54,20 @@ let filteredFilms = films.sort(compareValues(`id`, `asc`));
  * Функция сортировки фильмов по рейтингу
  * @return {Array} - отсортированный массив
  */
-const filmsRated = () => {
-  return filteredFilms.sort(compareValues(`rating`, `desc`)).slice(0, FILM_RATED_COUNT);
+const filmsRated = (films) => {
+  console.log(`filmsRated`);
+  console.log(films)
+  return films.sort(compareValues(`rating`, `desc`)).slice(0, FILM_RATED_COUNT);
 };
 
 /**
  * Функция сортировки фильмов по количеству комментариев
  * @return {Array} - отсортированный массив
  */
-const filmsCommented = () => {
-  return filteredFilms.sort(compareValues(`comments`, `desc`)).slice(0, FILM_RATED_COUNT);
+const filmsCommented = (films) => {
+  console.log(`filmsCommented`)
+  console.log(films);
+  return films.sort(compareValues(`comments`, `desc`)).slice(0, FILM_RATED_COUNT);
 };
 
 /**
@@ -194,11 +189,11 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  render(filmListRated, createCardFilmTemplate(filmsRated()[i]), `beforeend`);
+  render(filmListRated, createCardFilmTemplate(filmsRated(filteredFilms)[i]), `beforeend`);
 }
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  render(filmListCommented, createCardFilmTemplate(filmsCommented()[i]), `beforeend`);
+  render(filmListCommented, createCardFilmTemplate(filmsCommented(filteredFilms)[i]), `beforeend`);
 }
 
 // const filmCards = document.querySelectorAll(`.film-card`);

@@ -9,7 +9,7 @@ const createCommentTemplate = (comment) => {
   const {info: {emotion, text, author}, date} = comment;
   return `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${emoji(emotion)}" width="55" height="55" alt="emoji-${emotion}">
+              <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
             </span>
             <div>
               <p class="film-details__comment-text">${text}</p>
@@ -28,6 +28,8 @@ const createCommentTemplate = (comment) => {
  * @return {string}
  */
 const emoji = (emotion) => {
+  console.log(`emoji`);
+  console.log(emotion);
   switch (emotion) {
     case `angry`:
       return `angry.png`;
