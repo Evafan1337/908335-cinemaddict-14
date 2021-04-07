@@ -9,7 +9,7 @@ import {generateTime} from './utils';
 import {generateRandomComments} from './utils';
 
 
-const regisseurs = [
+const REGISSEURS = [
   `Anthony Mann`,
   `Christopher Jonathan`,
   `Steven Spielberg`,
@@ -17,7 +17,7 @@ const regisseurs = [
   `Alfred Hitchcock`,
 ];
 
-const screenwriters = [
+const SCREENWRITERS = [
   `Билли Уайлдер`,
   `Итан и Джоэл Коэны`,
   `Роберт Таун`,
@@ -25,7 +25,7 @@ const screenwriters = [
   `Френсис Форд Коппола`,
 ];
 
-const genres = [
+const GENRES = [
   `Comedy`,
   `Cartoon`,
   `Drama`,
@@ -33,7 +33,7 @@ const genres = [
   `Musical`
 ];
 
-const countries = [
+const COUNTRIES = [
   `USA`,
   `Great Britain`,
   `Canada`,
@@ -41,7 +41,7 @@ const countries = [
   `Russia`,
 ];
 
-const actors = [
+const ACTORS = [
   `Alan Rickman`,
   `Benedict Cumberbatch`,
   `Benicio del Toro`,
