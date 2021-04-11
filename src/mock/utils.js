@@ -74,7 +74,7 @@ export const generateComments = () => {
  * @return {number}
  */
 export const generateRating = (a = 0, b = 1) => {
-  console.log(`generateRating`);
+  // console.log(`generateRating`);
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
 
@@ -87,7 +87,7 @@ export const generateRating = (a = 0, b = 1) => {
  * @return {object}
  */
 export const generateInfo = () => {
-  console.log(`generateInfo`);
+  // console.log(`generateInfo`);
   const info = [
     {
       title: `The Dance of Life`,

@@ -1,4 +1,3 @@
-import {nanoid} from 'nanoid';
 import {getRandomInteger} from './utils';
 import {generateComments} from './utils';
 

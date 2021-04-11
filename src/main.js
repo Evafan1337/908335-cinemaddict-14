@@ -7,7 +7,7 @@ import {generateFilm} from './mock/film';
 import {createLoadmoreTemplate} from './view/loadmore';
 import {createTemplatePopupFilm} from './view/popup';
 import {createEmptyFilms} from './view/empty-films';
-import {render} from './utils'
+import {render} from './utils';
 
 const FILM_COUNT = 48;
 const FILM_PER_PAGE = 5;
@@ -52,33 +52,32 @@ let filteredFilms = films.sort(compareValues(`id`, `asc`));
 
 /**
  * Функция сортировки фильмов по рейтингу
- * @return {Array} - отсортированный массив
+ * @param {Array} filmsArray - массив фильмов
+ * @return {Array} filmsArray - массив фильмов
  */
-const filmsRated = (films) => {
-  console.log(`filmsRated`);
-  console.log(films)
-  return films.sort(compareValues(`rating`, `desc`)).slice(0, FILM_RATED_COUNT);
+const filmsRated = (filmsArray) => {
+  return filmsArray.sort(compareValues(`rating`, `desc`)).slice(0, FILM_RATED_COUNT);
 };
 
 /**
  * Функция сортировки фильмов по количеству комментариев
+ * @param {Array} filmsArray - массив фильмов
  * @return {Array} - отсортированный массив
  */
-const filmsCommented = (films) => {
-  console.log(`filmsCommented`)
-  console.log(films);
-  return films.sort(compareValues(`comments`, `desc`)).slice(0, FILM_RATED_COUNT);
+const filmsCommented = (filmsArray) => {
+  return filmsArray.sort(compareValues(`comments`, `desc`)).slice(0, FILM_RATED_COUNT);
 };
 
 /**
  * Функция фильтрации фильмов (по наличию чекбоксов)
+ * @param {Array} filmsArray - массив фильмов
  * @return {Object} filmsInfo
  */
-const filmsInfoSort = (films) => {
+const filmsInfoSort = (filmsArray) => {
   const filmsInfo = {
-    watchlist: films.filter((item) => item.isWatchlist === true),
-    history: films.filter((item) => item.isViewed === true),
-    favorites: films.filter((item) => item.isFavorite === true),
+    watchlist: filmsArray.filter((item) => item.isWatchlist === true),
+    history: filmsArray.filter((item) => item.isViewed === true),
+    favorites: filmsArray.filter((item) => item.isFavorite === true),
   };
 
   return filmsInfo;
