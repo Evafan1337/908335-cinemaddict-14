@@ -1,7 +1,8 @@
 /**
- * Функция создания компонента (счетчик фильмов)
+ * Функция создания счетчика фильмов
+ * @param {number} count - счетчик фильмов
  * @return {string}
  */
-export const createFooterStatisticsTemplate = () => {
-  return `<p>130 291 movies inside</p>`;
+export const createFooterStatisticsTemplate = (count) => {
+  return `<p>${count} movies inside</p>`;
 };
