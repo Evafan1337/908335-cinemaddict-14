@@ -1,16 +1,13 @@
 import {nanoid} from 'nanoid';
 import {getRandomInteger} from './utils';
-import {generateComment} from './utils';
+import {generateComments} from './utils';
 
 /**
- * Функция создания объекта комментария
- * Поля заполняются методами из этого файла
- * @return {object}
+ * Функция генерация времени + рандом
+ * @return {string}
  */
-export const generateComments = () => {
-  return {
-    id: nanoid(),
-    info: generateComment(),
-    date: new Date(getRandomInteger(0, new Date())),
-  };
+export const generateRandomComments = () => {
+  const COMMENT_COUNT = getRandomInteger(0, 5);
+  const randomComments = new Array(COMMENT_COUNT).fill(null).map((index) => generateComments(index));
+  return randomComments;
 };

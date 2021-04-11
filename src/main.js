@@ -74,11 +74,11 @@ const filmsCommented = (films) => {
  * Функция фильтрации фильмов (по наличию чекбоксов)
  * @return {Object} filmsInfo
  */
-const filmsInfoSort = () => {
+const filmsInfoSort = (films) => {
   const filmsInfo = {
-    watchlist: filteredFilms.filter((item) => item.isWatchlist === true),
-    history: filteredFilms.filter((item) => item.isViewed === true),
-    favorites: filteredFilms.filter((item) => item.isFavorite === true),
+    watchlist: films.filter((item) => item.isWatchlist === true),
+    history: films.filter((item) => item.isViewed === true),
+    favorites: films.filter((item) => item.isFavorite === true),
   };
 
   return filmsInfo;
@@ -88,7 +88,7 @@ const siteBody = document.querySelector(`body`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterStatistics = document.querySelector(`.footer__statistics`);
 
-render(siteMainElement, createMenuTemplate(filmsInfoSort()), `beforeend`);
+render(siteMainElement, createMenuTemplate(filmsInfoSort(filteredFilms)), `beforeend`);
 render(siteMainElement, createSortPanelTemplate(), `beforeend`);
 render(siteMainElement, createFilmListTemplate(), `beforeend`);
 render(siteFooterStatistics, createFooterStatisticsTemplate(FILM_COUNT), `beforeend`);

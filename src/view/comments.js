@@ -23,27 +23,6 @@ const createCommentTemplate = (comment) => {
 };
 
 /**
- * Функция вывода строки, соответствующей названию картинки (эмоции комментариев)
- * @param {string} emotion - эмоция
- * @return {string}
- */
-const emoji = (emotion) => {
-  console.log(`emoji`);
-  console.log(emotion);
-  switch (emotion) {
-    case `angry`:
-      return `angry.png`;
-    case `puke`:
-      return `puke.png`;
-    case `sleeping`:
-      return `sleeping.png`;
-    case `smile`:
-      return `smile.png`;
-  }
-  return null;
-};
-
-/**
  * Функция создания компонента списка комментариев
  * @param {Object} comments - данные о комментарииях
  * @return {string}

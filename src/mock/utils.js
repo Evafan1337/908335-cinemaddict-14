@@ -1,3 +1,5 @@
+import {nanoid} from 'nanoid';
+
 /**
  * Функция получения случайного числа в промежутке
  * @param {number} a - начало промежутка
@@ -19,7 +21,6 @@ export const getRandomInteger = (a = 0, b = 1) => {
  * @return {object}
  */
 export const generateComment = () => {
-  console.log(`generateComment`);
   const comments = [
     {
       text: `Interesting setting and a good cast`,
@@ -51,6 +52,19 @@ export const generateComment = () => {
   const randomIndex = getRandomInteger(0, comments.length - 1);
 
   return comments[randomIndex];
+};
+
+/**
+ * Функция создания объекта комментария
+ * Поля заполняются методами из этого файла
+ * @return {object}
+ */
+export const generateComments = () => {
+  return {
+    id: nanoid(),
+    info: generateComment(),
+    date: new Date(getRandomInteger(0, new Date())),
+  };
 };
 
 /**
@@ -146,15 +160,7 @@ export const generateTime = () => {
   const randomHour = getRandomInteger(0, 3);
   const randomMinutes = getRandomInteger(0, 59);
 
-  return randomHour + `h ` + randomMinutes + `m`;
-};
+  // return randomHour + `h ` + randomMinutes + `m`;
+  return `${randomHour}h ${randomMinutes}m`;
 
-/**
- * Функция генерация времени + рандом
- * @return {string}
- */
-export const generateRandomComments = () => {
-  const COMMENT_COUNT = getRandomInteger(0, 5);
-  const randomComments = new Array(COMMENT_COUNT).fill(null).map((index) => generateComments(index));
-  return randomComments;
 };
