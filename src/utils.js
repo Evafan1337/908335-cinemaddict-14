@@ -1,10 +1,12 @@
+const FILM_RATED_COUNT = 2;
+
 /**
  * Функция рендера компонента
  * @param {object} container - HTML элемент в который будет "вложен" элемент template
  * @param {string} template - HTML элемент в формате строки, который будет вложен в container
  * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
  */
-export const render = (container, template, place) => {
+export const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
 
@@ -73,7 +75,7 @@ export const filmsInfoSort = (filmsData) => {
  * @param {Array} filmsData - массив фильмов
  * @return {Array} filmsData - массив фильмов
  */
-const sortFilmsRated = (filmsData) => {
+export const sortFilmsRated = (filmsData) => {
   return filmsData.sort(compareValues('rating', 'desc')).slice(0, FILM_RATED_COUNT);
 };
 
@@ -82,6 +84,6 @@ const sortFilmsRated = (filmsData) => {
  * @param {Array} filmsData - массив фильмов
  * @return {Array} filmsData - отсортированный массив
  */
-const sortFilmsCommented = (filmsData) => {
+export const sortFilmsCommented = (filmsData) => {
   return filmsData.sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
 };
