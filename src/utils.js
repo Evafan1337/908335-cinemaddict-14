@@ -40,3 +40,48 @@ export function compareValues(key, order = 'asc') {
     );
   };
 }
+
+/**
+ * Функция фильтрации фильмов (по наличию чекбоксов)
+ * @param {Array} filmsData - массив фильмов
+ * @return {Object} filmsInfo
+ */
+export const filmsInfoSort = (filmsData) => {
+  const fieldList = ['isFavorite', 'isViewed', 'isWatchlist'];
+  const filmsInfo = filmsData.reduce((acc, film) => {
+    //  Непосредственно перебор карточки фильма
+    for (const filmDataField in film) {
+      if (fieldList.indexOf(filmDataField) != -1) {
+
+        if(!acc[filmDataField]) {
+          acc[filmDataField] = [];
+        }
+
+        if(film[filmDataField]) {
+          acc[filmDataField].push(film);
+        }
+      }
+    }
+    return acc;
+  }, []);
+
+  return filmsInfo;
+};
+
+/**
+ * Функция сортировки фильмов по рейтингу
+ * @param {Array} filmsData - массив фильмов
+ * @return {Array} filmsData - массив фильмов
+ */
+const sortFilmsRated = (filmsData) => {
+  return filmsData.sort(compareValues('rating', 'desc')).slice(0, FILM_RATED_COUNT);
+};
+
+/**
+ * Функция сортировки фильмов по количеству комментариев
+ * @param {Array} filmsData - массив фильмов
+ * @return {Array} filmsData - отсортированный массив
+ */
+const sortFilmsCommented = (filmsData) => {
+  return filmsData.sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
+};

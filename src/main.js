@@ -9,6 +9,9 @@ import {createTemplatePopupFilm} from './view/popup';
 import {createEmptyFilms} from './view/empty-films';
 import {render} from './utils';
 import {compareValues} from './utils';
+import {filmsInfoSort} from './utils';
+import {sortFilmsRated} from './utils';
+import {sortFilmsCommented} from './utils';
 
 const FILM_COUNT = 48;
 const FILM_PER_PAGE = 5;
@@ -18,39 +21,6 @@ const FILM_RATED_COUNT = 2;
 const films = new Array(FILM_COUNT).fill().map(generateFilm);
 
 let filteredFilms = films.sort(compareValues('id'));
-
-/**
- * Функция сортировки фильмов по рейтингу
- * @param {Array} filmsArray - массив фильмов
- * @return {Array} filmsArray - массив фильмов
- */
-const filmsRated = (filmsArray) => {
-  return filmsArray.sort(compareValues('rating', 'desc')).slice(0, FILM_RATED_COUNT);
-};
-
-/**
- * Функция сортировки фильмов по количеству комментариев
- * @param {Array} filmsArray - массив фильмов
- * @return {Array} - отсортированный массив
- */
-const filmsCommented = (filmsArray) => {
-  return filmsArray.sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
-};
-
-/**
- * Функция фильтрации фильмов (по наличию чекбоксов)
- * @param {Array} filmsArray - массив фильмов
- * @return {Object} filmsInfo
- */
-const filmsInfoSort = (filmsArray) => {
-  const filmsInfo = {
-    watchlist: filmsArray.filter((item) => item.isWatchlist === true),
-    history: filmsArray.filter((item) => item.isViewed === true),
-    favorites: filmsArray.filter((item) => item.isFavorite === true),
-  };
-
-  return filmsInfo;
-};
 
 const siteBody = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
@@ -157,11 +127,11 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  render(filmListRated, createCardFilmTemplate(filmsRated(filteredFilms)[i]), 'beforeend');
+  render(filmListRated, createCardFilmTemplate(sortFilmsRated(filteredFilms)[i]), 'beforeend');
 }
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  render(filmListCommented, createCardFilmTemplate(filmsCommented(filteredFilms)[i]), 'beforeend');
+  render(filmListCommented, createCardFilmTemplate(sortFilmsCommented(filteredFilms)[i]), 'beforeend');
 }
 
 // const filmCards = document.querySelectorAll(`.film-card`);
@@ -169,7 +139,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
 siteBody.addEventListener('click', (evt) => {
   const target = evt.target;
   if (target.classList.contains('js-open-popup') === true) {
-    showpopup(target.closest('.film-card').getAttribute('id'));
+    showPopup(target.closest('.film-card').getAttribute('id'));
   }
 });
 
@@ -177,7 +147,7 @@ siteBody.addEventListener('click', (evt) => {
  * Функция показа полной карточки фильма
  * @param {string} id - id фильма
  */
-const showpopup = (id) => {
+const showPopup = (id) => {
   const film = films.filter((item) => item.id === id)[0];
   render(siteBody, createTemplatePopupFilm(film), 'beforeend');
 };
