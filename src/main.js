@@ -130,7 +130,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
 
 siteBody.addEventListener('click', (evt) => {
   const target = evt.target;
-  if (target.classList.contains('js-open-popup') === true) {
+  if (target.classList.contains('js-open-popup')) {
     showPopup(target.closest('.film-card').getAttribute('id'));
   }
 });

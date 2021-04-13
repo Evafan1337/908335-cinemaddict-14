@@ -60,7 +60,7 @@ export const generateFilm = () => {
     time: generateTime(),
     date: new Date(getRandomInteger(0, new Date())),
     genre: choise(GENRES, getRandomInteger(1, GENRES.length - 1)),
-    comments: generateRandomComments(),
+    comments: generateRandomComments(getRandomInteger(0, 5)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     isViewed: Boolean(getRandomInteger(0, 1)),
     isWatchlist: Boolean(getRandomInteger(0, 1)),
