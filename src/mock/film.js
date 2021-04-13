@@ -8,43 +8,43 @@ import {generateTime} from './utils';
 import {generateRandomComments} from './comments';
 
 const REGISSEURS = [
-  `Anthony Mann`,
-  `Christopher Jonathan`,
-  `Steven Spielberg`,
-  `Martin Scorsese`,
-  `Alfred Hitchcock`,
+  'Anthony Mann',
+  'Christopher Jonathan',
+  'Steven Spielberg',
+  'Martin Scorsese',
+  'Alfred Hitchcock',
 ];
 
 const SCREENWRITERS = [
-  `Билли Уайлдер`,
-  `Итан и Джоэл Коэны`,
-  `Роберт Таун`,
-  `Квентин Тарантино`,
-  `Френсис Форд Коппола`,
+  'Билли Уайлдер',
+  'Итан и Джоэл Коэны',
+  'Роберт Таун',
+  'Квентин Тарантино',
+  'Френсис Форд Коппола',
 ];
 
 const GENRES = [
-  `Comedy`,
-  `Cartoon`,
-  `Drama`,
-  `Western`,
-  `Musical`
+  'Comedy',
+  'Cartoon',
+  'Drama',
+  'Western',
+  'Musical',
 ];
 
 const COUNTRIES = [
-  `USA`,
-  `Great Britain`,
-  `Canada`,
-  `France`,
-  `Russia`,
+  'USA',
+  'Great Britain',
+  'Canada',
+  'France',
+  'Russia',
 ];
 
 const ACTORS = [
-  `Alan Rickman`,
-  `Benedict Cumberbatch`,
-  `Benicio del Toro`,
-  `Vincent Cassel`,
-  `Viggo Mortensen`,
+  'Alan Rickman',
+  'Benedict Cumberbatch',
+  'Benicio del Toro',
+  'Vincent Cassel',
+  'Viggo Mortensen',
 ];
 
 /**

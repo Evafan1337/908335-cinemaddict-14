@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 /**
  * Функция создания компонента (карточка фильма)
@@ -9,20 +9,20 @@ export const createCardFilmTemplate = (film) => {
 
   const {id, info, time, date, rating, isFavorite, isViewed, isWatchlist, genre, comments, description} = film;
 
-  const year = dayjs(date).format(`YYYY`);
+  const year = dayjs(date).format('YYYY');
 
   // Тернарные операторы и вывод класса "активности" при необходимости
   const watchlistClassName = isWatchlist
-    ? `film-card__controls-item--active`
-    : ``;
+    ? 'film-card__controls-item--active'
+    : '';
 
   const watchedClassName = isViewed
-    ? `film-card__controls-item--active`
-    : ``;
+    ? 'film-card__controls-item--active'
+    : '';
 
   const favoriteClassName = isFavorite
-    ? `film-card__controls-item--active`
-    : ``;
+    ? 'film-card__controls-item--active'
+    : '';
 
   /**
    * Функция сокращения описания фильма для отображения в карточке фильма
@@ -31,7 +31,7 @@ export const createCardFilmTemplate = (film) => {
   const sliceDescription = () => {
     let slicedDescription;
     if (description.length > 140) {
-      slicedDescription = description.slice(0, 139) + `...`;
+      slicedDescription = description.slice(0, 139) + '...';
     } else {
       slicedDescription = description;
     }
