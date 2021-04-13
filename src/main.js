@@ -8,6 +8,7 @@ import {createLoadmoreTemplate} from './view/loadmore';
 import {createTemplatePopupFilm} from './view/popup';
 import {createEmptyFilms} from './view/empty-films';
 import {render} from './utils';
+import {compareValues} from './utils';
 
 const FILM_COUNT = 48;
 const FILM_PER_PAGE = 5;
@@ -16,39 +17,7 @@ const FILM_RATED_COUNT = 2;
 //	Создаются массивы длинной FILM_COUNT
 const films = new Array(FILM_COUNT).fill().map(generateFilm);
 
-/**
- * Функция сравнения значений ( используется в sort())
- * @param {string} key - ключ для сортировки
- * @param {string} order - порядок
- * @return {number} - аргумент для дальнейшей сортировки
- */
-const compareValues = (key, order) => {
-
-  // 0 если хотя бы в одном из сравниваемых элементов нет нужного св-ва(key)
-  return function innerSort(a, b) {
-    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-      return 0;
-    }
-
-    //  Если мы работаем со строками то переводим все в верхний регистр для удобства сортировки
-    const varA = (typeof a[key] === `string`)
-      ? a[key].toUpperCase() : a[key];
-    const varB = (typeof b[key] === `string`)
-      ? b[key].toUpperCase() : b[key];
-
-    let comparison = 0;
-    if (varA > varB) {
-      comparison = 1;
-    } else if (varA < varB) {
-      comparison = -1;
-    }
-    return (
-      (order === `desc`) ? (comparison * -1) : comparison
-    );
-  };
-};
-
-let filteredFilms = films.sort(compareValues(`id`, `asc`));
+let filteredFilms = films.sort(compareValues(`id`));
 
 /**
  * Функция сортировки фильмов по рейтингу
