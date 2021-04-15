@@ -27,6 +27,7 @@ export default class SortPanel {
   /**
    * Метод получения HTML шаблона
    * Вызывает внешнюю функцию createSortPanelTemplate
+   * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
     return createSortPanelTemplate();

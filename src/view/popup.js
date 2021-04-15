@@ -127,6 +127,7 @@ export default class Popup {
    * Метод получения HTML шаблона
    * Вызывает внешнюю функцию createTemplatePopupFilm с аргументом this._film
    * Поле которого обьявляется в конструкторе
+   * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
     return createTemplatePopupFilm(this._film);

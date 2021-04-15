@@ -58,16 +58,37 @@ const createFilmCardTemplate = (film) => {
         </article>`;
 };
 
+
+/**
+ * Класс описывает компонент (карточка фильма)
+ */
 export default class FilmCard {
+
+  /**
+   * Конструктор
+   * @param {Object} film - данные о фильме
+   */
   constructor(film) {
     this._element = null;
     this._film = film;
   }
 
+  /**
+   * Метод получения HTML шаблона
+   * Вызывает внешнюю функцию createFilmCardTemplate с аргументом this._film
+   * Поле которого обьявляется в конструкторе
+   * @return {string} - HTML код созданного элемента
+   */
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
+  /**
+   * Метод получения поля this._element
+   * Если это поле не существует то вызывается утилитарная функция createElement
+   * Аргументом которой является рез-т метода this.getTemplate()
+   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
+   */
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
@@ -76,6 +97,9 @@ export default class FilmCard {
     return this._element;
   }
 
+  /**
+   * Метод удаления элемента
+   */
   removeElement() {
     this._element = null;
   }
