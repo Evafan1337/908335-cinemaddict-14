@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import {createCommentsTemplate} from './comments';
+import {createElement} from "../utils";
 
 /**
  * Функция создания элемента(элементов) жанров фильма
@@ -15,9 +16,7 @@ const createGenresTemplate = (genre) => {
  * @param {Object} film - данные о фильме
  * @return {string} - HTML отображение попапа
  */
-export const createTemplatePopupFilm = (film) => {
-
-  console.log(film);
+const createTemplatePopupFilm = (film) => {
 
   const {info, time, date, rating, isFavorite, isViewed, isWatchlist, comments, description, regisseur, screenwriters, actors, country, genre} = film;
   const fullDate = dayjs(date).format('DD MMMM YYYY');
@@ -109,3 +108,26 @@ export const createTemplatePopupFilm = (film) => {
   </form>
 </section>`;
 };
+
+export default class Popup {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createTemplatePopupFilm(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

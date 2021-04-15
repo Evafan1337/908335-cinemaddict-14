@@ -140,7 +140,7 @@ siteBody.addEventListener('click', (evt) => {
   // console.log('click');
   const target = evt.target;
   if (target.classList.contains('js-open-popup')) {
-    showPopup(target.closest('.film-card').getAttribute('id'));
+    showPopup(target.closest('.film-card').dataset.id)
   }
 });
 
