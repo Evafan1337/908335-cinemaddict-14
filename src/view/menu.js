@@ -20,9 +20,11 @@ const createMenuTemplate = (filmsInfo) => {
   </nav>`;
 };
 
+/**
+ * Класс описывает компонент меню
+ */
 export default class Menu {
   constructor(filmsInfo) {
-    console.log(`Menu class!`);
     this._element = null;
     this._filmsInfo = filmsInfo;
   }

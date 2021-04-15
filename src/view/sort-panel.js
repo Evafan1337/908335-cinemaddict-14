@@ -16,14 +16,28 @@ const createSortPanelTemplate = () => {
  * Класс описывает панель сортировки
  */
 export default class SortPanel {
+
+  /**
+   * Конструктор
+   */
   constructor() {
     this._element = null;
   }
 
+  /**
+   * Метод получения HTML шаблона
+   * Вызывает внешнюю функцию createSortPanelTemplate
+   */
   getTemplate() {
     return createSortPanelTemplate();
   }
 
+  /**
+   * Метод получения поля this._element
+   * Если это поле не существует то вызывается утилитарная функция createElement
+   * Аргументом которой является рез-т метода this.getTemplate()
+   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
+   */
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
@@ -32,6 +46,9 @@ export default class SortPanel {
     return this._element;
   }
 
+  /**
+   * Метод удаления элемента
+   */
   removeElement() {
     this._element = null;
   }
