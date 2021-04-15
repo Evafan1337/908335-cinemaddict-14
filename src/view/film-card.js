@@ -1,11 +1,12 @@
 import dayjs from 'dayjs';
+import {createElement} from "../utils";
 
 /**
  * Функция создания компонента (карточка фильма)
  * @param {object} film - объект (фильм)
  * @return {string}
  */
-export const createCardFilmTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
 
   const {id, info, time, date, rating, isFavorite, isViewed, isWatchlist, genre, comments, description} = film;
 
@@ -56,3 +57,26 @@ export const createCardFilmTemplate = (film) => {
           </div>
         </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

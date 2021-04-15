@@ -1,8 +1,10 @@
+import {createElement} from "../utils";
+
 /**
  * Функция создания компонента списка фильмов
  * @return {string}
  */
-export const createFilmListTemplate = () => {
+const createFilmListTemplate = () => {
   return `<section class="films">
     <section class="films-list js-films-container">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
@@ -21,3 +23,25 @@ export const createFilmListTemplate = () => {
     </section>
   </section>`;
 };
+
+export default class FilmList {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmListTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

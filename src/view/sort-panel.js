@@ -12,6 +12,9 @@ const createSortPanelTemplate = () => {
   </ul>`;
 };
 
+/**
+ * Класс описывает панель сортировки
+ */
 export default class SortPanel {
   constructor() {
     this._element = null;
