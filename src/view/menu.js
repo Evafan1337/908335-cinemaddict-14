@@ -1,9 +1,11 @@
+import {createElement} from '../utils';
+
 /**
  * Функция создания компонента меню
  * @param {object} filmsInfo - информация о фильме
  * @return {string}
  */
-export const createMenuTemplate = (filmsInfo) => {
+const createMenuTemplate = (filmsInfo) => {
 
   const {isWatchlist, isViewed, isFavorite} = filmsInfo;
 
@@ -17,3 +19,27 @@ export const createMenuTemplate = (filmsInfo) => {
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`;
 };
+
+export default class Menu {
+  constructor(filmsInfo) {
+    console.log(`Menu class!`);
+    this._element = null;
+    this._filmsInfo = filmsInfo;
+  }
+
+  getTemplate() {
+    return createMenuTemplate(this._filmsInfo);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

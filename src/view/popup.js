@@ -16,6 +16,9 @@ const createGenresTemplate = (genre) => {
  * @return {string} - HTML отображение попапа
  */
 export const createTemplatePopupFilm = (film) => {
+
+  console.log(film);
+
   const {info, time, date, rating, isFavorite, isViewed, isWatchlist, comments, description, regisseur, screenwriters, actors, country, genre} = film;
   const fullDate = dayjs(date).format('DD MMMM YYYY');
 
