@@ -38,7 +38,7 @@ export const renderTemplate = (container, template, place = 'beforeend') => {
  * @param {Object} newElement.firstChild - созданный HTML элемент
  */
 export const createElement = (template) => {
-  const newElement = document.createElement(`div`); // 1
+  const newElement = document.createElement('div'); // 1
   newElement.innerHTML = template;
 
   return newElement.firstChild;

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {createCommentsTemplate} from './comments';
-import {createElement} from "../utils";
+import {createElement} from '../utils';
 
 /**
  * Функция создания элемента(элементов) жанров фильма

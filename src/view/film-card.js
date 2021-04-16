@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from "../utils";
+import {createElement} from '../utils';
 
 /**
  * Функция создания компонента (карточка фильма)

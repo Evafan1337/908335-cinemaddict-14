@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import {createElement} from '../utils';
 
 /**
  * Функция создания компонента списка фильмов

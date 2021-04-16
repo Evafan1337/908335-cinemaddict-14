@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import {createElement} from '../utils';
 
 /**
  * Функция создания счетчика фильмов
@@ -19,7 +19,6 @@ export default class FooterStatistics {
    * @param {number} count - количество подсчитанных фильмов (счетчик)
    */
   constructor(count) {
-    console.log(count);
     this._element = null;
     this._filmCount = count;
   }
