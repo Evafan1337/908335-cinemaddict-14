@@ -145,11 +145,10 @@ const showPopup = (id) => {
   //Навешивание обработчиков
   const popupElem = filmPopup.getElement();
   popupElem.querySelector('.film-details__close-btn').addEventListener('click', () => closePopup(filmPopup));
-  popupElem.addEventListener('keydown', (evt) => {
+  document.addEventListener('keydown', (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
+      // evt.preventDefault();
       closePopup(filmPopup);
-      filmPopup.getElement().removeEventListener('keydown', () => closePopup(filmPopup));
     }
   });
 };
@@ -159,6 +158,7 @@ const showPopup = (id) => {
  * @param {string} id - id фильма
  */
 const closePopup = (filmPopup) => {
+  filmPopup.getElement().removeEventListener('keydown', () => closePopup(filmPopup));
   filmPopup.getElement().remove();
   filmPopup.removeElement();
   siteBody.classList.remove('hide-overflow');
