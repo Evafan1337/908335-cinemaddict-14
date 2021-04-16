@@ -23,7 +23,6 @@ const FILM_RATED_COUNT = 2;
 const films = new Array(FILM_COUNT).fill().map(generateFilm);
 
 let filteredFilms = films.sort(compareValues('id'));
-
 const siteBody = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
 const siteFooterStatistics = document.querySelector('.footer__statistics');
@@ -39,7 +38,6 @@ const filmListCommented = siteMainElement.querySelector('.js-film-list-commented
 const filmsContainer = siteMainElement.querySelector('.js-films-container');
 
 if (filteredFilms.length > 0) {
-
   // Либо рендерим 5 за раз либо оставшиеся
   for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
     render(filmList, new FilmCard(filteredFilms[i]).getElement(), 'beforeend');
@@ -119,7 +117,6 @@ if (filteredFilms.length > FILM_PER_PAGE) {
   }
 }
 
-
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
   render(filmListRated, new FilmCard(sortFilmsCommented(filteredFilms)[i]).getElement(), `beforeend`);
 }
@@ -140,13 +137,29 @@ siteBody.addEventListener('click', (evt) => {
  * @param {string} id - id фильма
  */
 const showPopup = (id) => {
-  const film = films.filter((item) => item.id === id)[0];
-  render(siteBody, new Popup(film).getElement(), `beforeend`);
+  let film = films.filter((item) => item.id === id)[0];
+  const filmPopup = new Popup(film);
+  render(siteBody, filmPopup.getElement(), RenderPosition.BEFOREEND);
+  siteBody.classList.add(`hide-overflow`);
+
+  //Навешивание обработчиков
+  const popupElem = filmPopup.getElement();
+  popupElem.querySelector(`.film-details__close-btn`).addEventListener(`click`, () => closePopup(filmPopup));
+  popupElem.addEventListener(`keydown`, (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      closePopup(filmPopup);
+      filmPopup.getElement().removeEventListener(`keydown`, () => closePopup(filmPopup));
+    }
+  });
 };
 
-siteBody.addEventListener('click', (evt) => {
-  const target = evt.target;
-  if (target.classList.contains('film-details__close-btn') === true) {
-    document.querySelector('.film-details').remove();
-  }
-});
+/**
+ * Функция скрытия попапа
+ * @param {string} id - id фильма
+ */
+const closePopup = (filmPopup) => {
+  filmPopup.getElement().remove();
+  filmPopup.removeElement();
+  siteBody.classList.remove(`hide-overflow`);
+};
