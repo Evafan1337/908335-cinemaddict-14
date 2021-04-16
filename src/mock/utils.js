@@ -1,5 +1,3 @@
-import {nanoid} from 'nanoid';
-
 /**
  * Функция получения случайного числа в промежутке
  * @param {number} a - начало промежутка
@@ -16,58 +14,6 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 /**
- * Функция генерации комментария
- * Определяет объект comment и случайным образом выбирает из него один элемент
- * @return {object}
- */
-export const generateComment = () => {
-  const comments = [
-    {
-      text: `Interesting setting and a good cast`,
-      author: `Tim Macoveev`,
-      emotion: `smile`
-    },
-    {
-      text: `Booooooooooring`,
-      author: `John Doe`,
-      emotion: `sleeping`
-    },
-    {
-      text: `Very very old. Meh`,
-      author: `Elis`,
-      emotion: `puke`
-    },
-    {
-      text: `Almost two hours? Seriously?`,
-      author: `Alex`,
-      emotion: `angry`
-    },
-    {
-      text: `Very very old. Meh`,
-      author: `Suzan`,
-      emotion: `sleeping`
-    }
-  ];
-
-  const randomIndex = getRandomInteger(0, comments.length - 1);
-
-  return comments[randomIndex];
-};
-
-/**
- * Функция создания объекта комментария
- * Поля заполняются методами из этого файла
- * @return {object}
- */
-export const generateComments = () => {
-  return {
-    id: nanoid(),
-    info: generateComment(),
-    date: new Date(getRandomInteger(0, new Date())),
-  };
-};
-
-/**
  * Функция генерация рейтинга (рандомная генерация)
  * @param {number} a - начало промежутка
  * @param {number} b - конец промежутка
@@ -78,7 +24,7 @@ export const generateRating = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
 
-  return (lower + Math.random() * (upper - lower + 1)).toFixed(1).replace(`,`, `.`);
+  return (lower + Math.random() * (upper - lower + 1)).toFixed(1).replace(',', '.');
 };
 
 /**
@@ -90,30 +36,30 @@ export const generateInfo = () => {
   // console.log(`generateInfo`);
   const info = [
     {
-      title: `The Dance of Life`,
-      originTitle: `The Great Flamarion`,
-      poster: `the-dance-of-life.jpg`,
+      title: 'The Dance of Life',
+      originTitle: 'The Great Flamarion',
+      poster: 'the-dance-of-life.jpg',
     },
     {
-      title: `Sagebrush Trail`,
-      originTitle: `Sagebrush Trail`,
-      poster: `sagebrush-trail.jpg`,
+      title: 'Sagebrush Trail',
+      originTitle: 'Sagebrush Trail',
+      poster: 'sagebrush-trail.jpg',
     },
     {
-      title: `The Man with the Golden Arm`,
-      originTitle: `The Great Flamarion`,
-      poster: `made-for-each-other.png`,
+      title: 'The Man with the Golden Arm',
+      originTitle: 'The Great Flamarion',
+      poster: 'made-for-each-other.png',
     },
     {
-      title: `Santa Claus Conquers the Martians`,
-      originTitle: `Santa Claus`,
-      poster: `santa-claus-conquers-the-martians.jpg`,
+      title: 'Santa Claus Conquers the Martians',
+      originTitle: 'Santa Claus',
+      poster: 'santa-claus-conquers-the-martians.jpg',
     },
     {
-      title: `Popeye the Sailor Meets Sindbad the Sailor`,
-      originTitle: `Popeye the Sailor Meets Sindbad the Sailor`,
-      poster: `popeye-meets-sinbad.png`,
-    }
+      title: 'Popeye the Sailor Meets Sindbad the Sailor',
+      originTitle: 'Popeye the Sailor Meets Sindbad the Sailor',
+      poster: 'popeye-meets-sinbad.png',
+    },
   ];
 
   const randomIndex = getRandomInteger(0, info.length - 1);
@@ -136,19 +82,19 @@ export const choise = (arr, n) => {
  * @return {string}
  */
 export const generateDescription = () => {
-  const sentences = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-    `Cras aliquet varius magna, non porta ligula feugiat eget.`,
-    `Fusce tristique felis at fermentum pharetra.`,
-    `Aliquam id orci ut lectus varius viverra.`,
-    `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
-    `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
-    `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
-    `Sed sed nisi sed augue convallis suscipit in sed felis.`,
-    `Aliquam erat volutpat.`,
-    `Nunc fermentum tortor ac porta dapibus.`,
-    `In rutrum ac purus sit amet tempus.`];
+  const sentences = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    'Cras aliquet varius magna, non porta ligula feugiat eget.',
+    'Fusce tristique felis at fermentum pharetra.',
+    'Aliquam id orci ut lectus varius viverra.',
+    'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
+    'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+    'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
+    'Sed sed nisi sed augue convallis suscipit in sed felis.',
+    'Aliquam erat volutpat.',
+    'Nunc fermentum tortor ac porta dapibus.',
+    'In rutrum ac purus sit amet tempus.'];
 
-  return sentences.slice(getRandomInteger(1, sentences.length - 1)).join(` `);
+  return sentences.slice(getRandomInteger(1, sentences.length - 1)).join(' ');
 };
 
 /**

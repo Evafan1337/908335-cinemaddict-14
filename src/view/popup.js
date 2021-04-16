@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
-import {createCommentsTemplate} from "./comments";
+import dayjs from 'dayjs';
+import {createCommentsTemplate} from './comments';
+import {createElement} from '../utils';
 
 /**
  * Функция создания элемента(элементов) жанров фильма
@@ -7,7 +8,7 @@ import {createCommentsTemplate} from "./comments";
  * @return {string} - HTML отображение жанров
  */
 const createGenresTemplate = (genre) => {
-  return genre.map((item) => `<span class="film-details__genre">${item}</span>`).join(``);
+  return genre.map((item) => `<span class="film-details__genre">${item}</span>`).join('');
 };
 
 /**
@@ -15,21 +16,22 @@ const createGenresTemplate = (genre) => {
  * @param {Object} film - данные о фильме
  * @return {string} - HTML отображение попапа
  */
-export const createTemplatePopupFilm = (film) => {
+const createTemplatePopupFilm = (film) => {
+
   const {info, time, date, rating, isFavorite, isViewed, isWatchlist, comments, description, regisseur, screenwriters, actors, country, genre} = film;
-  const fullDate = dayjs(date).format(`DD MMMM YYYY`);
+  const fullDate = dayjs(date).format('DD MMMM YYYY');
 
   const watchlistCheck = isWatchlist
-    ? `checked`
-    : ``;
+    ? 'checked'
+    : '';
 
   const watchedCheck = isViewed
-    ? `checked`
-    : ``;
+    ? 'checked'
+    : '';
 
   const favoriteCheck = isFavorite
-    ? `checked`
-    : ``;
+    ? 'checked'
+    : '';
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -59,11 +61,11 @@ export const createTemplatePopupFilm = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${screenwriters.map((item) => item).join(`, `)}</td>
+              <td class="film-details__cell">${screenwriters.map((item) => item).join(', ')}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${actors.map((item) => item).join(`, `)}</td>
+              <td class="film-details__cell">${actors.map((item) => item).join(', ')}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
@@ -106,3 +108,48 @@ export const createTemplatePopupFilm = (film) => {
   </form>
 </section>`;
 };
+
+/**
+ * Класс описывает компонент панели сортировки
+ */
+export default class Popup {
+
+  /**
+   * Конструктор
+   * @param {Object} film - фильм
+   */
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  /**
+   * Метод получения HTML шаблона
+   * Вызывает внешнюю функцию createTemplatePopupFilm с аргументом this._film
+   * Поле которого обьявляется в конструкторе
+   * @return {string} - HTML код созданного элемента
+   */
+  getTemplate() {
+    return createTemplatePopupFilm(this._film);
+  }
+
+  /**
+   * Метод получения поля this._element
+   * Если это поле не существует то вызывается утилитарная функция createElement
+   * Аргументом которой является рез-т метода this.getTemplate()
+   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
+   */
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  /**
+   * Метод удаления элемента
+   */
+  removeElement() {
+    this._element = null;
+  }
+}

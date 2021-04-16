@@ -15,7 +15,7 @@ const createCommentTemplate = (comment) => {
               <p class="film-details__comment-text">${text}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
-                <span class="film-details__comment-day">${dayjs(date).format(`YYYY/MM/DD HH:mm`)}</span>
+                <span class="film-details__comment-day">${dayjs(date).format('YYYY/MM/DD HH:mm')}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
@@ -28,7 +28,7 @@ const createCommentTemplate = (comment) => {
  * @return {string}
  */
 export const createCommentsTemplate = (comments) => {
-  return `<ul class="film-details__comments-list">${comments.map((comment) => createCommentTemplate(comment)).join(``)}</ul>
+  return `<ul class="film-details__comments-list">${comments.map((comment) => createCommentTemplate(comment)).join('')}</ul>
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label"></div>
           <label class="film-details__comment-label">

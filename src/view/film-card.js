@@ -1,28 +1,29 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
+import {createElement} from '../utils';
 
 /**
  * Функция создания компонента (карточка фильма)
  * @param {object} film - объект (фильм)
  * @return {string}
  */
-export const createCardFilmTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
 
   const {id, info, time, date, rating, isFavorite, isViewed, isWatchlist, genre, comments, description} = film;
 
-  const year = dayjs(date).format(`YYYY`);
+  const year = dayjs(date).format('YYYY');
 
   // Тернарные операторы и вывод класса "активности" при необходимости
   const watchlistClassName = isWatchlist
-    ? `film-card__controls-item--active`
-    : ``;
+    ? 'film-card__controls-item--active'
+    : '';
 
   const watchedClassName = isViewed
-    ? `film-card__controls-item--active`
-    : ``;
+    ? 'film-card__controls-item--active'
+    : '';
 
   const favoriteClassName = isFavorite
-    ? `film-card__controls-item--active`
-    : ``;
+    ? 'film-card__controls-item--active'
+    : '';
 
   /**
    * Функция сокращения описания фильма для отображения в карточке фильма
@@ -31,14 +32,14 @@ export const createCardFilmTemplate = (film) => {
   const sliceDescription = () => {
     let slicedDescription;
     if (description.length > 140) {
-      slicedDescription = description.slice(0, 139) + `...`;
+      slicedDescription = description.slice(0, 139) + '...';
     } else {
       slicedDescription = description;
     }
     return slicedDescription;
   };
 
-  return `<article class="film-card" id="${id}">
+  return `<article class="film-card" id="${id}"  data-id="${id}">
           <h3 class="film-card__title js-open-popup">${info.title}</h3>
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
@@ -56,3 +57,50 @@ export const createCardFilmTemplate = (film) => {
           </div>
         </article>`;
 };
+
+
+/**
+ * Класс описывает компонент (карточка фильма)
+ */
+export default class FilmCard {
+
+  /**
+   * Конструктор
+   * @param {Object} film - данные о фильме
+   */
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  /**
+   * Метод получения HTML шаблона
+   * Вызывает внешнюю функцию createFilmCardTemplate с аргументом this._film
+   * Поле которого обьявляется в конструкторе
+   * @return {string} - HTML код созданного элемента
+   */
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  /**
+   * Метод получения поля this._element
+   * Если это поле не существует то вызывается утилитарная функция createElement
+   * Аргументом которой является рез-т метода this.getTemplate()
+   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
+   */
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  /**
+   * Метод удаления элемента
+   */
+  removeElement() {
+    this._element = null;
+  }
+}
