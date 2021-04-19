@@ -69,54 +69,59 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
   });
 
-  const filterBtns = siteMainElement.querySelectorAll('.main-navigation__item');
-  //  Отработка фильтрации
-  for (const btn of filterBtns) {
-    btn.addEventListener('click', () => {
+  // Делегирование
+  const filterButtonsContainer = siteMainElement.querySelector('.main-navigation__items');
+  filterButtonsContainer.addEventListener('click', (evt) => {
 
-      renderedFilmsCount = FILM_PER_PAGE;
-      // let id = this.getAttribute(`id`);
-      const param = btn.getAttribute('data-sort');
-      document.querySelector('.main-navigation__item--active').classList.remove('main-navigation__item--active');
-      btn.classList.add('main-navigation__item--active');
-      filteredFilms = films.slice();
-      if (filteredFilms.length > FILM_PER_PAGE) {
-        loadMoreButton.style.display = 'block';
-      }
-      if (param !== 'all') {
-        filteredFilms = filteredFilms.filter((film) => film[param] === true);
-      }
-      filmList.innerHTML = '';
+    if(evt.target.tagName !== 'A'){
+      return;
+    }
 
-      for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
-        render(filmList, new FilmCardView(filteredFilms[i]).getElement());
-      }
-    });
-  }
+    let filterButtonElement = evt.target;
+    let filterParam = filterButtonElement.dataset.sort;
 
-  const sortedBtns = siteMainElement.querySelectorAll('.sort__button');
-  // Отработка сортировки
-  for (const btn of sortedBtns) {
-    btn.addEventListener('click', () => {
+    filterButtonsContainer.querySelector('.main-navigation__item--active').classList.remove('main-navigation__item--active');
+    filterButtonElement.classList.add('main-navigation__item--active');
+    filteredFilms = films.slice();
+    if (filteredFilms.length > FILM_PER_PAGE) {
+      loadMoreButton.style.display = 'block';
+    }
+    if (filterParam !== 'all') {
+      filteredFilms = filteredFilms.filter((film) => film[filterParam] === true);
+    }
+    filmList.innerHTML = '';
 
-      document.querySelector('.sort__button--active').classList.remove('sort__button--active');
-      btn.classList.add('sort__button--active');
-      const param = btn.getAttribute('data-sort');
+    for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
+      render(filmList, new FilmCardView(filteredFilms[i]).getElement(), 'beforeend');
+    }
+  })
 
-      filteredFilms = films;
-      if (param !== 'default') {
-        filteredFilms = filteredFilms.sort(compareValues(param, 'desc'));
-      } else {
-        filteredFilms = filteredFilms.sort(compareValues('id', 'asc'));
-      }
+  // Делегирование
+  const sortedButtonsContainer = siteMainElement.querySelector('.sort');
+  sortedButtonsContainer.addEventListener('click', (evt) => {
+    if(evt.target.tagName !== 'A'){
+      return;
+    }
+    
+    let sortButtonElement = evt.target;
+    let sortParam = sortButtonElement.dataset.sort;
 
-      filmList.innerHTML = '';
+    sortedButtonsContainer.querySelector('.sort__button--active').classList.remove('sort__button--active');
+    sortButtonElement.classList.add('sort__button--active');
 
-      for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
-        render(filmList, new FilmCardView(filteredFilms[i]).getElement());
-      }
-    });
-  }
+    filteredFilms = films;
+    if (sortParam !== 'default') {
+        filteredFilms = filteredFilms.sort(compareValues(sortParam, 'desc'));
+    } else {
+      filteredFilms = filteredFilms.sort(compareValues('id', 'asc'));
+    }
+
+    filmList.innerHTML = '';
+
+    for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
+      render(filmList, new FilmCardView(filteredFilms[i]).getElement());
+    }
+  })
 }
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
