@@ -127,6 +127,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
 }
 
 siteBody.addEventListener('click', (evt) => {
+  console.log('openPopup');
   const target = evt.target;
   if (target.classList.contains('js-open-popup')) {
     showPopup(target.closest('.film-card').dataset.id);
@@ -145,10 +146,10 @@ const showPopup = (id) => {
 
   //Навешивание обработчиков
   const popupElem = filmPopupComponent.getElement();
-  popupElem.querySelector('.film-details__close-btn').addEventListener('click', () => closePopup(filmPopup));
+  popupElem.querySelector('.film-details__close-btn').addEventListener('click', () => closePopup(filmPopupComponent));
   document.addEventListener('keydown', (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
-      // evt.preventDefault();
+      filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopup));
       closePopup(filmPopupComponent);
     }
   });
@@ -159,7 +160,7 @@ const showPopup = (id) => {
  * @param {string} id - id фильма
  */
 const closePopup = (filmPopupComponent) => {
-  filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopup));
+  console.log('closePopup');
   filmPopupComponent.getElement().remove();
   filmPopupComponent.removeElement();
   siteBody.classList.remove('hide-overflow');
