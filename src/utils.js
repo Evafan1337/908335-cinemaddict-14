@@ -11,7 +11,7 @@ export const RenderPosition = {
  * @param {string} template - HTML элемент в формате строки, который будет вложен в container
  * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
  */
-export const render = (container, element, place) => {
+export const render = (container, element, place = 'beforeend') => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);

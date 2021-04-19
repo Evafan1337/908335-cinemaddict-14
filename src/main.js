@@ -1,6 +1,6 @@
 import MenuView from './view/menu';
 import FilmListView from './view/films-list';
-import FooterStatisticsView from './view/count-films';
+import CountFilmsView from './view/count-films';
 import FilmCardView from './view/film-card';
 import LoadmoreView from './view/loadmore';
 import PopupView from './view/popup';
@@ -14,24 +14,25 @@ import {
   sortFilmsRated,
   sortFilmsCommented
 } from './utils';
-import {generateFilm} from './mock/film';
+import {generateFilms} from './mock/film';
 
 const FILM_COUNT = 48;
 const FILM_PER_PAGE = 5;
 const FILM_RATED_COUNT = 2;
 
 //	Создаются массивы длинной FILM_COUNT
-const films = new Array(FILM_COUNT).fill().map(generateFilm);
+const films = generateFilms(FILM_COUNT);
 
-let filteredFilms = films.sort(compareValues('id'));
+let filteredFilms = [...films].sort(compareValues('id'));
+
 const siteBody = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
-const siteFooterStatistics = document.querySelector('.footer__statistics');
+const siteCountFilmsElement = document.querySelector('.footer__statistics');
 
-render(siteMainElement, new MenuView(filmsInfoSort(filteredFilms)).getElement(), 'beforeend');
-render(siteMainElement, new SortPanelView().getElement(), 'beforeend');
-render(siteMainElement, new FilmListView().getElement(), 'beforeend');
-render(siteFooterStatistics, new FooterStatisticsView(FILM_COUNT).getElement(), 'beforeend');
+render(siteMainElement, new MenuView(filmsInfoSort(filteredFilms)).getElement());
+render(siteMainElement, new SortPanelView().getElement());
+render(siteMainElement, new FilmListView().getElement());
+render(siteCountFilmsElement, new CountFilmsView(FILM_COUNT).getElement());
 
 const filmList = siteMainElement.querySelector('.js-film-list-main');
 const filmListRated = siteMainElement.querySelector('.js-film-list-rated');
@@ -41,15 +42,15 @@ const filmsContainer = siteMainElement.querySelector('.js-films-container');
 if (filteredFilms.length > 0) {
   // Либо рендерим 5 за раз либо оставшиеся
   for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
-    render(filmList, new FilmCardView(filteredFilms[i]).getElement(), 'beforeend');
+    render(filmList, new FilmCardView(filteredFilms[i]).getElement());
   }
 } else {
-  render(filmList, new EmptyFilmsView().getElement(), 'beforeend');
+  render(filmList, new EmptyFilmsView().getElement());
 }
 
 if (filteredFilms.length > FILM_PER_PAGE) {
   let renderedFilmsCount = FILM_PER_PAGE;
-  render(filmsContainer, new LoadmoreView().getElement(), 'beforeend');
+  render(filmsContainer, new LoadmoreView().getElement());
   const loadMoreButton = filmsContainer.querySelector('.js-loadmore');
 
   loadMoreButton.addEventListener('click', () => {
@@ -57,7 +58,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
     // Отрисовка оставшихся
     filteredFilms
       .slice(renderedFilmsCount, renderedFilmsCount + FILM_PER_PAGE)
-      .forEach((film) => render(filmList, new FilmCardView(film).getElement(), 'beforeend'));
+      .forEach((film) => render(filmList, new FilmCardView(film).getElement()));
 
     renderedFilmsCount += FILM_PER_PAGE;
 
@@ -88,7 +89,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
       filmList.innerHTML = '';
 
       for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
-        render(filmList, new FilmCardView(filteredFilms[i]).getElement(), 'beforeend');
+        render(filmList, new FilmCardView(filteredFilms[i]).getElement());
       }
     });
   }
@@ -112,18 +113,18 @@ if (filteredFilms.length > FILM_PER_PAGE) {
       filmList.innerHTML = '';
 
       for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
-        render(filmList, new FilmCardView(filteredFilms[i]).getElement(), 'beforeend');
+        render(filmList, new FilmCardView(filteredFilms[i]).getElement());
       }
     });
   }
 }
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  render(filmListRated, new FilmCardView(sortFilmsRated(filteredFilms)[i]).getElement(), 'beforeend');
+  render(filmListRated, new FilmCardView(sortFilmsRated(filteredFilms)[i]).getElement());
 }
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  render(filmListCommented, new FilmCardView(sortFilmsCommented(filteredFilms)[i]).getElement(), 'beforeend');
+  render(filmListCommented, new FilmCardView(sortFilmsCommented(filteredFilms)[i]).getElement());
 }
 
 siteBody.addEventListener('click', (evt) => {
