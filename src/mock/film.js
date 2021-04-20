@@ -75,4 +75,4 @@ const generateFilm = () => {
 
 export const generateFilms = (FILM_COUNT) => {
   return new Array(FILM_COUNT).fill().map(generateFilm);
-}
+};
