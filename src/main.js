@@ -132,33 +132,38 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
   render(filmListCommented, new FilmCardView(sortFilmsCommented(filteredFilms)[i]).getElement());
 }
 
+//  Следующий этап это вешать обработчики не на siteBody, а точечно на карточку
 siteBody.addEventListener('click', (evt) => {
   const target = evt.target;
   if (target.classList.contains('js-open-popup')) {
-    showPopup(target.closest('.film-card').dataset.id);
+
+    let filmId = target.closest('.film-card').dataset.id
+
+    /**
+    * Функция показа полной карточки фильма
+    * @param {string} id - id фильма
+    */
+    const showPopup = () => {
+      const film = films.filter((film) => film.id === filmId)[0];
+      const filmPopupComponent = new PopupView(film);
+      render(siteBody, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
+      siteBody.classList.add('hide-overflow');
+
+      //Навешивание обработчиков
+      const popupElem = filmPopupComponent.getElement();
+      popupElem.querySelector('.film-details__close-btn').addEventListener('click', () => closePopup(filmPopupComponent));
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'Escape' || evt.key === 'Esc') {
+          filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopupComponent));
+          closePopup(filmPopupComponent);
+        }
+      });
+    };
+
+    showPopup();
   }
 });
 
-/**
- * Функция показа полной карточки фильма
- * @param {string} id - id фильма
- */
-const showPopup = (id) => {
-  const film = films.filter((item) => item.id === id)[0];
-  const filmPopupComponent = new PopupView(film);
-  render(siteBody, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
-  siteBody.classList.add('hide-overflow');
-
-  //Навешивание обработчиков
-  const popupElem = filmPopupComponent.getElement();
-  popupElem.querySelector('.film-details__close-btn').addEventListener('click', () => closePopup(filmPopupComponent));
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopupComponent));
-      closePopup(filmPopupComponent);
-    }
-  });
-};
 
 /**
  * Функция скрытия попапа
