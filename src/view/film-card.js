@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания компонента (карточка фильма)
@@ -62,13 +62,14 @@ const createFilmCardTemplate = (film) => {
 /**
  * Класс описывает компонент (карточка фильма)
  */
-export default class FilmCard {
+export default class FilmCard  extends AbstractView {
 
   /**
    * Конструктор
    * @param {Object} film - данные о фильме
    */
   constructor(film) {
+    super();
     this._element = null;
     this._film = film;
   }
@@ -81,26 +82,5 @@ export default class FilmCard {
    */
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Метод удаления элемента
-   */
-  removeElement() {
-    this._element = null;
   }
 }

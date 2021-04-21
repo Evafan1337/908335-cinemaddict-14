@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания счетчика фильмов
@@ -12,13 +12,14 @@ const createFooterStatisticsTemplate = (count) => {
 /**
  * Класс описывает компонент (счетчик фильмов)
  */
-export default class FooterStatistics {
+export default class FooterStatistics extends AbstractView {
 
   /**
    * Конструктор
    * @param {number} count - количество подсчитанных фильмов (счетчик)
    */
   constructor(count) {
+    super();
     this._element = null;
     this._filmCount = count;
   }
@@ -31,26 +32,5 @@ export default class FooterStatistics {
    */
   getTemplate() {
     return createFooterStatisticsTemplate(this._filmCount);
-  }
-
-  /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Метод удаления элемента
-   */
-  removeElement() {
-    this._element = null;
   }
 }

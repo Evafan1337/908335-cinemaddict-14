@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import {createCommentsTemplate} from './comments';
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания элемента(элементов) жанров фильма
@@ -18,7 +17,7 @@ const createGenresTemplate = (genre) => {
  */
 const createTemplatePopupFilm = (film) => {
 
-  const {info, time, date, rating, isFavorite, isViewed, isWatchlist, comments, description, regisseur, screenwriters, actors, country, genre} = film;
+  const {info, time, date, rating, isFavorite, isViewed, isWatchlist, description, regisseur, screenwriters, actors, country, genre} = film;
   const fullDate = dayjs(date).format('DD MMMM YYYY');
 
   const watchlistCheck = isWatchlist
@@ -100,10 +99,6 @@ const createTemplatePopupFilm = (film) => {
       </section>
     </div>
     <div class="film-details__bottom-container">
-      <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-        ${createCommentsTemplate(comments)}
-      </section>
     </div>
   </form>
 </section>`;
@@ -112,13 +107,14 @@ const createTemplatePopupFilm = (film) => {
 /**
  * Класс описывает компонент панели сортировки
  */
-export default class Popup {
+export default class Popup extends AbstractView {
 
   /**
    * Конструктор
    * @param {Object} film - фильм
    */
   constructor(film) {
+    super();
     this._element = null;
     this._film = film;
   }
@@ -131,25 +127,5 @@ export default class Popup {
    */
   getTemplate() {
     return createTemplatePopupFilm(this._film);
-  }
-
-  /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  /**
-   * Метод удаления элемента
-   */
-  removeElement() {
-    this._element = null;
   }
 }

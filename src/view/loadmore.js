@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания кнопки отрисовки дополнительных фильмов
@@ -11,14 +11,7 @@ const createLoadmoreTemplate = () => {
 /**
  * Класс описывает компонент (кнопку подгрузки фильмов)
  */
-export default class Loadmore {
-
-  /**
-   * Конструктор
-   */
-  constructor() {
-    this._element = null;
-  }
+export default class Loadmore extends AbstractView {
 
   /**
    * Метод получения HTML шаблона
@@ -27,26 +20,5 @@ export default class Loadmore {
    */
   getTemplate() {
     return createLoadmoreTemplate();
-  }
-
-  /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Метод удаления элемента
-   */
-  removeElement() {
-    this._element = null;
   }
 }

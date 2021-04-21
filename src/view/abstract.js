@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import {createElement} from '../utils';
 
 export default class Abstract {
 
@@ -11,7 +11,7 @@ export default class Abstract {
     }
     this._element = null;
   }
-  
+
   /**
    * Метод получения HTML шаблона
    * Бросает ошибку, так как предназначен для переопределения

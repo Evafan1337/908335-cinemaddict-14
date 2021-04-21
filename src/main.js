@@ -6,6 +6,7 @@ import LoadmoreView from './view/loadmore';
 import PopupView from './view/popup';
 import EmptyFilmsView from './view/empty-films';
 import SortPanelView from './view/sort-panel';
+import Comments from './view/comments';
 import {
   render,
   RenderPosition,
@@ -41,6 +42,10 @@ const setOpenPopupHandler = (evt) => {
       const filmPopupComponent = new PopupView(film);
       render(siteBody, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
       siteBody.classList.add('hide-overflow');
+
+      const commentsList = new Comments(film.comments);
+      const commentsContainer = filmPopupComponent.getElement().querySelector('.film-details__bottom-container');
+      render(commentsContainer, commentsList.getElement(), RenderPosition.BEFOREEND);
 
       //Навешивание обработчиков
       const popupElem = filmPopupComponent.getElement();

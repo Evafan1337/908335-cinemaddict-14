@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания компонента меню
@@ -23,13 +23,14 @@ const createMenuTemplate = (filmsInfo) => {
 /**
  * Класс описывает компонент меню
  */
-export default class Menu {
+export default class Menu extends AbstractView {
 
   /**
    * Конструктор
    * @param {Object} filmsInfo - данные о фильмах
    */
   constructor(filmsInfo) {
+    super();
     this._element = null;
     this._filmsInfo = filmsInfo;
   }
@@ -42,26 +43,5 @@ export default class Menu {
    */
   getTemplate() {
     return createMenuTemplate(this._filmsInfo);
-  }
-
-  /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Метод удаления элемента
-   */
-  removeElement() {
-    this._element = null;
   }
 }
