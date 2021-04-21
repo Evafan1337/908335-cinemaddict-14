@@ -11,7 +11,7 @@ export const RenderPosition = {
  * @param {string} template - HTML элемент в формате строки, который будет вложен в container
  * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
  */
-export const render = (container, element, place) => {
+export const render = (container, element, place = 'beforeend') => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -50,10 +50,10 @@ export const createElement = (template) => {
  * @param {string} order - порядок
  * @return {number} - аргумент для дальнейшей сортировки
  */
-export function compareValues(key, order = 'asc') {
+export const compareValues = (key, order = 'asc') => {
 
   // 0 если хотя бы в одном из сравниваемых элементов нет нужного св-ва(key)
-  return function innerSort(a, b) {
+  return (a, b) => {
     // if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
     if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)){
       return 0;
@@ -75,7 +75,7 @@ export function compareValues(key, order = 'asc') {
       (order === 'desc') ? (comparison * -1) : comparison
     );
   };
-}
+};
 
 /**
  * Функция фильтрации фильмов (по наличию чекбоксов)
@@ -84,21 +84,21 @@ export function compareValues(key, order = 'asc') {
  */
 export const filmsInfoSort = (filmsData) => {
   const fieldList = ['isFavorite', 'isViewed', 'isWatchlist'];
-  const filmsInfo = filmsData.reduce((acc, film) => {
+  const filmsInfo = filmsData.reduce((filmsDataResult, film) => {
     //  Непосредственно перебор карточки фильма
     for (const filmDataField in film) {
       if (fieldList.indexOf(filmDataField) != -1) {
 
-        if(!acc[filmDataField]) {
-          acc[filmDataField] = [];
+        if(!filmsDataResult[filmDataField]) {
+          filmsDataResult[filmDataField] = [];
         }
 
         if(film[filmDataField]) {
-          acc[filmDataField].push(film);
+          filmsDataResult[filmDataField].push(film);
         }
       }
     }
-    return acc;
+    return filmsDataResult;
   }, []);
 
   return filmsInfo;

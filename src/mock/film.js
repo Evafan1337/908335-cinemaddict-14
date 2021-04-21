@@ -52,7 +52,7 @@ const ACTORS = [
  * Поля заполняются методами из этого файла
  * @return {object}
  */
-export const generateFilm = () => {
+const generateFilm = () => {
   return {
     id: nanoid(),
     info: generateInfo(),
@@ -71,4 +71,8 @@ export const generateFilm = () => {
     actors: choise(ACTORS, getRandomInteger(1, ACTORS.length - 1)),
     country: choise(COUNTRIES, getRandomInteger(1, COUNTRIES.length - 1)),
   };
+};
+
+export const generateFilms = (FILM_COUNT) => {
+  return new Array(FILM_COUNT).fill().map(generateFilm);
 };
