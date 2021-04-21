@@ -75,7 +75,7 @@ export const compareValues = (key, order = 'asc') => {
       (order === 'desc') ? (comparison * -1) : comparison
     );
   };
-}
+};
 
 /**
  * Функция фильтрации фильмов (по наличию чекбоксов)

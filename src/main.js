@@ -137,7 +137,7 @@ siteBody.addEventListener('click', (evt) => {
   const target = evt.target;
   if (target.classList.contains('js-open-popup')) {
 
-    let filmId = target.closest('.film-card').dataset.id
+    const filmId = target.closest('.film-card').dataset.id;
 
     /**
     * Функция показа полной карточки фильма
