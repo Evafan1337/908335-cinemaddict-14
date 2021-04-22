@@ -33,6 +33,7 @@ export default class Menu extends AbstractView {
     super();
     this._element = null;
     this._filmsInfo = filmsInfo;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   /**
@@ -43,5 +44,21 @@ export default class Menu extends AbstractView {
    */
   getTemplate() {
     return createMenuTemplate(this._filmsInfo);
+  }
+
+  /**
+   * Метод отработки слушателя
+   * @param {Object} evt - объект событий
+   */
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    for (let btn of this.getElement().querySelectorAll('.main-navigation__item')) {
+      btn.addEventListener('click', this._clickHandler);
+    }
   }
 }

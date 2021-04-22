@@ -72,6 +72,7 @@ export default class FilmCard  extends AbstractView {
     super();
     this._element = null;
     this._film = film;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   /**
@@ -82,5 +83,25 @@ export default class FilmCard  extends AbstractView {
    */
   getTemplate() {
     return createFilmCardTemplate(this._film);
+  }
+
+  /**
+   * Метод отработки слушателя
+   * @param {Object} evt - объект событий
+   */
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
+  }
+
+  /**
+   * Метод установки слушателя
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    for (const btn of this.getElement().querySelectorAll('.js-open-popup')) {
+      btn.addEventListener('click', this._clickHandler);
+    }
   }
 }

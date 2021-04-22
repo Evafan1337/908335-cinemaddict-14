@@ -17,7 +17,25 @@ const createSortPanelTemplate = () => {
  */
 export default class SortPanel extends AbstractView {
 
+  constructor() {
+    super();
+    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
+  }
+
   getTemplate() {
     return createSortPanelTemplate();
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    for (const btn of this.getElement().querySelectorAll('.sort__button')) {
+      btn.addEventListener('click', this._clickHandler);
+    }
   }
 }
