@@ -29,6 +29,12 @@ let openedPopupFlag = false;
  */
 const setOpenPopupHandler = (evt) => {
 
+  if(!openedPopupFlag) {
+    openedPopupFlag = true;
+  } else {
+    return;
+  }
+
   const target = evt.target;
   if (target.classList.contains('js-open-popup')) {
 
@@ -36,7 +42,6 @@ const setOpenPopupHandler = (evt) => {
 
     /**
     * Функция показа полной карточки фильма
-    * @param {string} id - id фильма
     */
     const showPopup = () => {
       const film = films.filter((film) => film.id === filmId)[0];
@@ -49,21 +54,19 @@ const setOpenPopupHandler = (evt) => {
       render(commentsContainer, commentsList.getElement(), RenderPosition.BEFOREEND);
 
       //  Навешивание обработчиков
-      //  const popupElem = filmPopupComponent.getElement();
-      //  popupElem.querySelector('.film-details__close-btn').addEventListener('click', () => closePopup(filmPopupComponent));
       filmPopupComponent.setClickHandler(() => closePopup(filmPopupComponent));
       document.addEventListener('keydown', (evt) => {
         if (evt.key === 'Escape' || evt.key === 'Esc') {
+          openedPopupFlag = false;
           filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopupComponent));
           closePopup(filmPopupComponent);
         }
       });
     };
-  showPopup();
+    showPopup();
   }
 };
 
-//	Создаются массивы длинной FILM_COUNT
 const films = generateFilms(FILM_COUNT);
 
 let filteredFilms = [...films].sort(compareValues('id'));
@@ -91,10 +94,15 @@ if (filteredFilms.length > 0) {
     render(filmList, filmCardElement.getElement());
 
     filmCardElement.setClickHandler((evt) => {
+
+      if(!openedPopupFlag) {
+        openedPopupFlag = true;
+      } else {
+        return;
+      }
+
       const target = evt.target;
       if (target.classList.contains('js-open-popup')) {
-
-        // const filmId = target.closest('.film-card').dataset.id;
 
         /**
          * Функция показа полной карточки фильма
@@ -115,6 +123,7 @@ if (filteredFilms.length > 0) {
           filmPopupComponent.setClickHandler(() => closePopup(filmPopupComponent));
           document.addEventListener('keydown', (evt) => {
             if (evt.key === 'Escape' || evt.key === 'Esc') {
+              openedPopupFlag = false;
               filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopupComponent));
               closePopup(filmPopupComponent);
             }
@@ -130,9 +139,8 @@ if (filteredFilms.length > 0) {
 
 if (filteredFilms.length > FILM_PER_PAGE) {
   let renderedFilmsCount = FILM_PER_PAGE;
-  const loadMoreComponent = new LoadmoreView()
+  const loadMoreComponent = new LoadmoreView();
   render(filmsContainer, loadMoreComponent.getElement());
-  const loadMoreButton = filmsContainer.querySelector('.js-loadmore');
 
 
   loadMoreComponent.setClickHandler(() => {
@@ -143,7 +151,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
       // filmCardElement.addEventListener('click', (evt) => {
       filmCardElement.setClickHandler((evt) =>{
-        setOpenPopupHandler(evt);        
+        setOpenPopupHandler(evt);
       });
     };
 
@@ -186,7 +194,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
       const filmCardElement = new FilmCardView(filteredFilms[i]);
       render(filmList, filmCardElement.getElement());
       filmCardElement.setClickHandler((evt) =>{
-        setOpenPopupHandler(evt);        
+        setOpenPopupHandler(evt);
       });
     }
   });
@@ -203,6 +211,10 @@ if (filteredFilms.length > FILM_PER_PAGE) {
     sortComponent.getElement().querySelector('.sort__button--active').classList.remove('sort__button--active');
     sortButtonElement.classList.add('sort__button--active');
 
+    if (filteredFilms.length > FILM_PER_PAGE) {
+      loadMoreComponent.getElement().style.display = 'block';
+    }
+
     filteredFilms = films;
     if (sortParam !== 'default') {
       filteredFilms = filteredFilms.sort(compareValues(sortParam, 'desc'));
@@ -216,7 +228,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
       const filmCardElement = new FilmCardView(filteredFilms[i]);
       render(filmList, filmCardElement.getElement());
       filmCardElement.setClickHandler((evt) =>{
-        setOpenPopupHandler(evt);        
+        setOpenPopupHandler(evt);
       });
     }
   });
@@ -226,7 +238,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
   const filmCardElement = new FilmCardView(sortFilmsRated(filteredFilms)[i]);
   render(filmListRated, filmCardElement.getElement());
   filmCardElement.setClickHandler((evt) =>{
-    setOpenPopupHandler(evt);        
+    setOpenPopupHandler(evt);
   });
 }
 
@@ -234,7 +246,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
   const filmCardElement = new FilmCardView(sortFilmsCommented(filteredFilms)[i]);
   render(filmListCommented, filmCardElement.getElement());
   filmCardElement.setClickHandler((evt) =>{
-    setOpenPopupHandler(evt);        
+    setOpenPopupHandler(evt);
   });
 }
 

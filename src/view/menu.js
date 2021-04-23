@@ -57,7 +57,7 @@ export default class Menu extends AbstractView {
 
   setClickHandler(callback) {
     this._callback.click = callback;
-    for (let btn of this.getElement().querySelectorAll('.main-navigation__item')) {
+    for (const btn of this.getElement().querySelectorAll('.main-navigation__item')) {
       btn.addEventListener('click', this._clickHandler);
     }
   }
