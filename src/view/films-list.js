@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания компонента списка фильмов
@@ -27,14 +27,7 @@ const createFilmListTemplate = () => {
 /**
  * Класс описывает компонент (контейнер для отрисовки в них фильмов)
  */
-export default class FilmList {
-
-  /**
-   * Конструктор
-   */
-  constructor() {
-    this._element = null;
-  }
+export default class FilmList extends AbstractView {
 
   /**
    * Метод получения HTML шаблона
@@ -43,26 +36,5 @@ export default class FilmList {
    */
   getTemplate() {
     return createFilmListTemplate();
-  }
-
-  /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Метод удаления элемента
-   */
-  removeElement() {
-    this._element = null;
   }
 }

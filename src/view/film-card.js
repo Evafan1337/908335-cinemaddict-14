@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания компонента (карточка фильма)
@@ -62,15 +62,17 @@ const createFilmCardTemplate = (film) => {
 /**
  * Класс описывает компонент (карточка фильма)
  */
-export default class FilmCard {
+export default class FilmCard  extends AbstractView {
 
   /**
    * Конструктор
    * @param {Object} film - данные о фильме
    */
   constructor(film) {
+    super();
     this._element = null;
     this._film = film;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   /**
@@ -84,23 +86,22 @@ export default class FilmCard {
   }
 
   /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
+   * Метод отработки слушателя
+   * @param {Object} evt - объект событий
    */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 
   /**
-   * Метод удаления элемента
+   * Метод установки слушателя
+   * @param {function} callback - функция, которая будет исполняться при слушателе
    */
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    for (const btn of this.getElement().querySelectorAll('.js-open-popup')) {
+      btn.addEventListener('click', this._clickHandler);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractView from './abstract';
 
 /**
  * Функция создания компонента меню
@@ -23,15 +23,17 @@ const createMenuTemplate = (filmsInfo) => {
 /**
  * Класс описывает компонент меню
  */
-export default class Menu {
+export default class Menu extends AbstractView {
 
   /**
    * Конструктор
    * @param {Object} filmsInfo - данные о фильмах
    */
   constructor(filmsInfo) {
+    super();
     this._element = null;
     this._filmsInfo = filmsInfo;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   /**
@@ -45,23 +47,18 @@ export default class Menu {
   }
 
   /**
-   * Метод получения поля this._element
-   * Если это поле не существует то вызывается утилитарная функция createElement
-   * Аргументом которой является рез-т метода this.getTemplate()
-   * @return {Object} this._element - созданный DOM элемент с заполненной информацией из карточки фильма
+   * Метод отработки слушателя
+   * @param {Object} evt - объект событий
    */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 
-  /**
-   * Метод удаления элемента
-   */
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    for (const btn of this.getElement().querySelectorAll('.main-navigation__item')) {
+      btn.addEventListener('click', this._clickHandler);
+    }
   }
 }
