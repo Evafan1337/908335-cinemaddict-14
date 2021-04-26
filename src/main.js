@@ -6,7 +6,7 @@ import LoadmoreView from './view/loadmore';
 import PopupView from './view/popup';
 import EmptyFilmsView from './view/empty-films';
 import SortPanelView from './view/sort-panel';
-import Comments from './view/comments';
+import CommentsView from './view/comments';
 import {
   render,
   RenderPosition,
@@ -21,43 +21,43 @@ const FILM_COUNT = 48;
 const FILM_PER_PAGE = 5;
 const FILM_RATED_COUNT = 2;
 
-let openedPopupFlag = false;
+let isOpenedPopup = false;
 
 /**
  * Функция установки слушателя на определенную карточку фильма
  * @param {Object} evt - объект событий
  */
-const setOpenPopupHandler = (evt) => {
+const setOpenPopupHandler = (evt, filmCardData) => {
 
-  if(!openedPopupFlag) {
-    openedPopupFlag = true;
-  } else {
+  console.log('setOpenPopupHandler');
+  if(isOpenedPopup) {
+    console.log('alreadyOpened!');
     return;
   }
 
   const target = evt.target;
   if (target.classList.contains('js-open-popup')) {
 
-    const filmId = target.closest('.film-card').dataset.id;
-
     /**
-    * Функция показа полной карточки фильма
-    */
+     * Функция показа полной карточки фильма
+     * @param {string} id - id фильма
+     */
     const showPopup = () => {
-      const film = films.filter((film) => film.id === filmId)[0];
+      const film = filmCardData;
       const filmPopupComponent = new PopupView(film);
       render(siteBody, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
+      isOpenedPopup = true;
       siteBody.classList.add('hide-overflow');
 
-      const commentsList = new Comments(film.comments);
+      const commentsComponent = new CommentsView(film.comments);
       const commentsContainer = filmPopupComponent.getElement().querySelector('.film-details__bottom-container');
-      render(commentsContainer, commentsList.getElement(), RenderPosition.BEFOREEND);
+      render(commentsContainer, commentsComponent.getElement(), RenderPosition.BEFOREEND);
 
       //  Навешивание обработчиков
+      // const popupElem = filmPopupComponent.getElement();
       filmPopupComponent.setClickHandler(() => closePopup(filmPopupComponent));
       document.addEventListener('keydown', (evt) => {
         if (evt.key === 'Escape' || evt.key === 'Esc') {
-          openedPopupFlag = false;
           filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopupComponent));
           closePopup(filmPopupComponent);
         }
@@ -70,7 +70,6 @@ const setOpenPopupHandler = (evt) => {
 const films = generateFilms(FILM_COUNT);
 
 let filteredFilms = [...films].sort(compareValues('id'));
-
 const siteBody = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
 const siteCountFilmsElement = document.querySelector('.footer__statistics');
@@ -94,43 +93,7 @@ if (filteredFilms.length > 0) {
     render(filmList, filmCardElement.getElement());
 
     filmCardElement.setClickHandler((evt) => {
-
-      if(!openedPopupFlag) {
-        openedPopupFlag = true;
-      } else {
-        return;
-      }
-
-      const target = evt.target;
-      if (target.classList.contains('js-open-popup')) {
-
-        /**
-         * Функция показа полной карточки фильма
-         * @param {string} id - id фильма
-         */
-        const showPopup = () => {
-          const film = filmCardData;
-          const filmPopupComponent = new PopupView(film);
-          render(siteBody, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
-          siteBody.classList.add('hide-overflow');
-
-          const commentsList = new Comments(film.comments);
-          const commentsContainer = filmPopupComponent.getElement().querySelector('.film-details__bottom-container');
-          render(commentsContainer, commentsList.getElement(), RenderPosition.BEFOREEND);
-
-          //  Навешивание обработчиков
-          // const popupElem = filmPopupComponent.getElement();
-          filmPopupComponent.setClickHandler(() => closePopup(filmPopupComponent));
-          document.addEventListener('keydown', (evt) => {
-            if (evt.key === 'Escape' || evt.key === 'Esc') {
-              openedPopupFlag = false;
-              filmPopupComponent.getElement().removeEventListener('keydown', () => closePopup(filmPopupComponent));
-              closePopup(filmPopupComponent);
-            }
-          });
-        };
-        showPopup();
-      }
+      setOpenPopupHandler(evt, filmCardData);
     });
   }
 } else {
@@ -145,20 +108,21 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
   loadMoreComponent.setClickHandler(() => {
 
-    const renderMoreFilms = (film) => {
+    const renderMoreFilms = (film, index) => {
       const filmCardElement = new FilmCardView(film);
+      const filmCardData = filteredFilms[index];
       render(filmList, filmCardElement.getElement());
 
       // filmCardElement.addEventListener('click', (evt) => {
       filmCardElement.setClickHandler((evt) =>{
-        setOpenPopupHandler(evt);
+        setOpenPopupHandler(evt, filmCardData);
       });
     };
 
     // Отрисовка оставшихся
     filteredFilms
       .slice(renderedFilmsCount, renderedFilmsCount + FILM_PER_PAGE)
-      .forEach((film) => renderMoreFilms(film));
+      .forEach((film, index) => renderMoreFilms(film, index));
 
     renderedFilmsCount += FILM_PER_PAGE;
 
@@ -192,9 +156,10 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
     for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
       const filmCardElement = new FilmCardView(filteredFilms[i]);
+      const filmCardData = filteredFilms[i];
       render(filmList, filmCardElement.getElement());
       filmCardElement.setClickHandler((evt) =>{
-        setOpenPopupHandler(evt);
+        setOpenPopupHandler(evt, filmCardData);
       });
     }
   });
@@ -226,27 +191,34 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
     for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
       const filmCardElement = new FilmCardView(filteredFilms[i]);
+      const filmCardData = filteredFilms[i];
       render(filmList, filmCardElement.getElement());
       filmCardElement.setClickHandler((evt) =>{
-        setOpenPopupHandler(evt);
+        setOpenPopupHandler(evt, filmCardData);
       });
     }
   });
 }
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  const filmCardElement = new FilmCardView(sortFilmsRated(filteredFilms)[i]);
+  const sortFilmsRatedData = sortFilmsRated(filteredFilms);
+  // const filmCardElement = new FilmCardView(sortFilmsRated(filteredFilms)[i]);
+  const filmCardElement = new FilmCardView(sortFilmsRatedData[i]);
+  const filmCardData = sortFilmsRatedData[i];
   render(filmListRated, filmCardElement.getElement());
   filmCardElement.setClickHandler((evt) =>{
-    setOpenPopupHandler(evt);
+    setOpenPopupHandler(evt, filmCardData);
   });
 }
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
-  const filmCardElement = new FilmCardView(sortFilmsCommented(filteredFilms)[i]);
+  const sortFilmsCommentedData = sortFilmsCommented(filteredFilms);
+  // const filmCardElement = new FilmCardView(sortFilmsCommented(filteredFilms)[i]);
+  const filmCardElement = new FilmCardView(sortFilmsCommentedData[i]);
+  const filmCardData = sortFilmsCommentedData[i];
   render(filmListCommented, filmCardElement.getElement());
   filmCardElement.setClickHandler((evt) =>{
-    setOpenPopupHandler(evt);
+    setOpenPopupHandler(evt, filmCardData);
   });
 }
 
@@ -255,6 +227,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
  * @param {string} id - id фильма
  */
 const closePopup = (filmPopupComponent) => {
+  isOpenedPopup = false;
   filmPopupComponent.getElement().remove();
   filmPopupComponent.removeElement();
   siteBody.classList.remove('hide-overflow');

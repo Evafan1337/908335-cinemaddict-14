@@ -12,6 +12,7 @@ export const RenderPosition = {
  * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
  */
 export const render = (container, element, place = 'beforeend') => {
+  // element = element.getElement();
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
