@@ -45,13 +45,13 @@ const setOpenPopupHandler = (evt, filmCardData) => {
     const showPopup = () => {
       const film = filmCardData;
       const filmPopupComponent = new PopupView(film);
-      render(siteBody, filmPopupComponent.getElement(), RenderPosition.BEFOREEND);
+      render(siteBody, filmPopupComponent);
       isOpenedPopup = true;
       siteBody.classList.add('hide-overflow');
 
       const commentsComponent = new CommentsView(film.comments);
       const commentsContainer = filmPopupComponent.getElement().querySelector('.film-details__bottom-container');
-      render(commentsContainer, commentsComponent.getElement(), RenderPosition.BEFOREEND);
+      render(commentsContainer, commentsComponent);
 
       //  Навешивание обработчиков
       // const popupElem = filmPopupComponent.getElement();
@@ -75,10 +75,10 @@ const siteMainElement = document.querySelector('.main');
 const siteCountFilmsElement = document.querySelector('.footer__statistics');
 const menuComponent = new MenuView(filmsInfoSort(filteredFilms));
 const sortComponent = new SortPanelView();
-render(siteMainElement, menuComponent.getElement());
-render(siteMainElement, sortComponent.getElement());
-render(siteMainElement, new FilmListView().getElement());
-render(siteCountFilmsElement, new CountFilmsView(FILM_COUNT).getElement());
+render(siteMainElement, menuComponent);
+render(siteMainElement, sortComponent);
+render(siteMainElement, new FilmListView());
+render(siteCountFilmsElement, new CountFilmsView(FILM_COUNT));
 
 const filmList = siteMainElement.querySelector('.js-film-list-main');
 const filmListRated = siteMainElement.querySelector('.js-film-list-rated');
@@ -90,20 +90,20 @@ if (filteredFilms.length > 0) {
   for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
     const filmCardElement = new FilmCardView(filteredFilms[i]);
     const filmCardData = filteredFilms[i];
-    render(filmList, filmCardElement.getElement());
+    render(filmList, filmCardElement);
 
     filmCardElement.setClickHandler((evt) => {
       setOpenPopupHandler(evt, filmCardData);
     });
   }
 } else {
-  render(filmList, new EmptyFilmsView().getElement());
+  render(filmList, new EmptyFilmsView());
 }
 
 if (filteredFilms.length > FILM_PER_PAGE) {
   let renderedFilmsCount = FILM_PER_PAGE;
   const loadMoreComponent = new LoadmoreView();
-  render(filmsContainer, loadMoreComponent.getElement());
+  render(filmsContainer, loadMoreComponent);
 
 
   loadMoreComponent.setClickHandler(() => {
@@ -111,7 +111,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
     const renderMoreFilms = (film, index) => {
       const filmCardElement = new FilmCardView(film);
       const filmCardData = filteredFilms[index];
-      render(filmList, filmCardElement.getElement());
+      render(filmList, filmCardElement);
 
       // filmCardElement.addEventListener('click', (evt) => {
       filmCardElement.setClickHandler((evt) =>{
@@ -157,7 +157,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
     for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
       const filmCardElement = new FilmCardView(filteredFilms[i]);
       const filmCardData = filteredFilms[i];
-      render(filmList, filmCardElement.getElement());
+      render(filmList, filmCardElement);
       filmCardElement.setClickHandler((evt) =>{
         setOpenPopupHandler(evt, filmCardData);
       });
@@ -192,7 +192,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
     for (let i = 0; i < Math.min(filteredFilms.length, FILM_PER_PAGE); i++) {
       const filmCardElement = new FilmCardView(filteredFilms[i]);
       const filmCardData = filteredFilms[i];
-      render(filmList, filmCardElement.getElement());
+      render(filmList, filmCardElement);
       filmCardElement.setClickHandler((evt) =>{
         setOpenPopupHandler(evt, filmCardData);
       });
@@ -205,7 +205,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
   // const filmCardElement = new FilmCardView(sortFilmsRated(filteredFilms)[i]);
   const filmCardElement = new FilmCardView(sortFilmsRatedData[i]);
   const filmCardData = sortFilmsRatedData[i];
-  render(filmListRated, filmCardElement.getElement());
+  render(filmListRated, filmCardElement);
   filmCardElement.setClickHandler((evt) =>{
     setOpenPopupHandler(evt, filmCardData);
   });
@@ -216,7 +216,7 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
   // const filmCardElement = new FilmCardView(sortFilmsCommented(filteredFilms)[i]);
   const filmCardElement = new FilmCardView(sortFilmsCommentedData[i]);
   const filmCardData = sortFilmsCommentedData[i];
-  render(filmListCommented, filmCardElement.getElement());
+  render(filmListCommented, filmCardElement);
   filmCardElement.setClickHandler((evt) =>{
     setOpenPopupHandler(evt, filmCardData);
   });
