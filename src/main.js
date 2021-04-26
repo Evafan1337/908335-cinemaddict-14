@@ -108,12 +108,11 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
   loadMoreComponent.setClickHandler(() => {
 
-    const renderMoreFilms = (film, index) => {
-      const filmCardElement = new FilmCardView(film);
-      const filmCardData = filteredFilms[index];
+    const renderMoreFilms = (film, index, renderedFilmsCount) => {
+      const filmCardData = filteredFilms[renderedFilmsCount + index];
+      const filmCardElement = new FilmCardView(filmCardData);
+      
       render(filmList, filmCardElement);
-
-      // filmCardElement.addEventListener('click', (evt) => {
       filmCardElement.setClickHandler((evt) =>{
         setOpenPopupHandler(evt, filmCardData);
       });
@@ -122,7 +121,7 @@ if (filteredFilms.length > FILM_PER_PAGE) {
     // Отрисовка оставшихся
     filteredFilms
       .slice(renderedFilmsCount, renderedFilmsCount + FILM_PER_PAGE)
-      .forEach((film, index) => renderMoreFilms(film, index));
+      .forEach((film, index) => renderMoreFilms(film, index, renderedFilmsCount));
 
     renderedFilmsCount += FILM_PER_PAGE;
 
@@ -202,7 +201,6 @@ if (filteredFilms.length > FILM_PER_PAGE) {
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
   const sortFilmsRatedData = sortFilmsRated(filteredFilms);
-  // const filmCardElement = new FilmCardView(sortFilmsRated(filteredFilms)[i]);
   const filmCardElement = new FilmCardView(sortFilmsRatedData[i]);
   const filmCardData = sortFilmsRatedData[i];
   render(filmListRated, filmCardElement);
@@ -213,7 +211,6 @@ for (let i = 0; i < FILM_RATED_COUNT; i++) {
 
 for (let i = 0; i < FILM_RATED_COUNT; i++) {
   const sortFilmsCommentedData = sortFilmsCommented(filteredFilms);
-  // const filmCardElement = new FilmCardView(sortFilmsCommented(filteredFilms)[i]);
   const filmCardElement = new FilmCardView(sortFilmsCommentedData[i]);
   const filmCardData = sortFilmsCommentedData[i];
   render(filmListCommented, filmCardElement);
