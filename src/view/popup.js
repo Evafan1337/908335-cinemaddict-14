@@ -105,7 +105,7 @@ const createTemplatePopupFilm = (film) => {
 };
 
 /**
- * Класс описывает компонент панели сортировки
+ * Класс описывает компонент попапа
  */
 export default class Popup extends AbstractView {
 

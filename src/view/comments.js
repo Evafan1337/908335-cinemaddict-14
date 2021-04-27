@@ -59,6 +59,9 @@ export const createCommentsTemplate = (comments) => {
       </section>`;
 };
 
+/**
+ * Класс описывает компонент (список комментариев попапа)
+ */
 export default class Comments extends AbstractView {
   constructor(comments) {
     super();

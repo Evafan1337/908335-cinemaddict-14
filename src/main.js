@@ -9,7 +9,6 @@ import SortPanelView from './view/sort-panel';
 import CommentsView from './view/comments';
 import {
   render,
-  RenderPosition,
   compareValues,
   filmsInfoSort,
   sortFilmsRated,
@@ -111,7 +110,6 @@ if (filteredFilms.length > FILM_PER_PAGE) {
     const renderMoreFilms = (film, index, renderedFilmsCount) => {
       const filmCardData = filteredFilms[renderedFilmsCount + index];
       const filmCardElement = new FilmCardView(filmCardData);
-      
       render(filmList, filmCardElement);
       filmCardElement.setClickHandler((evt) =>{
         setOpenPopupHandler(evt, filmCardData);

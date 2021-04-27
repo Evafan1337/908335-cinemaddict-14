@@ -1,7 +1,15 @@
-import EmptyFilms from '../view/empty-films';
+import EmptyFilmsView from '../view/empty-films';
 import {render, RenderPosition} from '../utils';
 
+/**
+ * Класс описывает презентер пустого списка фильмов
+ */
 export default class EmptyPresenter {
+
+  /**
+   * Конструктор презентера
+   * @param {emptyContainer} - ссылка на HTML элемент куда надо отрисовать пустой список фильмов
+   */
   constructor(emptyContainer) {
     this._emptyContainer = emptyContainer;
     this._emptyFilms = null;
@@ -15,7 +23,10 @@ export default class EmptyPresenter {
     this._renderEmpty();
   }
 
+  /**
+   * Метод рендера
+   */
   _renderEmpty() {
-    render(this._emptyContainer, this._emptyFilms.getElement(), RenderPosition.BEFOREEND);
+    render(this._emptyContainer, this._emptyFilms);
   }
 }
