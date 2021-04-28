@@ -130,6 +130,12 @@ export default class Popup extends AbstractView {
     return createTemplatePopupFilm(this._film);
   }
 
+  //?
+  getCommentsContainer() {
+    console.log('getCommentsContainer');
+    return super.getElement().querySelector(`.film-details__bottom-container`);
+  }
+
   /**
    * Метод отработки слушателя
    * @param {Object} evt - объект событий

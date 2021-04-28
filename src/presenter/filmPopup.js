@@ -11,7 +11,7 @@ export default class FilmPopupPresenter {
   constructor(container) {
     this._container = container;
     this._film = null;
-    this._popup = null;
+    this._popupComponent = null;
   }
 
   /**
@@ -20,16 +20,20 @@ export default class FilmPopupPresenter {
    */
   init(film) {
     this._film = film;
-    this._popup = new PopupView(this._film);
+    this._popupComponent = new PopupView(this._film);
+    console.log(this._popupComponent);
     this._renderPopup();
   }
 
   _renderPopup() {
-    render(this._container, this._popup);
+    render(this._container, this._popupComponent);
     const commentsList = new CommentsView(this._film.comments);
-    render(this._popup.getСommentsContainer(), commentsList);
+
+    // console.log(this._popupComponent.getCommentsContainer());
+
+    render(this._popupComponent.getCommentsContainer(), commentsList);
     this._container.classList.add('hide-overflow');
-    this._popup.setClickHandler(() => this.close());
+    this._popupComponent.setClickHandler(() => this.close());
     document.addEventListener('keydown', (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
@@ -39,8 +43,8 @@ export default class FilmPopupPresenter {
   }
 
   close() {
-    this._popup.getElement().remove();
-    this._popup.removeElement();
+    this._popupComponent.getElement().remove();
+    this._popupComponent.removeElement();
     this._container.classList.remove('hide-overflow');
   }
 }

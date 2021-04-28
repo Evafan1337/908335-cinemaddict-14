@@ -74,6 +74,7 @@ export default class FilmCard  extends AbstractView {
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._data = FilmCard.parseFilmToData(film);
   }
 
   /**
@@ -84,6 +85,21 @@ export default class FilmCard  extends AbstractView {
    */
   getTemplate() {
     return createFilmCardTemplate(this._film);
+  }
+
+  reset(film) {
+    this.updateData(FilmCard.parseFilmToData(film));
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setClickHandler(this._callback.click);
+  }
+
+  _setInnerHandlers() {
+    for (let btn of this.getElement().querySelectorAll(`.js-open-popup`)) {
+      btn.addEventListener(`click`, this._clickHandler);
+    }
   }
 
   /**
@@ -108,7 +124,11 @@ export default class FilmCard  extends AbstractView {
 
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(evt);
+    let type = evt.target.getAttribute(`data-type`);
+    this._callback.editClick(evt, FilmCard.parseDataToFilm(this._data));
+    this.updateData({
+      [type]: [type]
+    });
   }
 
   setEditClickHandler(callback) {
@@ -116,5 +136,23 @@ export default class FilmCard  extends AbstractView {
     for (let control of this.getElement().querySelectorAll('.film-card__controls-item')) {
       control.addEventListener(`click`, this._editClickHandler);
     }
+  }
+
+  static parseFilmToData(film) {
+    return Object.assign({}, film, {
+      isFavorite: film.isFavorite,
+      isViewed: film.isViewed,
+      isWatchlist: film.isWatchlist,
+    });
+  }
+
+  static parseDataToFilm(data) {
+    data = Object.assign({}, data);
+
+    delete data.isFavorite;
+    delete data.isWatchlist;
+    delete data.isViewed;
+
+    return data;
   }
 }

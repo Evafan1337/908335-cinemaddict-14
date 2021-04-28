@@ -26,8 +26,8 @@ export default class FilmCardPresenter {
     this._film = film;
     const prevCard = this._cardComponent;
     this._cardComponent = new FilmCardView(this._film);
-    this._card.setClickHandler(() => this._showPopup());
-    this._card.setEditClickHandler((evt) => this._clickFilmInfo(evt));
+    this._cardComponent.setClickHandler(() => this._showPopup());
+    this._cardComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
 
     if (prevCard === null) {
       this._renderCard();

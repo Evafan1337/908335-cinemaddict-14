@@ -5,7 +5,8 @@ import SortPanelView from '../view/sort-panel';
 import {
   render,
   compareValues,
-  RenderPosition
+  RenderPosition,
+  updateItem
 } from '../utils';
 import FilmCardPresenter from './filmCard';
 
@@ -25,8 +26,9 @@ export default class FilmsList {
     this._filmsContainer = filmsContainer;
     this._renderedFilmsCount = FILM_PER_PAGE;
     this._films = null;
-    this._sort = null;
-    this._menuView = null;
+    this._sort = {};
+    this._menuView = {};
+    this._filmPresenter = {};
     this._sortPanelView = new SortPanelView();
     this._filmListView = new FilmListView();
     this._loadMoreView = new LoadmoreView();
@@ -37,6 +39,7 @@ export default class FilmsList {
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
   }
 
 
@@ -91,8 +94,9 @@ export default class FilmsList {
    * Вызывает метод инициализации презентера карточки фильма (FilmCardPresenter)
    */
   _renderCard(film, container) {
-    const filmCardPresenter = new FilmCardPresenter(container);
-    filmCardPresenter.init(film);
+    const filmPresenter = new FilmCardPresenter(container, this._handleFilmChange);
+    filmPresenter.init(film);
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   _handleSortItemClick(evt) {
@@ -209,5 +213,10 @@ export default class FilmsList {
       filtered = this._sourcedFilms;
     }
     this.update(filtered);
+  }
+
+  _handleFilmChange(updatedFilm) {
+    this._films = updateItem(this._films, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
   }
 }
