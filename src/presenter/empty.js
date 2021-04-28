@@ -19,7 +19,7 @@ export default class EmptyPresenter {
    * Метод инициализации
    */
   init() {
-    this._emptyFilms = new EmptyFilms();
+    this._emptyFilms = new EmptyFilmsView();
     this._renderEmpty();
   }
 

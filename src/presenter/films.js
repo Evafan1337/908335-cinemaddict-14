@@ -1,10 +1,9 @@
-import FilmListView from './view/films-list';
-import LoadmoreView from './view/loadmore';
+import FilmListView from '../view/films-list';
+import LoadmoreView from '../view/loadmore';
 import {
   render,
-  RenderPosition,
   compareValues
-} from './utils.js';
+} from '../utils';
 import FilmCardPresenter from './filmCard';
 
 const FILM_PER_PAGE = 5;
@@ -31,7 +30,7 @@ export default class FilmsList {
   /**
    * Публичный метод инициализации
    */
-  init() {
+  init(films) {
     this._films = films;
     this._renderFilmsContainer();
   }
@@ -144,7 +143,7 @@ export default class FilmsList {
     if (this._films.length > FILM_PER_PAGE) {
       this._renderLoadMore();
     }
-    if (param !== `default`) {
+    if (param !== 'default') {
       let filteredFilms = this._films.slice().sort(compareValues(param, 'desc'));
     }
   }

@@ -1,13 +1,13 @@
-import {render, RenderPosition} from '../utils';
+import {render} from '../utils';
 import FilmCardView from '../view/film-card';
 
-const siteBody = document.querySelector(`body`);
+const siteBody = document.querySelector('body');
 
 export default class FilmCardPresenter {
 
   /**
    * Конструктор презентера
-   * @param {DOM} filmContainer - ссылка на HTML элемент куда надо отрисовать карточку фильма
+   * @param {Object} filmContainer - ссылка на HTML элемент куда надо отрисовать карточку фильма
    */
   constructor(filmContainer) {
     this._filmContainer = filmContainer;
@@ -17,7 +17,7 @@ export default class FilmCardPresenter {
 
   /**
    * Метод инициализации
-   * @param {Object} film - компонент карточки фильма
+   * @param {Object} film - данные о фильме
    */
   init(film) {
     this._film = film;
