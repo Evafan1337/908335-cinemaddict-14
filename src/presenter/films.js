@@ -27,7 +27,7 @@ export default class FilmsList {
     this._renderedFilmsCount = FILM_PER_PAGE;
     this._films = null;
     this._sort = {};
-    this._menuView = {};
+    this._menuComponent = {};
     this._filmPresenter = {};
     this._sortPanelView = new SortPanelView();
     this._filmListView = new FilmListView();
@@ -40,6 +40,10 @@ export default class FilmsList {
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._sortType = {
+      sort: `default`,
+      filter: `all`,
+    };
   }
 
 
@@ -51,7 +55,7 @@ export default class FilmsList {
     this._films = films.slice();
     this._sourcedFilms = films.slice();
     this._sort = sortInfo;
-    this._menuView = new SiteMenuView(this._sort);
+    this._menuComponent = new SiteMenuView(this._sort);
     this._renderFilmsContainer();
   }
 
@@ -69,22 +73,29 @@ export default class FilmsList {
   }
 
   update() {
-    this._films = films;
     this._mainFilmList.innerHTML = ``;
+    let updatedFilms = this._sourcedFilms;
+    if (this._sortType.filter !== `all`) {
+      updatedFilms = this._sourcedFilms.filter((film) => film[this._sortType.filter]);
+    }
+    if (this._sortType.sort !== `default`) {
+      updatedFilms.sort(compareValues(this._sortType.sort, `desc`));
+    }
+    this._films = updatedFilms;
     this._renderFilms();
   }
 
   _renderMenu() {
     console.log('_renderMenu');
-    console.log(this._menuView);
-    render(this._filmsContainer, this._menuView, RenderPosition.AFTERBEGIN);
-    this._menuView.setClickHandler((evt) => this._handleFilterItemClick(evt));
+    console.log(this._menuComponent);
+    render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
+    this._menuComponent.setClickHandler((evt) => this._handleFilterItemClick(evt));
   }
 
   _handleFilterItemClick(evt) {
     //  dataset
     let param = evt.target.getAttribute(`data-sort`);
-    this._menuView.getActiveMenuLink().classList.remove(`main-navigation__item--active`);
+    this._menuComponent.getActiveMenuLink().classList.remove(`main-navigation__item--active`);
     evt.target.classList.add(`main-navigation__item--active`);
     this._filteredFilms(param);
   }
@@ -196,21 +207,31 @@ export default class FilmsList {
 
 
   _sortedFilms(param) {
+    this._sortType.sort = param;
+    console.log(this._sortType);
     let sorted;
     if (param !== `default`) {
       sorted = this._sourcedFilms.slice().sort(compareValues(param, `desc`));
     } else {
       sorted = this._sourcedFilms;
     }
+    if (this._sortType.filter !== `all`) {
+      sorted = sorted.filter((film) => film[this._sortType.filter] === true);
+    }
     this.update(sorted);
   }
 
   _filteredFilms(param) {
+    this._sortType.filter = param;
+    console.log(this._sortType);
     let filtered;
     if (param !== `all`) {
       filtered = this._sourcedFilms.slice().filter((film) => film[param] === true);
     } else {
       filtered = this._sourcedFilms;
+    }
+    if (this._sortType.sort !== `default`) {
+      filtered = filtered.sort(compareValues(this._sortType.sort, `desc`));
     }
     this.update(filtered);
   }

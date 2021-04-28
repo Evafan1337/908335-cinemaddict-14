@@ -56,6 +56,10 @@ export default class Menu extends AbstractView {
     this._callback.click(evt);
   }
 
+  getActiveMenuLink() {
+    return super.getElement().querySelector(`.main-navigation__item--active`);
+  }
+
   setClickHandler(callback) {
     this._callback.click = callback;
     for (const btn of this.getElement().querySelectorAll('.main-navigation__item')) {

@@ -127,7 +127,7 @@ export default class FilmCard  extends AbstractView {
     let type = evt.target.getAttribute(`data-type`);
     this._callback.editClick(evt, FilmCard.parseDataToFilm(this._data));
     this.updateData({
-      [type]: [type]
+      [type]: !this._film[type]
     });
   }
 
