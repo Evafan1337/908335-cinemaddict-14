@@ -8,10 +8,11 @@ export default class FilmPopupPresenter {
    * Конструктор попапа
    * @param {Object} container - ссылка на HTML элемент куда надо отрисовать попап
    */
-  constructor(container) {
+  constructor(container, changeData) {
     this._container = container;
     this._film = null;
     this._popupComponent = null;
+    this._changeData = changeData;
   }
 
   /**
@@ -20,8 +21,17 @@ export default class FilmPopupPresenter {
    */
   init(film) {
     this._film = film;
+    const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
+    this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
     console.log(this._popupComponent);
+
+    if (prevPopup) {
+      console.log('prevPopup');
+      prevPopup.getElement().remove();
+      prevPopup.removeElement();
+    }
+
     this._renderPopup();
   }
 
@@ -41,6 +51,12 @@ export default class FilmPopupPresenter {
       }
     });
   }
+
+  _clickFilmInfo(evt) {
+    let type = evt.target.getAttribute(`data-type`);
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
+  }
+
 
   close() {
     this._popupComponent.getElement().remove();

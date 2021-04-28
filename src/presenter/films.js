@@ -9,9 +9,11 @@ import {
   updateItem
 } from '../utils';
 import FilmCardPresenter from './filmCard';
+import FilmPopupPresenter from './filmPopup';
 
 const FILM_PER_PAGE = 5;
 const FILM_RATED_COUNT = 2;
+const siteBody = document.querySelector(`body`);
 
 /**
  * Класс описывает презентер списка фильмов
@@ -40,6 +42,9 @@ export default class FilmsList {
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
+    this._handlePopupChange = this._handlePopupChange.bind(this);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange);
     this._sortType = {
       sort: `default`,
       filter: `all`,
@@ -94,10 +99,11 @@ export default class FilmsList {
 
   _handleFilterItemClick(evt) {
     //  dataset
-    let param = evt.target.getAttribute(`data-sort`);
+    // let param = evt.target.getAttribute(`data-sort`);
+    this._sortType.filter = evt.target.getAttribute(`data-sort`);
     this._menuComponent.getActiveMenuLink().classList.remove(`main-navigation__item--active`);
     evt.target.classList.add(`main-navigation__item--active`);
-    this._filteredFilms(param);
+    this.update();
   }
 
   /**
@@ -105,7 +111,7 @@ export default class FilmsList {
    * Вызывает метод инициализации презентера карточки фильма (FilmCardPresenter)
    */
   _renderCard(film, container) {
-    const filmPresenter = new FilmCardPresenter(container, this._handleFilmChange);
+    const filmPresenter = new FilmCardPresenter(container, this._handleFilmChange, this._handlePopupDisplay);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -114,8 +120,8 @@ export default class FilmsList {
     //  dataset str 95
     this._sortPanelView.getActiveMenuLink().classList.remove(`sort__button--active`);
     evt.target.classList.add(`sort__button--active`);
-    let param = evt.target.getAttribute(`data-sort`);
-    this._sortedFilms(param);
+    this._sortType.sort = evt.target.getAttribute(`data-sort`);
+    this.update();
   }
 
   _renderSort() {
@@ -206,38 +212,19 @@ export default class FilmsList {
   }
 
 
-  _sortedFilms(param) {
-    this._sortType.sort = param;
-    console.log(this._sortType);
-    let sorted;
-    if (param !== `default`) {
-      sorted = this._sourcedFilms.slice().sort(compareValues(param, `desc`));
-    } else {
-      sorted = this._sourcedFilms;
-    }
-    if (this._sortType.filter !== `all`) {
-      sorted = sorted.filter((film) => film[this._sortType.filter] === true);
-    }
-    this.update(sorted);
-  }
-
-  _filteredFilms(param) {
-    this._sortType.filter = param;
-    console.log(this._sortType);
-    let filtered;
-    if (param !== `all`) {
-      filtered = this._sourcedFilms.slice().filter((film) => film[param] === true);
-    } else {
-      filtered = this._sourcedFilms;
-    }
-    if (this._sortType.sort !== `default`) {
-      filtered = filtered.sort(compareValues(this._sortType.sort, `desc`));
-    }
-    this.update(filtered);
-  }
 
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
+  }
+
+  _handlePopupDisplay(film) {
+    this._popupPresenter.init(film);
+  }
+
+  _handlePopupChange(updatedFilm) {
+    this._films = updateItem(this._sourcedFilms, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+    this._popupPresenter.init(updatedFilm);
   }
 }
