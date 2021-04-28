@@ -105,6 +105,14 @@ export const filmsInfoSort = (filmsData) => {
   return filmsInfo;
 };
 
+export const getFilmsInfoSortLength = (filmsData) => {
+  return {
+    isFavorite: filmsData.isFavorite.length,
+    isViewed: filmsData.isViewed.length,
+    isWatchlist: filmsData.isWatchlist.length
+  }
+}
+
 /**
  * Функция сортировки фильмов по рейтингу
  * @param {Array} filmsData - массив фильмов
