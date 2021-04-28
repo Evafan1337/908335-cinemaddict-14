@@ -25,9 +25,9 @@ export default class FilmPopupPresenter {
   }
 
   _renderPopup() {
-    render(this._container, this._popup.getElement(), RenderPosition.BEFOREEND);
+    render(this._container, this._popup);
     const commentsList = new CommentsView(this._film.comments);
-    render(this._popup.getСommentsContainer(), commentsList.getElement(), RenderPosition.BEFOREEND);
+    render(this._popup.getСommentsContainer(), commentsList);
     this._container.classList.add('hide-overflow');
     this._popup.setClickHandler(() => this.close());
     document.addEventListener('keydown', (evt) => {
