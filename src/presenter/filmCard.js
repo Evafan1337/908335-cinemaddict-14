@@ -1,4 +1,4 @@
-import {render} from '../utils';
+import {render, replace, remove} from '../utils';
 import FilmCardView from '../view/film-card';
 import FilmPopupPresenter from './filmPopup';
 
@@ -14,7 +14,6 @@ export default class FilmCardPresenter {
     this._filmContainer = filmContainer;
     this._film = null;
     this._cardComponent = null;
-    this._popupPresenter = new FilmPopupPresenter(siteBody);
     this._changeData = changeData;
     this._showPopup = showPopup;
   }
@@ -31,10 +30,11 @@ export default class FilmCardPresenter {
     this._cardComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
 
     if (prevCard) {
-      prevCard.getElement().remove();
-      prevCard.removeElement();
+      replace(this._cardComponent, prevCard);
+      // remove(prevCard);
+    } else {
+      this._renderCard();
     }
-    this._renderCard();
   }
 
   /**
@@ -44,13 +44,18 @@ export default class FilmCardPresenter {
     render(this._filmContainer, this._cardComponent);
   }
 
+
+  /**
+   * Метод обработки клика по карточке фильма (управление данными)
+   * @param {Object} evt - объект событий
+   */
   _clickFilmInfo(evt) {
-    let type = evt.target.getAttribute(`data-type`);
-    // check
+    console.log('filmCard.js: _clickFilmInfo');
+    let type = evt.target.dataset.type;
+    console.log(type);
+
+    //  Инвертируем значение в сыром виде данных о фильме согласно клика
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
   }
 
-  _changeData() {
-    console.log(this._film);
-  }
 }

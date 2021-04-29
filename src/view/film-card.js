@@ -74,7 +74,6 @@ export default class FilmCard  extends AbstractView {
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
-    this._data = FilmCard.parseFilmToData(film);
   }
 
   /**
@@ -94,11 +93,16 @@ export default class FilmCard  extends AbstractView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setClickHandler(this._callback.click);
+    this.setEditClickHandler(this._callback.editClick);
   }
 
   _setInnerHandlers() {
     for (let btn of this.getElement().querySelectorAll(`.js-open-popup`)) {
       btn.addEventListener(`click`, this._clickHandler);
+    }
+
+    for (let control of this.getElement().querySelectorAll(`.film-card__controls-item`)) {
+      control.addEventListener(`click`, this._editClickHandler);
     }
   }
 
@@ -107,6 +111,7 @@ export default class FilmCard  extends AbstractView {
    * @param {Object} evt - объект событий
    */
   _clickHandler(evt) {
+    console.log('_clickHandler');
     evt.preventDefault();
     this._callback.click(evt);
   }
@@ -123,12 +128,9 @@ export default class FilmCard  extends AbstractView {
   }
 
   _editClickHandler(evt) {
+    console.log('editClick!');
     evt.preventDefault();
-    let type = evt.target.getAttribute(`data-type`);
-    this._callback.editClick(evt, FilmCard.parseDataToFilm(this._data));
-    this.updateData({
-      [type]: !this._film[type]
-    });
+    this._callback.editClick(evt);
   }
 
   setEditClickHandler(callback) {
@@ -136,23 +138,5 @@ export default class FilmCard  extends AbstractView {
     for (let control of this.getElement().querySelectorAll('.film-card__controls-item')) {
       control.addEventListener(`click`, this._editClickHandler);
     }
-  }
-
-  static parseFilmToData(film) {
-    return Object.assign({}, film, {
-      isFavorite: film.isFavorite,
-      isViewed: film.isViewed,
-      isWatchlist: film.isWatchlist,
-    });
-  }
-
-  static parseDataToFilm(data) {
-    data = Object.assign({}, data);
-
-    delete data.isFavorite;
-    delete data.isWatchlist;
-    delete data.isViewed;
-
-    return data;
   }
 }

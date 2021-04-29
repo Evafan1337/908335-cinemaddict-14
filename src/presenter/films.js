@@ -78,21 +78,20 @@ export default class FilmsList {
   }
 
   update() {
-    this._mainFilmList.innerHTML = ``;
+    console.log('update');
+    this._mainFilmList.innerHTML = '';
     let updatedFilms = this._sourcedFilms;
-    if (this._sortType.filter !== `all`) {
+    if (this._sortType.filter !== 'all') {
       updatedFilms = this._sourcedFilms.filter((film) => film[this._sortType.filter]);
     }
-    if (this._sortType.sort !== `default`) {
-      updatedFilms.sort(compareValues(this._sortType.sort, `desc`));
+    if (this._sortType.sort !== 'default') {
+      updatedFilms.sort(compareValues(this._sortType.sort, 'desc'));
     }
     this._films = updatedFilms;
     this._renderFilms();
   }
 
   _renderMenu() {
-    console.log('_renderMenu');
-    console.log(this._menuComponent);
     render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
     this._menuComponent.setClickHandler((evt) => this._handleFilterItemClick(evt));
   }
@@ -129,7 +128,6 @@ export default class FilmsList {
     this._sortPanelView.setClickHandler((evt) => this._handleSortItemClick(evt));
   }
 
-  // check later
   /**
    * Приватный метод рендера определенного количества фильмов
    * @param {number} from - индекс с какого необходимо начать отрисовку
@@ -212,16 +210,30 @@ export default class FilmsList {
   }
 
 
-
+  /**
+   * Приватный метод обработки фильма (клик по интерфейсу карточки)
+   * @param {object} updatedFilm - данные о фильме, которые нужно изменить
+   */
   _handleFilmChange(updatedFilm) {
-    this._films = updateItem(this._films, updatedFilm);
+    console.log('films.js: updatedFilm');
+    this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
+
+    //Обновление меню можно реализовывать здесь
   }
 
+  /**
+   * Приватный метод обработки открытия попапа (клик по интерфейсу карточки фильма)
+   * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
+   */
   _handlePopupDisplay(film) {
     this._popupPresenter.init(film);
   }
 
+  /**
+   * Приватный метод обработки фильма (клик по интерфейсу попапа)
+   * @param {object} updatedFilm - данные о фильме, которые нужно изменить
+   */
   _handlePopupChange(updatedFilm) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);

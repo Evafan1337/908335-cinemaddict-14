@@ -57,7 +57,7 @@ export default class Menu extends AbstractView {
   }
 
   getActiveMenuLink() {
-    return super.getElement().querySelector(`.main-navigation__item--active`);
+    return this.getElement().querySelector(`.main-navigation__item--active`);
   }
 
   setClickHandler(callback) {

@@ -22,7 +22,7 @@ const emptyPresenter = new EmptyPresenter(siteMainElement);
 if (films.length > 0) {
   filmsPresenter.init(films, sortInfoLength);
 } else {
-  emptyPresenter.init();
+  emptyPresenter.init(sortInfoLength);
 }
 
 const footerPresenter = new FooterPresenter(siteFooterStatistics);

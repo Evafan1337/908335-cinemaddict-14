@@ -1,6 +1,6 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
-import {render, RenderPosition} from '../utils';
+import {render, RenderPosition, remove, replace} from '../utils';
 
 export default class FilmPopupPresenter {
 
@@ -23,33 +23,42 @@ export default class FilmPopupPresenter {
     this._film = film;
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
-    this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
-    console.log(this._popupComponent);
 
-    if (prevPopup) {
-      console.log('prevPopup');
-      prevPopup.getElement().remove();
-      prevPopup.removeElement();
+    if (prevPopup && this._container.classList.contains(`hide-overflow`)) {
+      replace(this._popupComponent, prevPopup);
+      this._container.classList.add(`hide-overflow`);
+      this._callbacks();
+      this._renderComments();
+      this._popupComponent.restoreHandlers();
+    } else {
+      this._renderPopup();
+      return;
     }
 
-    this._renderPopup();
+    remove(prevPopup);
   }
 
   _renderPopup() {
     render(this._container, this._popupComponent);
-    const commentsList = new CommentsView(this._film.comments);
+    this._container.classList.add(`hide-overflow`);
+    this._callbacks();
+    this._renderComments();
+  }
 
-    // console.log(this._popupComponent.getCommentsContainer());
-
-    render(this._popupComponent.getCommentsContainer(), commentsList);
-    this._container.classList.add('hide-overflow');
+  _callbacks() {
+    this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
     this._popupComponent.setClickHandler(() => this.close());
-    document.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
+    document.addEventListener(`keydown`, (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
         evt.preventDefault();
         this.close();
       }
     });
+  }
+
+  _renderComments() {
+    const commentsComponent = new CommentsView(this._film.comments);
+    render(this._popupComponent.getCommentsContainer(), commentsComponent);
   }
 
   _clickFilmInfo(evt) {
@@ -57,10 +66,8 @@ export default class FilmPopupPresenter {
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
   }
 
-
   close() {
-    this._popupComponent.getElement().remove();
-    this._popupComponent.removeElement();
-    this._container.classList.remove('hide-overflow');
+    remove(this._popupComponent);
+    this._container.classList.remove(`hide-overflow`);
   }
 }

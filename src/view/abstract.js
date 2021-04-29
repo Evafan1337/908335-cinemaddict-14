@@ -21,6 +21,11 @@ export default class Abstract {
 
 
   updateData(update, justDataUpdating) {
+    console.log('updateData');
+    console.log(update);
+    console.log(justDataUpdating);
+
+
     if (!update) {
       return;
     }
@@ -35,7 +40,7 @@ export default class Abstract {
   }
 
   updateElement() {
-    let prevElement = this.getElement();
+    const prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
 

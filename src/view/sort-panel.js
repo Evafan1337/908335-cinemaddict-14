@@ -17,21 +17,46 @@ const createSortPanelTemplate = () => {
  */
 export default class SortPanel extends AbstractView {
 
+  /**
+   * Конструктор
+   * Вызывается конструктор класса родителя (AbstractView)
+   * Производится привязка контекста обработчика к объекту компонента
+   */
   constructor() {
     super();
-    this._element = null;
     this._clickHandler = this._clickHandler.bind(this);
   }
 
+  /**
+   * Метод получения HTML шаблона
+   * Вызывает внешнюю функцию createSortPanelTemplate
+   * @return {string} - HTML код созданного элемента
+   */
   getTemplate() {
     return createSortPanelTemplate();
   }
 
+  /**
+   * Метод получения HTML тега выбранной сортировки
+   * @return {object} - HTML элемент
+   */
+  getActiveMenuLink() {
+    return this.getElement().querySelector('.sort__button--active');
+  }
+
+  /**
+   * Метод отработки слушателя
+   * @param {Object} evt - объект событий
+   */
   _clickHandler(evt) {
     evt.preventDefault();
     this._callback.click(evt);
   }
 
+  /**
+   * Метод установки слушателя
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
   setClickHandler(callback) {
     this._callback.click = callback;
     for (const btn of this.getElement().querySelectorAll('.sort__button')) {

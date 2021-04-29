@@ -1,4 +1,5 @@
 import EmptyFilmsView from '../view/empty-films';
+import SiteMenuView from '../view/menu.js';
 import {render, RenderPosition} from '../utils';
 
 /**
@@ -12,14 +13,17 @@ export default class EmptyPresenter {
    */
   constructor(emptyContainer) {
     this._emptyContainer = emptyContainer;
-    this._emptyFilms = null;
+    this._emptyFilmsComponent = new EmptyFilmsView();
+    this._sort = null;
+    this._menu = null;
   }
 
   /**
    * Метод инициализации
    */
-  init() {
-    this._emptyFilms = new EmptyFilmsView();
+  init(sort) {
+    this._sort = sort;
+    this._menuComponent = new SiteMenuView(this._sort);
     this._renderEmpty();
   }
 
@@ -27,6 +31,8 @@ export default class EmptyPresenter {
    * Метод рендера
    */
   _renderEmpty() {
-    render(this._emptyContainer, this._emptyFilms);
+    render(this._emptyContainer, this._menuComponent);
+    render(this._emptyContainer, this._emptyFilmsComponent);
+    
   }
 }

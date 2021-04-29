@@ -1,3 +1,5 @@
+import AbstractView from "./view/abstract";
+
 const FILM_RATED_COUNT = 2;
 
 export const RenderPosition = {
@@ -106,6 +108,7 @@ export const filmsInfoSort = (filmsData) => {
 };
 
 export const getFilmsInfoSortLength = (filmsData) => {
+
   return {
     isFavorite: filmsData.isFavorite.length,
     isViewed: filmsData.isViewed.length,
@@ -131,7 +134,9 @@ export const sortFilmsCommented = (filmsData) => {
   return filmsData.sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
 };
 
+
 export const updateItem = (items, update) => {
+  console.log('utils.js: updateItem');
   const index = items.findIndex((item) => item.id === update.id);
 
   if (index === -1) {
@@ -143,4 +148,30 @@ export const updateItem = (items, update) => {
     update,
     ...items.slice(index + 1)
   ];
+};
+
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof AbstractView) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof AbstractView) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    return;
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
+export const remove = (component) => {
+  if (!(component instanceof AbstractView)) {
+    throw new Error('Can remove only components');
+  }
+  component.getElement().remove();
+  component.removeElement();
 };

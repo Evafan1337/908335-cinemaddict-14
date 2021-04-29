@@ -120,6 +120,7 @@ export default class Popup extends AbstractView {
     this._clickHandler = this._clickHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
     this._data = Popup.parseFilmToData(film);
+    this._setInnerHandlers();
   }
 
   /**
@@ -132,10 +133,9 @@ export default class Popup extends AbstractView {
     return createTemplatePopupFilm(this._film);
   }
 
-  //?
   getCommentsContainer() {
     console.log('getCommentsContainer');
-    return super.getElement().querySelector(`.film-details__bottom-container`);
+    return this.getElement().querySelector(`.film-details__bottom-container`);
   }
 
   /**
@@ -150,6 +150,7 @@ export default class Popup extends AbstractView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setClickHandler(this._callback.click);
+    this.setEditClickHandler(this._callback.editClick);
   }
 
   _setInnerHandlers() {
