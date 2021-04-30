@@ -30,7 +30,6 @@ export default class Menu extends AbstractView {
    * @param {Object} filmsInfo - данные о фильмах
    */
   constructor(filmsInfo) {
-    console.log(filmsInfo);
     super();
     this._element = null;
     this._filmsInfo = filmsInfo;
@@ -56,10 +55,17 @@ export default class Menu extends AbstractView {
     this._callback.click(evt);
   }
 
+  /**
+   * Метод получения активного элемента фильтрации
+   */
   getActiveMenuLink() {
-    return this.getElement().querySelector(`.main-navigation__item--active`);
+    return this.getElement().querySelector('.main-navigation__item--active');
   }
 
+  /**
+   * Метод установки слушателя
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
   setClickHandler(callback) {
     this._callback.click = callback;
     for (const btn of this.getElement().querySelectorAll('.main-navigation__item')) {

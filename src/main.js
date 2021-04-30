@@ -8,8 +8,7 @@ const FILM_COUNT = 48;
 
 const films = generateFilms(FILM_COUNT);
 const sortInfo = filmsInfoSort(films);
-const sortInfoLength = getFilmsInfoSortLength(sortInfo)
-console.log(sortInfoLength);
+const sortInfoLength = getFilmsInfoSortLength(sortInfo);
 
 const siteBody = document.querySelector('body');
 const siteMainElement = siteBody.querySelector('.main');

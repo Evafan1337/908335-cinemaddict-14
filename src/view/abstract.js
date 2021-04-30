@@ -19,26 +19,25 @@ export default class Abstract {
     this._data = {};
   }
 
-
-  updateData(update, justDataUpdating) {
-    console.log('updateData');
-    console.log(update);
-    console.log(justDataUpdating);
-
-
+  /**
+   * Метод обновления данных
+   * Меняет данные через Object.assign
+   * Потом вызывает метод обновления элемента
+   */
+  updateData(update) {
     if (!update) {
       return;
     }
 
     this._data = Object.assign({}, this._data, update);
 
-    if (justDataUpdating) {
-      return;
-    }
-
     this.updateElement();
   }
 
+  /**
+   * Метод обновления элемента
+   * работает с помощью replaceChild
+   */
   updateElement() {
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;

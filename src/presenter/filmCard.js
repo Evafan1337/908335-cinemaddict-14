@@ -1,14 +1,13 @@
-import {render, replace, remove} from '../utils';
+import {render, replace} from '../utils';
 import FilmCardView from '../view/film-card';
-import FilmPopupPresenter from './filmPopup';
-
-const siteBody = document.querySelector('body');
 
 export default class FilmCardPresenter {
 
   /**
    * Конструктор презентера
    * @param {Object} filmContainer - ссылка на HTML элемент куда надо отрисовать карточку фильма
+   * @param {Function} changeData - функция изменения данных
+   * @param {Function} showPopup - функция открытия попапа
    */
   constructor(filmContainer, changeData, showPopup) {
     this._filmContainer = filmContainer;
@@ -26,6 +25,7 @@ export default class FilmCardPresenter {
     this._film = film;
     const prevCard = this._cardComponent;
     this._cardComponent = new FilmCardView(this._film);
+    //  Устанавливаем слушатели на открытие попапа и редактирование данных
     this._cardComponent.setClickHandler(() => this._showPopup(this._film));
     this._cardComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
 
@@ -50,10 +50,7 @@ export default class FilmCardPresenter {
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
-    console.log('filmCard.js: _clickFilmInfo');
-    let type = evt.target.dataset.type;
-    console.log(type);
-
+    const type = evt.target.dataset.type;
     //  Инвертируем значение в сыром виде данных о фильме согласно клика
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
   }

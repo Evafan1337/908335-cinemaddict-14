@@ -134,8 +134,7 @@ export default class Popup extends AbstractView {
   }
 
   getCommentsContainer() {
-    console.log('getCommentsContainer');
-    return this.getElement().querySelector(`.film-details__bottom-container`);
+    return this.getElement().querySelector('.film-details__bottom-container');
   }
 
   /**
@@ -147,16 +146,22 @@ export default class Popup extends AbstractView {
     this._callback.click();
   }
 
+  /**
+   * Метод восстановления обработчиков
+   */
   restoreHandlers() {
     this._setInnerHandlers();
     this.setClickHandler(this._callback.click);
     this.setEditClickHandler(this._callback.editClick);
   }
 
+  /**
+   * Метод установки обработчиков (редактирование фильма)
+   */
   _setInnerHandlers() {
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
-    for (let control of this.getElement().querySelectorAll(`.film-details__control-input`)) {
-      control.addEventListener(`change`, this._editClickHandler);
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
+    for (const control of this.getElement().querySelectorAll('.film-details__control-input')) {
+      control.addEventListener('change', this._editClickHandler);
     }
   }
 
@@ -172,35 +177,31 @@ export default class Popup extends AbstractView {
 
   _editClickHandler(evt) {
     evt.preventDefault();
-    let type = evt.target.getAttribute(`data-type`);
-    this._callback.editClick(evt, Popup.parseDataToFilm(this._data));
-    this.updateData({
-      [type]: !this._film[type]
-    });
+    this._callback.editClick(evt);
   }
 
+  /**
+   * Метод установки слушателя
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
-    for (let control of this.getElement().querySelectorAll(`.film-details__control-input`)) {
-      control.addEventListener(`change`, this._editClickHandler);
+    for (const control of this.getElement().querySelectorAll('.film-details__control-input')) {
+      control.addEventListener('change', this._editClickHandler);
     }
   }
 
+  /**
+   * Статический метод копирования объектов
+   */
   static parseFilmToData(film) {
-    return Object.assign({}, film, {
-      isFavorite: film.isFavorite,
-      isViewed: film.isViewed,
-      isWatchlist: film.isWatchlist,
-    });
+    return Object.assign({}, film);
   }
 
+  /**
+   * Статический метод копирования объектов
+   */
   static parseDataToFilm(data) {
-    data = Object.assign({}, data);
-
-    delete data.isFavorite;
-    delete data.isWatchlist;
-    delete data.isViewed;
-
-    return data;
+    return Object.assign({}, data);
   }
 }

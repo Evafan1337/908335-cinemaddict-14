@@ -13,7 +13,7 @@ import FilmPopupPresenter from './filmPopup';
 
 const FILM_PER_PAGE = 5;
 const FILM_RATED_COUNT = 2;
-const siteBody = document.querySelector(`body`);
+const siteBody = document.querySelector('body');
 
 /**
  * Класс описывает презентер списка фильмов
@@ -46,8 +46,8 @@ export default class FilmsList {
     this._handlePopupChange = this._handlePopupChange.bind(this);
     this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange);
     this._sortType = {
-      sort: `default`,
-      filter: `all`,
+      sort: 'default',
+      filter: 'all',
     };
   }
 
@@ -56,7 +56,6 @@ export default class FilmsList {
    * Публичный метод инициализации
    */
   init(films, sortInfo) {
-    console.log(sortInfo);
     this._films = films.slice();
     this._sourcedFilms = films.slice();
     this._sort = sortInfo;
@@ -77,8 +76,10 @@ export default class FilmsList {
     this._renderCommentedFilms();
   }
 
+  /**
+   * Приватный метод обновление наполнения списка фильмов
+   */
   update() {
-    console.log('update');
     this._mainFilmList.innerHTML = '';
     let updatedFilms = this._sourcedFilms;
     if (this._sortType.filter !== 'all') {
@@ -91,23 +92,30 @@ export default class FilmsList {
     this._renderFilms();
   }
 
+  /**
+   * Приватный метод рендера меню (фильтации)
+   */
   _renderMenu() {
     render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
     this._menuComponent.setClickHandler((evt) => this._handleFilterItemClick(evt));
   }
 
+  /**
+   * Приватный метод, описывающий клик по панели фильтрации
+   * @param {Object} evt - объект событий
+   */
   _handleFilterItemClick(evt) {
-    //  dataset
-    // let param = evt.target.getAttribute(`data-sort`);
-    this._sortType.filter = evt.target.getAttribute(`data-sort`);
-    this._menuComponent.getActiveMenuLink().classList.remove(`main-navigation__item--active`);
-    evt.target.classList.add(`main-navigation__item--active`);
+    this._sortType.filter = evt.target.dataset.sort;
+    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
+    evt.target.classList.add('main-navigation__item--active');
     this.update();
   }
 
   /**
    * Приватный метод рендера определенной карточки фильма
    * Вызывает метод инициализации презентера карточки фильма (FilmCardPresenter)
+   * @param {Object} film - данные о фильме
+   * @param {Object} container - контейнер куда надо отрисовать компонент фильма
    */
   _renderCard(film, container) {
     const filmPresenter = new FilmCardPresenter(container, this._handleFilmChange, this._handlePopupDisplay);
@@ -115,14 +123,20 @@ export default class FilmsList {
     this._filmPresenter[film.id] = filmPresenter;
   }
 
+  /**
+   * Приватный метод, описывающий клик по панели сортировки
+   * @param {Object} evt - объект событий
+   */
   _handleSortItemClick(evt) {
-    //  dataset str 95
-    this._sortPanelView.getActiveMenuLink().classList.remove(`sort__button--active`);
-    evt.target.classList.add(`sort__button--active`);
-    this._sortType.sort = evt.target.getAttribute(`data-sort`);
+    this._sortPanelView.getActiveMenuLink().classList.remove('sort__button--active');
+    evt.target.classList.add('sort__button--active');
+    this._sortType.sort = evt.target.dataset.sort;
     this.update();
   }
 
+  /**
+   * Приватный метод отрисовки панели сортировки
+   */
   _renderSort() {
     render(this._filmsContainer, this._sortPanelView, RenderPosition.AFTERBEGIN);
     this._sortPanelView.setClickHandler((evt) => this._handleSortItemClick(evt));
@@ -215,7 +229,6 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmChange(updatedFilm) {
-    console.log('films.js: updatedFilm');
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
 

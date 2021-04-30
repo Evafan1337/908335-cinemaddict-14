@@ -1,6 +1,6 @@
 import EmptyFilmsView from '../view/empty-films';
 import SiteMenuView from '../view/menu.js';
-import {render, RenderPosition} from '../utils';
+import {render} from '../utils';
 
 /**
  * Класс описывает презентер пустого списка фильмов
@@ -33,6 +33,5 @@ export default class EmptyPresenter {
   _renderEmpty() {
     render(this._emptyContainer, this._menuComponent);
     render(this._emptyContainer, this._emptyFilmsComponent);
-    
   }
 }

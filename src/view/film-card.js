@@ -86,23 +86,25 @@ export default class FilmCard  extends AbstractView {
     return createFilmCardTemplate(this._film);
   }
 
-  reset(film) {
-    this.updateData(FilmCard.parseFilmToData(film));
-  }
-
+  /**
+   * Метод восстановления обработчиков
+   */
   restoreHandlers() {
     this._setInnerHandlers();
     this.setClickHandler(this._callback.click);
     this.setEditClickHandler(this._callback.editClick);
   }
 
+  /**
+   * Метод установки внутренних обработчиков
+   */
   _setInnerHandlers() {
-    for (let btn of this.getElement().querySelectorAll(`.js-open-popup`)) {
-      btn.addEventListener(`click`, this._clickHandler);
+    for (const btn of this.getElement().querySelectorAll('.js-open-popup')) {
+      btn.addEventListener('click', this._clickHandler);
     }
 
-    for (let control of this.getElement().querySelectorAll(`.film-card__controls-item`)) {
-      control.addEventListener(`click`, this._editClickHandler);
+    for (const control of this.getElement().querySelectorAll('.film-card__controls-item')) {
+      control.addEventListener('click', this._editClickHandler);
     }
   }
 
@@ -111,7 +113,6 @@ export default class FilmCard  extends AbstractView {
    * @param {Object} evt - объект событий
    */
   _clickHandler(evt) {
-    console.log('_clickHandler');
     evt.preventDefault();
     this._callback.click(evt);
   }
@@ -127,16 +128,23 @@ export default class FilmCard  extends AbstractView {
     }
   }
 
+  /**
+   * Реализация обработчика
+   * Изменение параметров фильма
+   */
   _editClickHandler(evt) {
-    console.log('editClick!');
     evt.preventDefault();
     this._callback.editClick(evt);
   }
 
+  /**
+   * Метод установки слушателя
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
-    for (let control of this.getElement().querySelectorAll('.film-card__controls-item')) {
-      control.addEventListener(`click`, this._editClickHandler);
+    for (const control of this.getElement().querySelectorAll('.film-card__controls-item')) {
+      control.addEventListener('click', this._editClickHandler);
     }
   }
 }

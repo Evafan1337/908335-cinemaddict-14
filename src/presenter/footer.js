@@ -1,5 +1,5 @@
 import FooterStatisticsView from '../view/count-films';
-import {render, RenderPosition} from '../utils';
+import {render} from '../utils';
 
 export default class FooterPresenter {
   constructor(footerContainer) {

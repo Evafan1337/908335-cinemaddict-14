@@ -1,4 +1,4 @@
-import AbstractView from "./view/abstract";
+import AbstractView from './view/abstract';
 
 const FILM_RATED_COUNT = 2;
 
@@ -112,9 +112,9 @@ export const getFilmsInfoSortLength = (filmsData) => {
   return {
     isFavorite: filmsData.isFavorite.length,
     isViewed: filmsData.isViewed.length,
-    isWatchlist: filmsData.isWatchlist.length
-  }
-}
+    isWatchlist: filmsData.isWatchlist.length,
+  };
+};
 
 /**
  * Функция сортировки фильмов по рейтингу
@@ -134,9 +134,12 @@ export const sortFilmsCommented = (filmsData) => {
   return filmsData.sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
 };
 
-
+/**
+ * Функция обновления элемента массива
+ * @param {Array} items - массив данных
+ * @return {Object} update - элемент для замены
+ */
 export const updateItem = (items, update) => {
-  console.log('utils.js: updateItem');
   const index = items.findIndex((item) => item.id === update.id);
 
   if (index === -1) {
@@ -146,10 +149,15 @@ export const updateItem = (items, update) => {
   return [
     ...items.slice(0, index),
     update,
-    ...items.slice(index + 1)
+    ...items.slice(index + 1),
   ];
 };
 
+/**
+ * Функция замены элемента с помощью replaceChild
+ * @param {Object} newChild - новый элемент
+ * @return {Object} oldChild - старый элемент
+ */
 export const replace = (newChild, oldChild) => {
   if (oldChild instanceof AbstractView) {
     oldChild = oldChild.getElement();
@@ -166,12 +174,4 @@ export const replace = (newChild, oldChild) => {
   }
 
   parent.replaceChild(newChild, oldChild);
-};
-
-export const remove = (component) => {
-  if (!(component instanceof AbstractView)) {
-    throw new Error('Can remove only components');
-  }
-  component.getElement().remove();
-  component.removeElement();
 };
