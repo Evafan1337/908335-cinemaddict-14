@@ -2,8 +2,8 @@ import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {
   render,
-  remove,
-  replace
+  replace,
+  remove
 } from '../utils';
 
 export default class FilmPopupPresenter {
