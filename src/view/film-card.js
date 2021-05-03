@@ -51,9 +51,9 @@ const createFilmCardTemplate = (film) => {
           <p class="film-card__description">${sliceDescription()}</p>
           <a class="film-card__comments js-open-popup">${comments.length} comments</a>
           <div class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button"></button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${watchedClassName}" type="button"></button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteClassName}" type="button"></button>
+            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button"  data-type="isWatchlist"></button>
+            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${watchedClassName}" type="button" data-type="isViewed"></button>
+            <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteClassName}" type="button" data-type="isFavorite"></button>
           </div>
         </article>`;
 };
@@ -73,6 +73,7 @@ export default class FilmCard  extends AbstractView {
     this._element = null;
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   /**
@@ -83,6 +84,28 @@ export default class FilmCard  extends AbstractView {
    */
   getTemplate() {
     return createFilmCardTemplate(this._film);
+  }
+
+  /**
+   * Метод восстановления обработчиков
+   */
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setClickHandler(this._callback.click);
+    this.setEditClickHandler(this._callback.editClick);
+  }
+
+  /**
+   * Метод установки внутренних обработчиков
+   */
+  _setInnerHandlers() {
+    for (const btn of this.getElement().querySelectorAll('.js-open-popup')) {
+      btn.addEventListener('click', this._clickHandler);
+    }
+
+    for (const control of this.getElement().querySelectorAll('.film-card__controls-item')) {
+      control.addEventListener('click', this._editClickHandler);
+    }
   }
 
   /**
@@ -102,6 +125,26 @@ export default class FilmCard  extends AbstractView {
     this._callback.click = callback;
     for (const btn of this.getElement().querySelectorAll('.js-open-popup')) {
       btn.addEventListener('click', this._clickHandler);
+    }
+  }
+
+  /**
+   * Реализация обработчика
+   * Изменение параметров фильма
+   */
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick(evt);
+  }
+
+  /**
+   * Метод установки слушателя
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    for (const control of this.getElement().querySelectorAll('.film-card__controls-item')) {
+      control.addEventListener('click', this._editClickHandler);
     }
   }
 }

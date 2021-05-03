@@ -1,5 +1,10 @@
 import {createElement} from '../utils';
 
+/**
+ * Абстрактный класс для компонентов
+ * Предназначен для наследования
+ * Определяется интерфейс для всех компонентов
+ */
 export default class Abstract {
 
   /**
@@ -11,6 +16,38 @@ export default class Abstract {
     }
     this._callback = {};
     this._element = null;
+    this._data = {};
+  }
+
+  /**
+   * Метод обновления данных
+   * Меняет данные через Object.assign
+   * Потом вызывает метод обновления элемента
+   */
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign({}, this._data, update);
+
+    this.updateElement();
+  }
+
+  /**
+   * Метод обновления элемента
+   * работает с помощью replaceChild
+   */
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
   }
 
   /**
