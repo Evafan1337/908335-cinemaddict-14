@@ -1,4 +1,5 @@
 import AbstractView from './abstract';
+import SmartView from './smart';
 
 /**
  * Функция создания кнопки отрисовки дополнительных фильмов
@@ -11,7 +12,7 @@ const createLoadmoreTemplate = () => {
 /**
  * Класс описывает компонент (кнопку подгрузки фильмов)
  */
-export default class Loadmore extends AbstractView {
+export default class Loadmore extends SmartView {
 
   constructor() {
     super();

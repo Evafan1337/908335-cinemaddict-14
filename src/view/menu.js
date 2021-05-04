@@ -1,4 +1,5 @@
 import AbstractView from './abstract';
+import SmartView from './smart';
 
 /**
  * Функция создания компонента меню
@@ -23,7 +24,7 @@ const createMenuTemplate = (filmsInfo) => {
 /**
  * Класс описывает компонент меню
  */
-export default class Menu extends AbstractView {
+export default class Menu extends SmartView {
 
   /**
    * Конструктор

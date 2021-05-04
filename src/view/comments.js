@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract';
+import SmartView from './smart';
+import {createElement, render, RenderPosition, replace} from '../utils';
 
 /**
  * Функция создания шаблона комментария
@@ -62,14 +63,77 @@ export const createCommentsTemplate = (comments) => {
 /**
  * Класс описывает компонент (список комментариев попапа)
  */
-export default class Comments extends AbstractView {
+export default class Comments extends SmartView {
   constructor(comments) {
     super();
     this._element = null;
     this._comments = comments;
+    this._deleteClickComment = this._deleteClickComment.bind(this);
+    this._addCommentEmotion = this._addCommentEmotion.bind(this);
   }
 
   getTemplate() {
     return createCommentsTemplate(this._comments);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setDeleteCommentHandler(this._callback.removeClick);
+    this.setAddCommentEmotionHandler(this._callback.addClickEmotion);
+  }
+
+  _setInnerHandlers() {
+    for (let link of this.getElement().querySelectorAll(`.film-details__comment-delete`)) {
+      link.addEventListener(`click`, this._deleteClickComment);
+    }
+    for (let inp of this.getElement().querySelectorAll(`.film-details__emoji-item`)) {
+      inp.addEventListener(`change`, this._addCommentEmotion);
+    }
+  }
+
+  /**
+   * Метод отработки слушателя (удаление эмоции)
+   * @param {Object} evt - объект событий
+   */
+  _deleteClickComment(evt) {
+    evt.preventDefault();
+    this._callback.removeClick(evt);
+  }
+
+  /**
+   * Метод установки слушателя (удаление эмоции)
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
+  setDeleteCommentHandler(callback) {
+    this._callback.removeClick = callback;
+    for (let link of this.getElement().querySelectorAll(`.film-details__comment-delete`)) {
+      link.addEventListener(`click`, this._deleteClickComment);
+    }
+  }
+
+  /**
+   * Метод отработки слушателя (добавление эмоции)
+   * @param {Object} evt - объект событий
+   */
+  _addCommentEmotion(evt) {
+    evt.preventDefault();
+    this._callback.addClickEmotion(evt);
+  }
+
+  renderEmotion(labelEmotion, emotion) {
+    const img = createElement(createEmojiLabel(emotion));
+    labelEmotion.innerHTML = ``;
+    render(labelEmotion, img, RenderPosition.BEFOREEND);
+  }
+
+  /**
+   * Метод установки слушателя (добавление эмоции)
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
+  setAddCommentEmotionHandler(callback) {
+    this._callback.addClickEmotion = callback;
+    for (let inp of this.getElement().querySelectorAll('.film-details__emoji-item')) {
+      inp.addEventListener('change', this._addCommentEmotion);
+    }
   }
 }

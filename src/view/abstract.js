@@ -20,37 +20,6 @@ export default class Abstract {
   }
 
   /**
-   * Метод обновления данных
-   * Меняет данные через Object.assign
-   * Потом вызывает метод обновления элемента
-   */
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign({}, this._data, update);
-
-    this.updateElement();
-  }
-
-  /**
-   * Метод обновления элемента
-   * работает с помощью replaceChild
-   */
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
-  }
-
-  /**
    * Метод получения HTML шаблона
    * Бросает ошибку, так как предназначен для переопределения
    */

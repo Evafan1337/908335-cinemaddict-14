@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract';
+import SmartView from './smart';
 
 /**
  * Функция создания элемента(элементов) жанров фильма
@@ -107,10 +108,11 @@ const createTemplatePopupFilm = (film) => {
 /**
  * Класс описывает компонент попапа
  */
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
 
   /**
    * Конструктор
+   * Вызывается конструктор класса родителя (SmartView)
    * @param {Object} film - фильм
    */
   constructor(film) {
