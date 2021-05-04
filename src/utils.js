@@ -109,6 +109,15 @@ export const filmsInfoSort = (filmsData) => {
 
 export const getFilmsInfoSortLength = (filmsData) => {
 
+  console.log(filmsData);
+  if(!filmsData.isFavorite && !filmsData.isViewed && !filmsData.isWatchlist){
+    return {
+      isFavorite: 0,
+      isViewed: 0,
+      isWatchlist: 0,
+    }
+  }
+
   return {
     isFavorite: filmsData.isFavorite.length,
     isViewed: filmsData.isViewed.length,

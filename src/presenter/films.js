@@ -101,17 +101,6 @@ export default class FilmsList {
   }
 
   /**
-   * Приватный метод, описывающий клик по панели фильтрации
-   * @param {Object} evt - объект событий
-   */
-  _handleFilterItemClick(evt) {
-    this._sortType.filter = evt.target.dataset.sort;
-    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
-    evt.target.classList.add('main-navigation__item--active');
-    this.update();
-  }
-
-  /**
    * Приватный метод рендера определенной карточки фильма
    * Вызывает метод инициализации презентера карточки фильма (FilmCardPresenter)
    * @param {Object} film - данные о фильме
@@ -121,17 +110,6 @@ export default class FilmsList {
     const filmPresenter = new FilmCardPresenter(container, this._handleFilmChange, this._handlePopupDisplay);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
-  }
-
-  /**
-   * Приватный метод, описывающий клик по панели сортировки
-   * @param {Object} evt - объект событий
-   */
-  _handleSortItemClick(evt) {
-    this._sortPanelView.getActiveMenuLink().classList.remove('sort__button--active');
-    evt.target.classList.add('sort__button--active');
-    this._sortType.sort = evt.target.dataset.sort;
-    this.update();
   }
 
   /**
@@ -160,21 +138,6 @@ export default class FilmsList {
   _renderLoadMore() {
     render(this._loadMoreContainer, this._loadMoreView);
     this._loadMoreView.setClickHandler(this._handleLoadMoreButtonClick);
-  }
-
-  /**
-   * Приватный метод, описывающий работу кнопки ShowMore
-   * Передается аргументом в методе _renderLoadMore
-   */
-  _handleLoadMoreButtonClick() {
-    this._renderFilmList(this._renderedFilmsCount, this._renderedFilmsCount + FILM_PER_PAGE);
-    this._renderedFilmsCount += FILM_PER_PAGE;
-
-    if (this._renderedFilmsCount >= this._films.length) {
-      this._loadMoreView.getElement().remove();
-      this._loadMoreView.removeElement();
-      this._renderedFilmsCount = FILM_PER_PAGE;
-    }
   }
 
   /**
@@ -251,5 +214,42 @@ export default class FilmsList {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
+  }
+
+  /**
+   * Приватный метод, описывающий работу кнопки ShowMore
+   * Передается аргументом в методе _renderLoadMore
+   */
+  _handleLoadMoreButtonClick() {
+    this._renderFilmList(this._renderedFilmsCount, this._renderedFilmsCount + FILM_PER_PAGE);
+    this._renderedFilmsCount += FILM_PER_PAGE;
+
+    if (this._renderedFilmsCount >= this._films.length) {
+      this._loadMoreView.getElement().remove();
+      this._loadMoreView.removeElement();
+      this._renderedFilmsCount = FILM_PER_PAGE;
+    }
+  }
+
+  /**
+   * Приватный метод, описывающий клик по панели фильтрации
+   * @param {Object} evt - объект событий
+   */
+  _handleFilterItemClick(evt) {
+    this._sortType.filter = evt.target.dataset.sort;
+    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
+    evt.target.classList.add('main-navigation__item--active');
+    this.update();
+  }
+
+  /**
+   * Приватный метод, описывающий клик по панели сортировки
+   * @param {Object} evt - объект событий
+   */
+  _handleSortItemClick(evt) {
+    this._sortPanelView.getActiveMenuLink().classList.remove('sort__button--active');
+    evt.target.classList.add('sort__button--active');
+    this._sortType.sort = evt.target.dataset.sort;
+    this.update();
   }
 }

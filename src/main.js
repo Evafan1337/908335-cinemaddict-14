@@ -2,13 +2,20 @@ import FilmsPresenter from './presenter/films';
 import EmptyPresenter from './presenter/empty';
 import FooterPresenter from './presenter/footer';
 import {generateFilms} from './mock/film';
-import {filmsInfoSort, getFilmsInfoSortLength} from './utils';
+import {filmsInfoSort, getFilmsInfoSortLength, render} from './utils';
 
-const FILM_COUNT = 48;
+import FooterStatisticsView from './view/count-films';
+import EmptyFilmsView from './view/empty-films';
+
+// const FILM_COUNT = 0;
+const FILM_COUNT = 22;
 
 const films = generateFilms(FILM_COUNT);
+const filmsCount = films.length;
 const sortInfo = filmsInfoSort(films);
 const sortInfoLength = getFilmsInfoSortLength(sortInfo);
+
+console.log(sortInfoLength);
 
 const siteBody = document.querySelector('body');
 const siteMainElement = siteBody.querySelector('.main');
@@ -18,11 +25,16 @@ const filmsPresenter = new FilmsPresenter(siteMainElement);
 const emptyPresenter = new EmptyPresenter(siteMainElement);
 
 
-if (films.length > 0) {
+if (filmsCount > 0) {
   filmsPresenter.init(films, sortInfoLength);
 } else {
+  // Замена презентера на обычный компонент
   emptyPresenter.init(sortInfoLength);
+
 }
 
-const footerPresenter = new FooterPresenter(siteFooterStatistics);
-footerPresenter.init(FILM_COUNT);
+// Замена презентера на обычный компонент
+// const footerPresenter = new FooterPresenter(siteFooterStatistics);
+// footerPresenter.init(filmsCount);
+
+render(siteFooterStatistics, new FooterStatisticsView(filmsCount));
