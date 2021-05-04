@@ -44,7 +44,8 @@ export default class FilmsList {
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
     this._handlePopupChange = this._handlePopupChange.bind(this);
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange);
+    this._handlePopupRemoveComment = this._handlePopupRemoveComment.bind(this);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment);
     this._sortType = {
       sort: 'default',
       filter: 'all',
@@ -251,5 +252,11 @@ export default class FilmsList {
     evt.target.classList.add('sort__button--active');
     this._sortType.sort = evt.target.dataset.sort;
     this.update();
+  }
+
+  _handlePopupRemoveComment(updatedFilm) {
+    this._films = updateItem(this._sourcedFilms, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+    this._popupPresenter.init(updatedFilm);
   }
 }

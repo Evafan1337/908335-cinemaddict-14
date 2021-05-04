@@ -13,10 +13,12 @@ export default class FilmPopupPresenter {
    * @param {Object} container - ссылка на HTML элемент куда надо отрисовать попап
    * @param {Function} changeData - функция изменения данных
    */
-  constructor(container, changeData) {
+  constructor(container, changeData, deleteComment) {
     this._container = container;
     this._film = null;
     this._popupComponent = null;
+    this._deleteComment = deleteComment;
+    this._commentsListComponent = {};
     this._changeData = changeData;
   }
 
@@ -28,6 +30,7 @@ export default class FilmPopupPresenter {
     this._film = film;
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
+    this._commentsListComponent = new CommentsView(this._film.comments);
 
     if (prevPopup && this._container.classList.contains('hide-overflow')) {
       replace(this._popupComponent, prevPopup);
@@ -35,6 +38,7 @@ export default class FilmPopupPresenter {
       this._callbacks();
       this._renderComments();
       this._popupComponent.restoreHandlers();
+      this._commentsListComponent.restoreHandlers();
     } else {
       this._renderPopup();
       return;
@@ -59,6 +63,8 @@ export default class FilmPopupPresenter {
   _callbacks() {
     this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
     this._popupComponent.setClickHandler(() => this.close());
+    this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeFilmComment(evt));
+    this._commentsListComponent.setAddCommentEmotionHandler((evt) => this._addFilmCommenEmotiont(evt));
     document.addEventListener('keydown', (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
@@ -71,8 +77,7 @@ export default class FilmPopupPresenter {
    * Приватный метод рендера комментариев
    */
   _renderComments() {
-    const commentsComponent = new CommentsView(this._film.comments);
-    render(this._popupComponent.getCommentsContainer(), commentsComponent);
+    render(this._popup.getCommentsContainer(), this._commentsListComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
   /**
@@ -82,6 +87,19 @@ export default class FilmPopupPresenter {
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
+  }
+
+  _removeFilmComment(evt) {
+    let commentId = evt.target.closest('.film-details__comment').getAttribute('id');
+    let commentInd = this._film.comments.findIndex((item) => item.id === commentId);
+    this._film.comments.splice(commentInd, 1);
+    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}));
+  }
+
+  _addFilmCommenEmotiont(evt) {
+    const labelEmotion = this._commentsListComponent.getElement().querySelector('.film-details__add-emoji-label');
+    const emotion = evt.target.value;
+    this._commentsListComponent.renderEmotion(labelEmotion, emotion);
   }
 
   /**
