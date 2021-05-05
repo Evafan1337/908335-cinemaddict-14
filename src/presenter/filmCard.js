@@ -1,4 +1,4 @@
-import {render, replace} from '../utils';
+import {render, replace, remove} from '../utils';
 import FilmCardView from '../view/film-card';
 
 export default class FilmCardPresenter {
@@ -56,7 +56,6 @@ export default class FilmCardPresenter {
   }
 
   destroy() {
-    this._cardComponent.getElement().removeElement();
-    this._cardComponent.remove();
+    remove(this._cardComponent);
   }
 }

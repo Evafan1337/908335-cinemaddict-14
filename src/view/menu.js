@@ -10,6 +10,8 @@ const createMenuTemplate = (filmsInfo, sortType) => {
 
   const {isWatchlist, isViewed, isFavorite} = filmsInfo;
 
+  console.log(filmsInfo);
+
   const allFilmsClassName = (sortType === 'all')
     ? 'main-navigation__item--active'
     : '';
@@ -30,9 +32,9 @@ const createMenuTemplate = (filmsInfo, sortType) => {
   return `<nav class="main-navigation">
     <div class="main-navigation__items">
       <a href="#all" data-sort="all" class="main-navigation__item ${allFilmsClassName}">All movies</a>
-      <a href="#watchlist" data-sort="isWatchlist" class="main-navigation__item ${watchlistClassName}">Watchlist <span class="main-navigation__item-count">${watchlist}</span></a>
-      <a href="#history" data-sort="isViewed" class="main-navigation__item ${watchedClassName}">History <span class="main-navigation__item-count">${history}</span></a>
-      <a href="#favorites" data-sort="isFavorite" class="main-navigation__item ${favoriteClassName}">Favorites <span class="main-navigation__item-count">${favorites}</span></a>
+      <a href="#watchlist" data-sort="isWatchlist" class="main-navigation__item ${watchlistClassName}">Watchlist <span class="main-navigation__item-count">${isWatchlist}</span></a>
+      <a href="#history" data-sort="isViewed" class="main-navigation__item ${watchedClassName}">History <span class="main-navigation__item-count">${isViewed}</span></a>
+      <a href="#favorites" data-sort="isFavorite" class="main-navigation__item ${favoriteClassName}">Favorites <span class="main-navigation__item-count">${isFavorite}</span></a>
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`;
@@ -62,6 +64,7 @@ export default class Menu extends AbstractView {
    * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
+    // console.log(this._filmsInfo);
     return createMenuTemplate(this._filmsInfo);
   }
 
