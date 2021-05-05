@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-import {createElement, render, RenderPosition, replace} from '../utils';
+import {createElement, render, renderTemplate, RenderPosition, replace} from '../utils';
 
 /**
  * Функция создания шаблона комментария
@@ -26,7 +26,8 @@ const createCommentTemplate = (comment) => {
 
 const createEmojiLabel = (emotion) => {
   console.log('createEmojiLabel');
-  return `<img src="./images/emoji/${emoji(emotion)}" width="55" height="55" alt="emoji-${emotion}">`;
+  console.log(emotion);
+  return `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`;
 };
 
 /**
@@ -127,6 +128,10 @@ export default class Comments extends SmartView {
     console.log('renderEmotion');
     const img = createElement(createEmojiLabel(emotion));
     labelEmotion.innerHTML = ``;
+
+    console.log(labelEmotion);
+    console.log(img);
+
     render(labelEmotion, img, RenderPosition.BEFOREEND);
   }
 

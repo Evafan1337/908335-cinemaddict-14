@@ -6,6 +6,7 @@ import {
   remove,
   RenderPosition
 } from '../utils';
+import {nanoid} from 'nanoid';
 
 export default class FilmPopupPresenter {
 
@@ -14,12 +15,13 @@ export default class FilmPopupPresenter {
    * @param {Object} container - ссылка на HTML элемент куда надо отрисовать попап
    * @param {Function} changeData - функция изменения данных
    */
-  constructor(container, changeData, deleteComment) {
+  constructor(container, changeData, deleteComment, addComment) {
     this._container = container;
     this._film = null;
     this._popupComponent = null;
     this._deleteComment = deleteComment;
     this._commentsListComponent = {};
+    this._addComment = addComment;
     this._changeData = changeData;
   }
 
@@ -72,6 +74,38 @@ export default class FilmPopupPresenter {
         this.close();
       }
     });
+    document.addEventListener('keydown', (evt) => {
+      //  check later
+      if ((evt.ctrlKey) && ((evt.keyCode === 0xA) || (evt.keyCode === 0xD))) {
+        evt.preventDefault();
+        this.submitFormComments();
+      }
+    });
+  }
+
+  submitFormComments() {
+    let posScroll = this.getPositionScroll();
+    let text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
+    const emotions = document.querySelectorAll('.film-details__emoji-item');
+    let currentEmotion;
+    for (let emotion of emotions) {
+      if (emotion.checked) {
+        currentEmotion = emotion.value;
+      }
+    }
+    if (currentEmotion !== null && (text !== `` || text !== null)) {
+      let newComment = {
+        id: nanoid(),
+        info: {
+          text: text.value,
+          author: ``,
+          emotion: currentEmotion
+        },
+        date: new Date(),
+      };
+      this._film.comments.push(newComment);
+      this._addComment(Object.assign({}, this._film, {comments: this._film.comments}), posScroll);
+    }
   }
 
   /**
@@ -99,11 +133,15 @@ export default class FilmPopupPresenter {
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), posScroll);
   }
 
-  _addFilmCommenEmotiont(evt) {
-    console.log('_addFilmCommenEmotiont');
+  _addFilmCommentEmotion(evt) {
+    console.log('_addFilmCommentEmotion');
     const labelEmotion = this._commentsListComponent.getElement().querySelector('.film-details__add-emoji-label');
     const emotion = evt.target.value;
     this._commentsListComponent.renderEmotion(labelEmotion, emotion);
+  }
+
+  getPositionScroll() {
+    return document.querySelector('.film-details').scrollTop;
   }
 
   /**

@@ -1,3 +1,5 @@
+import AbstractView from '../view/abstract';
+
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -10,7 +12,11 @@ export const RenderPosition = {
  * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
  */
 export const render = (container, element, place = 'beforeend') => {
-  element = element.getElement();
+  
+  if (element instanceof AbstractView) {
+    element = element.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);

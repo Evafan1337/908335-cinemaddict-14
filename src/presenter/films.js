@@ -45,7 +45,8 @@ export default class FilmsList {
     this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
     this._handlePopupChange = this._handlePopupChange.bind(this);
     this._handlePopupRemoveComment = this._handlePopupRemoveComment.bind(this);
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment);
+    this._handleAddComment = this._handleAddComment.bind(this);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment);
     this._sortType = {
       sort: 'default',
       filter: 'all',
@@ -211,10 +212,11 @@ export default class FilmsList {
    * Приватный метод обработки фильма (клик по интерфейсу попапа)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
-  _handlePopupChange(updatedFilm) {
+  _handlePopupChange(updatedFilm, posScroll) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
+    document.querySelector(`.film-details`).scrollTop = posScroll;
   }
 
   /**
@@ -254,9 +256,17 @@ export default class FilmsList {
     this.update();
   }
 
-  _handlePopupRemoveComment(updatedFilm) {
+  _handlePopupRemoveComment(updatedFilm, posScroll) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
+    document.querySelector(`.film-details`).scrollTop = posScroll;
+  }
+
+  _handleAddComment(updatedFilm, posScroll) {
+    this._films = updateItem(this._sourcedFilms, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+    this._popupPresenter.init(updatedFilm);
+    document.querySelector(`.film-details`).scrollTop = posScroll;
   }
 }
