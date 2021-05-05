@@ -26,10 +26,10 @@ const emptyPresenter = new EmptyPresenter(siteMainElement);
 
 
 if (filmsCount > 0) {
-  filmsPresenter.init(films, sortInfoLength);
+  filmsPresenter.init(films);
 } else {
   // Замена презентера на обычный компонент
-  emptyPresenter.init(sortInfoLength);
+  emptyPresenter.init();
 
 }
 

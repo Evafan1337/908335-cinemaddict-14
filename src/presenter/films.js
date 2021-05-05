@@ -1,3 +1,4 @@
+import {nanoid} from 'nanoid';
 import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
 import SiteMenuView from '../view/menu';
@@ -29,7 +30,7 @@ export default class FilmsList {
     this._renderedFilmsCount = FILM_PER_PAGE;
     this._films = null;
     this._sort = {};
-    this._menuComponent = {};
+    this._menuComponent = null;
     this._filmPresenter = {};
     this._sortPanelView = new SortPanelView();
     this._filmListView = new FilmListView();
@@ -57,11 +58,15 @@ export default class FilmsList {
   /**
    * Публичный метод инициализации
    */
-  init(films, sortInfo) {
+  init(films) {
     this._films = films.slice();
     this._sourcedFilms = films.slice();
-    this._sort = sortInfo;
-    this._menuComponent = new SiteMenuView(this._sort);
+    //взять из утилит
+    this._sort = {
+      watchlist: this._films.filter((item) => item.isWatchlist).length,
+      history: this._films.filter((item) => item.isViewed).length,
+      favorites: this._films.filter((item) => item.isFavorite).length,
+    };
     this._renderFilmsContainer();
   }
 
@@ -188,6 +193,15 @@ export default class FilmsList {
     return this._films.slice().sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
   }
 
+  // later
+  _clearList() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+    this._renderedFilmsCount = FILM_PER_PAGE;
+    remove(this._loadMore);
+  }
 
   /**
    * Приватный метод обработки фильма (клик по интерфейсу карточки)
@@ -213,6 +227,7 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handlePopupChange(updatedFilm, posScroll) {
+    this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);

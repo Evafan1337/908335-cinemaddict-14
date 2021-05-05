@@ -55,4 +55,8 @@ export default class FilmCardPresenter {
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
   }
 
+  destroy() {
+    this._cardComponent.getElement().removeElement();
+    this._cardComponent.remove();
+  }
 }
