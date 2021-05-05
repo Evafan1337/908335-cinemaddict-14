@@ -25,6 +25,7 @@ const createCommentTemplate = (comment) => {
 };
 
 const createEmojiLabel = (emotion) => {
+  console.log('createEmojiLabel');
   return `<img src="./images/emoji/${emoji(emotion)}" width="55" height="55" alt="emoji-${emotion}">`;
 };
 
@@ -77,7 +78,16 @@ export default class Comments extends SmartView {
   }
 
   getTemplate() {
+    console.log(this._comments);
     return createCommentsTemplate(this._comments);
+  }
+
+  getInputsEmoji() {
+    return this.getElement().querySelectorAll(`.film-details__emoji-item`);
+  }
+
+  getLinksDelete() {
+    return this.getElement().querySelectorAll(`.film-details__comment-delete`);
   }
 
   restoreHandlers() {
@@ -105,17 +115,6 @@ export default class Comments extends SmartView {
   }
 
   /**
-   * Метод установки слушателя (удаление эмоции)
-   * @param {function} callback - функция, которая будет исполняться при слушателе
-   */
-  setDeleteCommentHandler(callback) {
-    this._callback.removeClick = callback;
-    for (let link of this.getElement().querySelectorAll('.film-details__comment-delete')) {
-      link.addEventListener('click', this._deleteClickComment);
-    }
-  }
-
-  /**
    * Метод отработки слушателя (добавление эмоции)
    * @param {Object} evt - объект событий
    */
@@ -125,6 +124,7 @@ export default class Comments extends SmartView {
   }
 
   renderEmotion(labelEmotion, emotion) {
+    console.log('renderEmotion');
     const img = createElement(createEmojiLabel(emotion));
     labelEmotion.innerHTML = ``;
     render(labelEmotion, img, RenderPosition.BEFOREEND);
@@ -135,9 +135,22 @@ export default class Comments extends SmartView {
    * @param {function} callback - функция, которая будет исполняться при слушателе
    */
   setAddCommentEmotionHandler(callback) {
+    console.log('setAddCommentEmotionHandler');
     this._callback.addClickEmotion = callback;
-    for (let inp of this.getElement().querySelectorAll('.film-details__emoji-item')) {
+    for (let inp of this.getInputsEmoji()) {
       inp.addEventListener('change', this._addCommentEmotion);
+    }
+  }
+
+  /**
+   * Метод установки слушателя (удаление эмоции)
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
+  setDeleteCommentHandler(callback) {
+    console.log('setDeleteCommentHandler');
+    this._callback.removeClick = callback;
+    for (let link of this.getLinksDelete()) {
+      link.addEventListener('click', this._deleteClickComment);
     }
   }
 }
