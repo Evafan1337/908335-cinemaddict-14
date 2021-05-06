@@ -69,28 +69,14 @@ export default class FilmsList {
     this._sourcedFilms = films.slice();
     //взять из утилит
     this._sort = {
-      isWatchlist: this._films.filter((item) => item.isWatchlist).length,
-      isViewed: this._films.filter((item) => item.isViewed).length,
-      isFavorite: this._films.filter((item) => item.isFavorite).length,
+      isWatchlist: this._sourcedFilms.filter((item) => item.isWatchlist).length,
+      isViewed: this._sourcedFilms.filter((item) => item.isViewed).length,
+      isFavorite: this._sourcedFilms.filter((item) => item.isFavorite).length,
     };
-    this._historyCount = this._sourcedFilms.filter((item) => item.isViewed).length;
-    if (this._historyCount > 0) {
+    if (this._sort.history > 0) {
       this._renderProfile();
     }
     this._renderFilmsContainer();
-  }
-
-  /**
-   * Приватный метод рендера контейнера фильмов
-   * Вызывает методы рендера фильмов (в т.ч в категориях: по рейтингу и кол-ву комментариев)
-   */
-  _renderFilmsContainer() {
-    render(this._filmsContainer, this._filmListView);
-    this._renderSort(this._filmsContainer);
-    this._renderMenu(this._filmsContainer);
-    this._renderFilms();
-    this._renderRatedFilms();
-    this._renderCommentedFilms();
   }
 
   /**
@@ -102,7 +88,14 @@ export default class FilmsList {
       this._renderedFilmsCount = renderedFilms;
     }
     let updatedFilms = this._sourcedFilms;
-    this._historyCount = this._sourcedFilms.filter((item) => item.isViewed).length;
+    this._sort = {
+      isWatchlist: this._sourcedFilms.filter((item) => item.isWatchlist).length,
+      isViewed: this._sourcedFilms.filter((item) => item.isViewed).length,
+      isFavorite: this._sourcedFilms.filter((item) => item.isFavorite).length,
+    };
+    if (this._sort.history > 0) {
+      this._renderProfile();
+    }
     if (this._sortType.filter !== 'all') {
       updatedFilms = this._sourcedFilms.filter((film) => film[this._sortType.filter]);
     }
@@ -111,8 +104,17 @@ export default class FilmsList {
     }
     this._films = updatedFilms;
     this._renderFilms();
-    this._renderRatedFilms();
-    this._renderCommentedFilms();
+  }
+
+  /**
+   * Приватный метод рендера контейнера фильмов
+   * Вызывает методы рендера фильмов (в т.ч в категориях: по рейтингу и кол-ву комментариев)
+   */
+  _renderFilmsContainer() {
+    render(this._filmsContainer, this._filmListView);
+    this._renderSort(this._filmsContainer);
+    this._renderMenu(this._filmsContainer);
+    this._renderFilms();
   }
 
   _renderProfile() {
@@ -170,10 +172,12 @@ export default class FilmsList {
    * @param {number} to - индекс до какого элемента необходимо произвести отрисовку
    */
   _renderFilmList(from, to) {
+    // check laterf
     this._films
       .slice(from, to)
       .forEach((film) => this._renderCard(film, this._mainFilmList));
   }
+
 
   /**
    * Приватный метод рендера кнопки ShowMore
@@ -198,40 +202,6 @@ export default class FilmsList {
     }
   }
 
-  /**
-   * Приватный метод рендера фильмов, отсортированных по рейтингу
-   */
-  _renderRatedFilms() {
-    for (let i = 0; i < FILM_RATED_COUNT; i++) {
-      this._filmsRated()[i].id = nanoid();
-      this._renderCard(this._filmsRated()[i], this._topRatedFilmList);
-    }
-  }
-
-  /**
-   * Приватный метод рендера фильмов, отсортированных по количеству комментариев
-   */
-  _renderCommentedFilms() {
-    for (let i = 0; i < FILM_RATED_COUNT; i++) {
-      this._filmsRated()[i].id = nanoid();
-      this._renderCard(this._filmsCommented()[i], this._topCommentedFilmList);
-    }
-  }
-
-  /**
-   * Приватный метод получения данных фильмов, отсортированных по рейтингу
-   */
-  _filmsRated() {
-    return this._films.slice().sort(compareValues('rating', 'desc')).slice(0, FILM_RATED_COUNT);
-  }
-
-  /**
-   * Приватный метод получения данных фильмов, отсортированных по количеству комментариев
-   */
-  _filmsCommented() {
-    return this._films.slice().sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
-  }
-
   // later
   _clearList() {
     Object
@@ -249,15 +219,15 @@ export default class FilmsList {
   _handleFilmChange(updatedFilm) {
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
+    this._renderProfile();
+    this._renderMenu(this._filmsContainer);
     // check later
     if (!updatedFilm[this._sortType.filter]) {
       this.update(this._renderedFilmsCount);
-      this._renderProfile();
-      this._renderMenu(this._filmsContainer);
     } else {
-      this._renderProfile();
-      this._renderMenu(this._filmsContainer);
-      this._filmPresenter[updatedFilm.id].init(updatedFilm);
+      this._filmPresenter[updatedFilm.id].forEach((item) => {
+        item.init(updatedFilm);
+      });
     }
     //Обновление меню можно реализовывать здесь
   }
@@ -274,7 +244,7 @@ export default class FilmsList {
    * Приватный метод обработки фильма (клик по интерфейсу попапа)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
-  _handlePopupChange(updatedFilm, posScroll) {
+  _handlePopupChange(updatedFilm) {
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     if (!updatedFilm[this._sortType.filter]) {
@@ -285,7 +255,6 @@ export default class FilmsList {
     this._renderProfile();
     this._renderMenu(this._filmsContainer);
     this._popupPresenter.init(updatedFilm);
-    document.querySelector('.film-details').scrollTop = posScroll;
   }
 
   /**
@@ -296,7 +265,7 @@ export default class FilmsList {
     this._renderFilmList(this._renderedFilmsCount, this._renderedFilmsCount + FILM_PER_PAGE);
     this._renderedFilmsCount += FILM_PER_PAGE;
 
-    if (this._renderedFilmsCount >= this._films.length) {
+    if (this._renderedFilmsCount >= (this._films.length)) {
       this._loadMoreView.getElement().remove();
       this._loadMoreView.removeElement();
       this._renderedFilmsCount = FILM_PER_PAGE;
@@ -309,6 +278,9 @@ export default class FilmsList {
    */
   _handleFilterItemClick(evt) {
     this._sortType.filter = evt.target.dataset.sort;
+
+    console.log(this._menuComponent.getActiveMenuLink());
+
     this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
     evt.target.classList.add('main-navigation__item--active');
     this.update();
@@ -325,17 +297,15 @@ export default class FilmsList {
     this.update();
   }
 
-  _handlePopupRemoveComment(updatedFilm, posScroll) {
+  _handlePopupRemoveComment(updatedFilm) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
-    document.querySelector('.film-details').scrollTop = posScroll;
   }
 
-  _handleAddComment(updatedFilm, posScroll) {
+  _handleAddComment(updatedFilm) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
-    document.querySelector('.film-details').scrollTop = posScroll;
   }
 }

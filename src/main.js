@@ -1,3 +1,5 @@
+import RatedFilmsPresenter from './presenter/ratedFilms';
+import CommentedFilmsPresenter from './presenter/commentedFilms';
 import FilmsPresenter from './presenter/films';
 import EmptyPresenter from './presenter/empty';
 import {generateFilms} from './mock/film';
@@ -18,9 +20,13 @@ const siteFooterStatistics = siteBody.querySelector('.footer__statistics');
 const filmsPresenter = new FilmsPresenter(siteMainElement);
 const emptyPresenter = new EmptyPresenter(siteMainElement);
 
-
+// check later
 if (filmsCount > 0) {
   filmsPresenter.init(films);
+  const ratedFilmsPresenter = new RatedFilmsPresenter(siteMainElement);
+  const commentedFilmsPresenter = new CommentedFilmsPresenter(siteMainElement);
+  ratedFilmsPresenter.init(films);
+  commentedFilmsPresenter.init(films);
 } else {
   // Замена презентера на обычный компонент (стоит ли?)
   emptyPresenter.init();

@@ -20,9 +20,10 @@ export default class FilmPopupPresenter {
     this._film = null;
     this._popupComponent = null;
     this._deleteComment = deleteComment;
-    this._commentsListComponent = {};
+    this._commentsListComponent = null;
     this._addComment = addComment;
     this._changeData = changeData;
+    this._posScroll = null;
   }
 
   /**
@@ -38,10 +39,11 @@ export default class FilmPopupPresenter {
     if (prevPopup && this._container.classList.contains('hide-overflow')) {
       replace(this._popupComponent, prevPopup);
       this._container.classList.add('hide-overflow');
-      this._callbacks();
+      this.restoreHandlers();
       this._renderComments();
       this._popupComponent.restoreHandlers();
       this._commentsListComponent.restoreHandlers();
+      document.querySelector(`.film-details`).scrollTop = this._posScroll;
     } else {
       this._renderPopup();
       return;
@@ -56,14 +58,15 @@ export default class FilmPopupPresenter {
   _renderPopup() {
     render(this._container, this._popupComponent);
     this._container.classList.add('hide-overflow');
-    this._callbacks();
+    this.restoreHandlers();
+    this._handleFormSubmit();
     this._renderComments();
   }
 
   /**
    * Приватный метод определения колбэков
    */
-  _callbacks() {
+  restoreHandlers() {
     this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
     this._popupComponent.setClickHandler(() => this.close());
     this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeFilmComment(evt));
@@ -74,9 +77,14 @@ export default class FilmPopupPresenter {
         this.close();
       }
     });
+  }
+
+
+  
+  _handleFormSubmit() {
     document.addEventListener('keydown', (evt) => {
       //  check later
-      if ((evt.ctrlKey) && ((evt.keyCode === 0xA) || (evt.keyCode === 0xD))) {
+      if ((evt.ctrlKey) && (evt.code === 'Enter')) {
         evt.preventDefault();
         this.submitFormComments();
       }
@@ -93,7 +101,7 @@ export default class FilmPopupPresenter {
         currentEmotion = emotion.value;
       }
     }
-    if (currentEmotion !== null && (text !== '' || text !== null)) {
+    if (currentEmotion !== null && text) {
       const newComment = {
         id: nanoid(),
         info: {
@@ -121,12 +129,12 @@ export default class FilmPopupPresenter {
    */
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
-    const posScroll = this.getPositionScroll();
+    this._posScroll = this.getPositionScroll();
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), posScroll);
   }
 
   _removeFilmComment(evt) {
-    const posScroll = this.getPositionScroll();
+    this._posScroll = this.getPositionScroll();
     const commentId = evt.target.closest('.film-details__comment').getAttribute('id');
     const commentInd = this._film.comments.findIndex((item) => item.id === commentId);
     this._film.comments.splice(commentInd, 1);
