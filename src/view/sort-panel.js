@@ -1,5 +1,4 @@
 import AbstractView from './abstract';
-import SmartView from './smart';
 
 /**
  * Функция создания компонента сортировки
@@ -16,11 +15,11 @@ const createSortPanelTemplate = () => {
 /**
  * Класс описывает панель сортировки
  */
-export default class SortPanel extends SmartView {
+export default class SortPanel extends AbstractView {
 
   /**
    * Конструктор
-   * Вызывается конструктор класса родителя (SmartView)
+   * Вызывается конструктор класса родителя (AbstractView)
    * Производится привязка контекста обработчика к объекту компонента
    */
   constructor() {

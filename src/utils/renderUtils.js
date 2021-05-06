@@ -12,7 +12,6 @@ export const RenderPosition = {
  * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
  */
 export const render = (container, element, place = 'beforeend') => {
-  
   if (element instanceof AbstractView) {
     element = element.getElement();
   }

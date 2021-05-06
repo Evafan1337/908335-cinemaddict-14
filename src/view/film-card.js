@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract';
 import SmartView from './smart';
 
 

@@ -1,5 +1,4 @@
 import AbstractView from './abstract';
-import SmartView from './smart';
 
 /**
  * Функция создания компонента меню
@@ -9,8 +8,6 @@ import SmartView from './smart';
 const createMenuTemplate = (filmsInfo, sortType) => {
 
   const {isWatchlist, isViewed, isFavorite} = filmsInfo;
-
-  console.log(filmsInfo);
 
   const allFilmsClassName = (sortType === 'all')
     ? 'main-navigation__item--active'

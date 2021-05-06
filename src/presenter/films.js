@@ -3,6 +3,7 @@ import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
 import SiteMenuView from '../view/menu';
 import SortPanelView from '../view/sort-panel';
+import ProfileView from '../view/profile';
 import {
   render,
   remove,
@@ -34,9 +35,11 @@ export default class FilmsList {
     this._sort = {};
     this._menuComponent = null;
     this._filmPresenter = {};
+    //  Переименовать в Components
     this._sortPanelView = new SortPanelView();
     this._filmListView = new FilmListView();
     this._loadMoreView = new LoadmoreView();
+    this._profileComponent = null;
     this._mainFilmList = this._filmListView.getElement().querySelector('.js-film-list-main');
     this._loadMoreContainer = this._filmListView.getElement().querySelector('.js-films-container');
     this._topRatedFilmList = this._filmListView.getElement().querySelector('.js-film-list-rated');
@@ -54,6 +57,7 @@ export default class FilmsList {
       sort: 'default',
       filter: 'all',
     };
+    this._historyCount = null;
   }
 
 
@@ -69,6 +73,10 @@ export default class FilmsList {
       isViewed: this._films.filter((item) => item.isViewed).length,
       isFavorite: this._films.filter((item) => item.isFavorite).length,
     };
+    this._historyCount = this._sourcedFilms.filter((item) => item.isViewed).length;
+    if (this._historyCount > 0) {
+      this._renderProfile();
+    }
     this._renderFilmsContainer();
   }
 
@@ -88,9 +96,13 @@ export default class FilmsList {
   /**
    * Приватный метод обновление наполнения списка фильмов
    */
-  update() {
+  update(renderedFilms) {
     this._clearList();
+    if (renderedFilms) {
+      this._renderedFilmsCount = renderedFilms;
+    }
     let updatedFilms = this._sourcedFilms;
+    this._historyCount = this._sourcedFilms.filter((item) => item.isViewed).length;
     if (this._sortType.filter !== 'all') {
       updatedFilms = this._sourcedFilms.filter((film) => film[this._sortType.filter]);
     }
@@ -101,6 +113,16 @@ export default class FilmsList {
     this._renderFilms();
     this._renderRatedFilms();
     this._renderCommentedFilms();
+  }
+
+  _renderProfile() {
+    const prevProfile = this._profileComponent;
+    this._profileComponent = new ProfileView(this._sort.history);
+    if (prevProfile) {
+      replace(this._profileComponent, prevProfile);
+    } else {
+      render(siteBody.querySelector('.header'), this._profileComponent);
+    }
   }
 
   /**
@@ -169,7 +191,7 @@ export default class FilmsList {
    * То дополнительно вызывает метод рендера кнопки ShowMore
    */
   _renderFilms() {
-    this._renderFilmList(0, Math.min(this._films.length, FILM_PER_PAGE));
+    this._renderFilmList(0, Math.min(this._films.length, this._renderedFilmsCount));
 
     if (this._films.length > FILM_PER_PAGE) {
       this._renderLoadMore();
@@ -227,10 +249,13 @@ export default class FilmsList {
   _handleFilmChange(updatedFilm) {
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
+    // check later
     if (!updatedFilm[this._sortType.filter]) {
-      this.update();
+      this.update(this._renderedFilmsCount);
+      this._renderProfile();
       this._renderMenu(this._filmsContainer);
     } else {
+      this._renderProfile();
       this._renderMenu(this._filmsContainer);
       this._filmPresenter[updatedFilm.id].init(updatedFilm);
     }
@@ -257,9 +282,10 @@ export default class FilmsList {
     } else {
       this._filmPresenter[updatedFilm.id].init(updatedFilm);
     }
+    this._renderProfile();
     this._renderMenu(this._filmsContainer);
     this._popupPresenter.init(updatedFilm);
-    document.querySelector(`.film-details`).scrollTop = posScroll;
+    document.querySelector('.film-details').scrollTop = posScroll;
   }
 
   /**
@@ -303,13 +329,13 @@ export default class FilmsList {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
-    document.querySelector(`.film-details`).scrollTop = posScroll;
+    document.querySelector('.film-details').scrollTop = posScroll;
   }
 
   _handleAddComment(updatedFilm, posScroll) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
-    document.querySelector(`.film-details`).scrollTop = posScroll;
+    document.querySelector('.film-details').scrollTop = posScroll;
   }
 }

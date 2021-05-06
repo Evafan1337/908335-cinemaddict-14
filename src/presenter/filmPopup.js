@@ -84,22 +84,22 @@ export default class FilmPopupPresenter {
   }
 
   submitFormComments() {
-    let posScroll = this.getPositionScroll();
-    let text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
+    const posScroll = this.getPositionScroll();
+    const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
     const emotions = document.querySelectorAll('.film-details__emoji-item');
     let currentEmotion;
-    for (let emotion of emotions) {
+    for (const emotion of emotions) {
       if (emotion.checked) {
         currentEmotion = emotion.value;
       }
     }
-    if (currentEmotion !== null && (text !== `` || text !== null)) {
-      let newComment = {
+    if (currentEmotion !== null && (text !== '' || text !== null)) {
+      const newComment = {
         id: nanoid(),
         info: {
           text: text.value,
-          author: ``,
-          emotion: currentEmotion
+          author: '',
+          emotion: currentEmotion,
         },
         date: new Date(),
       };
@@ -121,20 +121,19 @@ export default class FilmPopupPresenter {
    */
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
-    let posScroll = this.getPositionScroll();
+    const posScroll = this.getPositionScroll();
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), posScroll);
   }
 
   _removeFilmComment(evt) {
-    let posScroll = this.getPositionScroll();
-    let commentId = evt.target.closest('.film-details__comment').getAttribute('id');
-    let commentInd = this._film.comments.findIndex((item) => item.id === commentId);
+    const posScroll = this.getPositionScroll();
+    const commentId = evt.target.closest('.film-details__comment').getAttribute('id');
+    const commentInd = this._film.comments.findIndex((item) => item.id === commentId);
     this._film.comments.splice(commentInd, 1);
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), posScroll);
   }
 
   _addFilmCommentEmotion(evt) {
-    console.log('_addFilmCommentEmotion');
     const labelEmotion = this._commentsListComponent.getElement().querySelector('.film-details__add-emoji-label');
     const emotion = evt.target.value;
     this._commentsListComponent.renderEmotion(labelEmotion, emotion);

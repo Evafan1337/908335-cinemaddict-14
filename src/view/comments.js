@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-import {createElement, render, renderTemplate, RenderPosition, replace} from '../utils';
+import {createElement, render, RenderPosition} from '../utils';
 
 /**
  * Функция создания шаблона комментария
@@ -25,8 +25,6 @@ const createCommentTemplate = (comment) => {
 };
 
 const createEmojiLabel = (emotion) => {
-  console.log('createEmojiLabel');
-  console.log(emotion);
   return `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`;
 };
 
@@ -79,16 +77,15 @@ export default class Comments extends SmartView {
   }
 
   getTemplate() {
-    console.log(this._comments);
     return createCommentsTemplate(this._comments);
   }
 
   getInputsEmoji() {
-    return this.getElement().querySelectorAll(`.film-details__emoji-item`);
+    return this.getElement().querySelectorAll('.film-details__emoji-item');
   }
 
   getLinksDelete() {
-    return this.getElement().querySelectorAll(`.film-details__comment-delete`);
+    return this.getElement().querySelectorAll('.film-details__comment-delete');
   }
 
   restoreHandlers() {
@@ -98,10 +95,10 @@ export default class Comments extends SmartView {
   }
 
   _setInnerHandlers() {
-    for (let link of this.getElement().querySelectorAll('.film-details__comment-delete')) {
+    for (const link of this.getElement().querySelectorAll('.film-details__comment-delete')) {
       link.addEventListener('click', this._deleteClickComment);
     }
-    for (let inp of this.getElement().querySelectorAll('.film-details__emoji-item')) {
+    for (const inp of this.getElement().querySelectorAll('.film-details__emoji-item')) {
       inp.addEventListener('change', this._addCommentEmotion);
     }
   }
@@ -125,13 +122,8 @@ export default class Comments extends SmartView {
   }
 
   renderEmotion(labelEmotion, emotion) {
-    console.log('renderEmotion');
     const img = createElement(createEmojiLabel(emotion));
-    labelEmotion.innerHTML = ``;
-
-    console.log(labelEmotion);
-    console.log(img);
-
+    labelEmotion.innerHTML = '';
     render(labelEmotion, img, RenderPosition.BEFOREEND);
   }
 
@@ -140,9 +132,8 @@ export default class Comments extends SmartView {
    * @param {function} callback - функция, которая будет исполняться при слушателе
    */
   setAddCommentEmotionHandler(callback) {
-    console.log('setAddCommentEmotionHandler');
     this._callback.addClickEmotion = callback;
-    for (let inp of this.getInputsEmoji()) {
+    for (const inp of this.getInputsEmoji()) {
       inp.addEventListener('change', this._addCommentEmotion);
     }
   }
@@ -152,9 +143,8 @@ export default class Comments extends SmartView {
    * @param {function} callback - функция, которая будет исполняться при слушателе
    */
   setDeleteCommentHandler(callback) {
-    console.log('setDeleteCommentHandler');
     this._callback.removeClick = callback;
-    for (let link of this.getLinksDelete()) {
+    for (const link of this.getLinksDelete()) {
       link.addEventListener('click', this._deleteClickComment);
     }
   }

@@ -1,5 +1,4 @@
 import AbstractView from './abstract';
-import SmartView from './smart';
 
 /**
  * Функция создания компонента списка фильмов
@@ -28,7 +27,7 @@ const createFilmListTemplate = () => {
 /**
  * Класс описывает компонент (контейнер для отрисовки в них фильмов)
  */
-export default class FilmList extends SmartView {
+export default class FilmList extends AbstractView {
 
   /**
    * Метод получения HTML шаблона

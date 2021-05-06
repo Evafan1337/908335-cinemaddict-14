@@ -49,7 +49,7 @@ export const replace = (newChild, oldChild) => {
   if (oldChild === null || newChild === null) {
     return;
   }
-  
+
   const parent = oldChild.parentElement;
   parent.replaceChild(newChild, oldChild);
 };

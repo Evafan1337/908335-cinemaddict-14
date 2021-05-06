@@ -12,7 +12,6 @@ export default class Smart extends AbstractView {
    * Потом вызывает метод обновления элемента
    */
   updateData(update) {
-    console.log('updateData');
     if (!update) {
       return;
     }
@@ -27,7 +26,6 @@ export default class Smart extends AbstractView {
    * работает с помощью replaceChild
    */
   updateElement() {
-    console.log('updateElement');
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
