@@ -134,6 +134,9 @@ export default class Popup extends SmartView {
     return createTemplatePopupFilm(this._film);
   }
 
+  /**
+   * Метод получения элемента(контейнера для комментариев)
+   */
   getCommentsContainer() {
     return this.getElement().querySelector('.film-details__bottom-container');
   }
@@ -175,10 +178,20 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
 
-
+  /**
+   * Реализация обработчика
+   * Изменение параметров фильма
+   * Изменение и перерисовка компонента с помощью
+   * this.updateData, объявленного в SmartView
+   * @param {Object} evt - объект событий
+   */
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(evt);
+    const type = evt.target.dataset.type;
+    this._callback.editClick(evt, Popup.parseDataToFilm(this._data));
+    this.updateData({
+      [type]: !this._film[type]
+    });
   }
 
   /**

@@ -1,5 +1,11 @@
 import AbstractView from './abstract';
 
+/**
+ * Смарт класс, наследуется от абстрактного
+ * Смарт класс инкапсулирует в себе бизнес-логику
+ * для обновления данных и перерисовки самого себя
+ * без привлечения методов презентера (модели)
+ */
 export default class Smart extends AbstractView {
   constructor() {
     super();
@@ -10,8 +16,12 @@ export default class Smart extends AbstractView {
    * Метод обновления данных
    * Меняет данные через Object.assign
    * Потом вызывает метод обновления элемента
+   * @param {object} update - поле которое необходимо "инвертировать"
+   * По сути реализуется изменение полей карточки фильма/попапа
    */
   updateData(update) {
+    console.log('updateData');
+    console.log(update);
     if (!update) {
       return;
     }
@@ -23,7 +33,9 @@ export default class Smart extends AbstractView {
 
   /**
    * Метод обновления элемента
+   * Путем замены элементов
    * работает с помощью replaceChild
+   * Вызывает метод восстановления слушателей
    */
   updateElement() {
     const prevElement = this.getElement();
@@ -31,7 +43,6 @@ export default class Smart extends AbstractView {
     this.removeElement();
 
     const newElement = this.getElement();
-
     parent.replaceChild(newElement, prevElement);
 
     this.restoreHandlers();

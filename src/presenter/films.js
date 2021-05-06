@@ -73,7 +73,7 @@ export default class FilmsList {
       isViewed: this._sourcedFilms.filter((item) => item.isViewed).length,
       isFavorite: this._sourcedFilms.filter((item) => item.isFavorite).length,
     };
-    if (this._sort.history > 0) {
+    if (this._sort.isViewed > 0) {
       this._renderProfile();
     }
     this._renderFilmsContainer();
@@ -93,7 +93,7 @@ export default class FilmsList {
       isViewed: this._sourcedFilms.filter((item) => item.isViewed).length,
       isFavorite: this._sourcedFilms.filter((item) => item.isFavorite).length,
     };
-    if (this._sort.history > 0) {
+    if (this._sort.isViewed > 0) {
       this._renderProfile();
     }
     if (this._sortType.filter !== 'all') {
@@ -117,9 +117,13 @@ export default class FilmsList {
     this._renderFilms();
   }
 
+  /**
+   * Приватный метод рендера звания пользователя
+   * Вызывается если у пользователя есть хотя бы один просмотренный фильм
+   */
   _renderProfile() {
     const prevProfile = this._profileComponent;
-    this._profileComponent = new ProfileView(this._sort.history);
+    this._profileComponent = new ProfileView(this._sort.isViewed);
     if (prevProfile) {
       replace(this._profileComponent, prevProfile);
     } else {
@@ -217,6 +221,8 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmChange(updatedFilm) {
+    console.log(updatedFilm);
+    console.log(this._filmPresenter[updatedFilm.id]);
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._renderProfile();
@@ -277,6 +283,7 @@ export default class FilmsList {
    * @param {Object} evt - объект событий
    */
   _handleFilterItemClick(evt) {
+    console.log('_handleFilterItemClick');
     this._sortType.filter = evt.target.dataset.sort;
 
     console.log(this._menuComponent.getActiveMenuLink());

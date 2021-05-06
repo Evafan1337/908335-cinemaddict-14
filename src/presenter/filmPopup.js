@@ -130,7 +130,7 @@ export default class FilmPopupPresenter {
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
     this._posScroll = this.getPositionScroll();
-    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), posScroll);
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
   }
 
   _removeFilmComment(evt) {
@@ -138,7 +138,7 @@ export default class FilmPopupPresenter {
     const commentId = evt.target.closest('.film-details__comment').getAttribute('id');
     const commentInd = this._film.comments.findIndex((item) => item.id === commentId);
     this._film.comments.splice(commentInd, 1);
-    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), posScroll);
+    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._posScroll);
   }
 
   _addFilmCommentEmotion(evt) {

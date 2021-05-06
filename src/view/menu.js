@@ -46,11 +46,11 @@ export default class Menu extends AbstractView {
    * Конструктор
    * @param {Object} filmsInfo - данные о фильмах
    */
-  constructor(filmsInfo, sortType) {
+  constructor(sortInfo, sortType) {
     super();
     this._element = null;
-    this._filmsInfo = filmsInfo;
     this._clickHandler = this._clickHandler.bind(this);
+    this._sortInfo = sortInfo;
     this._sortType = sortType;
   }
 
@@ -61,8 +61,7 @@ export default class Menu extends AbstractView {
    * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
-    // console.log(this._filmsInfo);
-    return createMenuTemplate(this._filmsInfo);
+    return createMenuTemplate(this._sortInfo, this._sortType);
   }
 
   /**
@@ -78,7 +77,6 @@ export default class Menu extends AbstractView {
    * Метод получения активного элемента фильтрации
    */
   getActiveMenuLink() {
-    console.log('getActiveMenuLink');
     return this.getElement().querySelector('.main-navigation__item--active');
   }
 

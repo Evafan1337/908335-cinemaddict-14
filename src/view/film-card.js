@@ -131,9 +131,12 @@ export default class FilmCard  extends SmartView {
 
   /**
    * Реализация обработчика
+   * @param {Object} evt - объект событий
    * Изменение параметров фильма
    */
   _editClickHandler(evt) {
+    console.log('_editClickHandler');
+    console.log(evt);
     evt.preventDefault();
     this._callback.editClick(evt);
   }
