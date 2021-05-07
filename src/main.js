@@ -3,7 +3,7 @@ import CommentedFilmsPresenter from './presenter/commentedFilms';
 import FilmsPresenter from './presenter/films';
 import EmptyPresenter from './presenter/empty';
 import {generateFilms} from './mock/film';
-import {filmsInfoSort, getFilmsInfoSortLength, render} from './utils';
+import {render} from './utils';
 import FooterStatisticsView from './view/count-films';
 
 // const FILM_COUNT = 0;
@@ -11,7 +11,6 @@ const FILM_COUNT = 22;
 
 const films = generateFilms(FILM_COUNT);
 const filmsCount = films.length;
-const sortInfo = filmsInfoSort(films);
 
 const siteBody = document.querySelector('body');
 const siteMainElement = siteBody.querySelector('.main');
@@ -20,7 +19,8 @@ const siteFooterStatistics = siteBody.querySelector('.footer__statistics');
 const filmsPresenter = new FilmsPresenter(siteMainElement);
 const emptyPresenter = new EmptyPresenter(siteMainElement);
 
-// check later
+//	check later
+//	main presenter?
 if (filmsCount > 0) {
   filmsPresenter.init(films);
   const ratedFilmsPresenter = new RatedFilmsPresenter(siteMainElement);

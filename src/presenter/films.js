@@ -1,4 +1,3 @@
-import {nanoid} from 'nanoid';
 import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
 import SiteMenuView from '../view/menu';
@@ -10,13 +9,14 @@ import {
   replace,
   compareValues,
   RenderPosition,
-  updateItem
+  updateItem,
+  filmsInfoSort,
+  getFilmsInfoSortLength
 } from '../utils';
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
 
 const FILM_PER_PAGE = 5;
-const FILM_RATED_COUNT = 2;
 const siteBody = document.querySelector('body');
 
 /**
@@ -63,16 +63,12 @@ export default class FilmsList {
 
   /**
    * Публичный метод инициализации
+   * @param {Array} films - данные о фильмах
    */
   init(films) {
     this._films = films.slice();
     this._sourcedFilms = films.slice();
-    //взять из утилит
-    this._sort = {
-      isWatchlist: this._sourcedFilms.filter((item) => item.isWatchlist).length,
-      isViewed: this._sourcedFilms.filter((item) => item.isViewed).length,
-      isFavorite: this._sourcedFilms.filter((item) => item.isFavorite).length,
-    };
+    this._sort = getFilmsInfoSortLength(filmsInfoSort(this._films));
     if (this._sort.isViewed > 0) {
       this._renderProfile();
     }
@@ -81,6 +77,7 @@ export default class FilmsList {
 
   /**
    * Приватный метод обновление наполнения списка фильмов
+   * @param {number} renderedFilms - количество отрисованных фильмов
    */
   update(renderedFilms) {
     this._clearList();
@@ -88,11 +85,7 @@ export default class FilmsList {
       this._renderedFilmsCount = renderedFilms;
     }
     let updatedFilms = this._sourcedFilms;
-    this._sort = {
-      isWatchlist: this._sourcedFilms.filter((item) => item.isWatchlist).length,
-      isViewed: this._sourcedFilms.filter((item) => item.isViewed).length,
-      isFavorite: this._sourcedFilms.filter((item) => item.isFavorite).length,
-    };
+    this._sort = getFilmsInfoSortLength(filmsInfoSort(this._films));
     if (this._sort.isViewed > 0) {
       this._renderProfile();
     }
@@ -138,11 +131,8 @@ export default class FilmsList {
     const prevMenu = this._menuComponent;
     this._menuComponent = new SiteMenuView(this._sort, this._sortType.filter);
     if (prevMenu) {
-      this._sort = {
-        isWatchlist: this._films.filter((item) => item.isWatchlist).length,
-        isViewed: this._films.filter((item) => item.isViewed).length,
-        isFavorite: this._films.filter((item) => item.isFavorite).length,
-      };
+      this._sort = getFilmsInfoSortLength(filmsInfoSort(this._films));
+      this._menuComponent = new SiteMenuView(this._sort, this._sortType.filter);
       replace(this._menuComponent, prevMenu);
     } else {
       render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
@@ -176,7 +166,6 @@ export default class FilmsList {
    * @param {number} to - индекс до какого элемента необходимо произвести отрисовку
    */
   _renderFilmList(from, to) {
-    // check laterf
     this._films
       .slice(from, to)
       .forEach((film) => this._renderCard(film, this._mainFilmList));
@@ -206,8 +195,13 @@ export default class FilmsList {
     }
   }
 
-  // later
+  /**
+   * Приватный метод очистки списка фильмов
+   * Удаляются презентеры (компоненты)
+   * Удаляется кнопка showMore
+   */
   _clearList() {
+    //  Перебираем все презентеры
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -221,13 +215,10 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmChange(updatedFilm) {
-    console.log(updatedFilm);
-    console.log(this._filmPresenter[updatedFilm.id]);
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._renderProfile();
     this._renderMenu(this._filmsContainer);
-    // check later
     if (!updatedFilm[this._sortType.filter]) {
       this.update(this._renderedFilmsCount);
     } else {
@@ -235,7 +226,6 @@ export default class FilmsList {
         item.init(updatedFilm);
       });
     }
-    //Обновление меню можно реализовывать здесь
   }
 
   /**
@@ -283,11 +273,7 @@ export default class FilmsList {
    * @param {Object} evt - объект событий
    */
   _handleFilterItemClick(evt) {
-    console.log('_handleFilterItemClick');
     this._sortType.filter = evt.target.dataset.sort;
-
-    console.log(this._menuComponent.getActiveMenuLink());
-
     this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
     evt.target.classList.add('main-navigation__item--active');
     this.update();
@@ -304,12 +290,20 @@ export default class FilmsList {
     this.update();
   }
 
+  /**
+   * Приватный метод обработки фильма (удаление комментария)
+   * @param {object} updatedFilm - данные о фильме, которые нужно изменить (удалить комментарий)
+   */
   _handlePopupRemoveComment(updatedFilm) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
 
+  /**
+   * Приватный метод обработки фильма (добавление комментария)
+   * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
+   */
   _handleAddComment(updatedFilm) {
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);

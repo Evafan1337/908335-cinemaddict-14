@@ -18,6 +18,7 @@ export const createElement = (template) => {
  * @return {Object} update - элемент для замены
  */
 export const updateItem = (items, update) => {
+
   const index = items.findIndex((item) => item.id === update.id);
 
   if (index === -1) {

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-import {createElement, render, RenderPosition} from '../utils';
+import {createElement, render} from '../utils';
 
 /**
  * Функция создания шаблона комментария
@@ -24,6 +24,11 @@ const createCommentTemplate = (comment) => {
           </li>`;
 };
 
+/**
+ * Функция создания элемента картинки
+ * @param {string} emotion - значение "эмоции"
+ * @return {string}
+ */
 const createEmojiLabel = (emotion) => {
   return `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`;
 };
@@ -76,25 +81,45 @@ export default class Comments extends SmartView {
     this._addCommentEmotion = this._addCommentEmotion.bind(this);
   }
 
+  /**
+   * Метод получения HTML шаблона
+   * Вызывает внешнюю функцию createCommentsTemplate с аргументом this._comments
+   * Поле которого обьявляется в конструкторе
+   * @return {string} - HTML код созданного элемента
+   */
   getTemplate() {
     return createCommentsTemplate(this._comments);
   }
 
+  /**
+   * Метод получения HTML элемента выбранной эмоции
+   */
   getInputsEmoji() {
     return this.getElement().querySelectorAll('.film-details__emoji-item');
   }
 
+
+  /**
+   * Метод получения HTML элемента (ссылка на удаление комментария)
+   */
   getLinksDelete() {
     return this.getElement().querySelectorAll('.film-details__comment-delete');
   }
 
+  /**
+   * Метод восстановления обработчиков
+   */
   restoreHandlers() {
     this._setInnerHandlers();
     this.setDeleteCommentHandler(this._callback.removeClick);
     this.setAddCommentEmotionHandler(this._callback.addClickEmotion);
   }
 
+  /**
+   * Метод установки обработчиков
+   */
   _setInnerHandlers() {
+    //  Может делегирование?
     for (const link of this.getElement().querySelectorAll('.film-details__comment-delete')) {
       link.addEventListener('click', this._deleteClickComment);
     }
@@ -121,10 +146,15 @@ export default class Comments extends SmartView {
     this._callback.addClickEmotion(evt);
   }
 
+  /**
+   * Метод отрисовки эмоции для комментария
+   * @param {Object} labelEmotion - выбранная эмоция (тег label)
+   * @param {string} emotion - значение эмоции, которое будет подставляться в путь для изображения
+   */
   renderEmotion(labelEmotion, emotion) {
     const img = createElement(createEmojiLabel(emotion));
     labelEmotion.innerHTML = '';
-    render(labelEmotion, img, RenderPosition.BEFOREEND);
+    render(labelEmotion, img);
   }
 
   /**

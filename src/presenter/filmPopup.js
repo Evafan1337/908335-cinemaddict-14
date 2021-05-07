@@ -3,8 +3,7 @@ import CommentsView from '../view/comments';
 import {
   render,
   replace,
-  remove,
-  RenderPosition
+  remove
 } from '../utils';
 import {nanoid} from 'nanoid';
 
@@ -43,7 +42,7 @@ export default class FilmPopupPresenter {
       this._renderComments();
       this._popupComponent.restoreHandlers();
       this._commentsListComponent.restoreHandlers();
-      document.querySelector(`.film-details`).scrollTop = this._posScroll;
+      document.querySelector('.film-details').scrollTop = this._posScroll;
     } else {
       this._renderPopup();
       return;
@@ -79,8 +78,9 @@ export default class FilmPopupPresenter {
     });
   }
 
-
-  
+  /**
+   * Приватный метод обработчика создания комментария
+   */
   _handleFormSubmit() {
     document.addEventListener('keydown', (evt) => {
       //  check later
@@ -91,6 +91,11 @@ export default class FilmPopupPresenter {
     });
   }
 
+  /**
+   * Метод обработки формы добавления комментария
+   * Создание объекта комментария
+   * Обновление моков
+   */
   submitFormComments() {
     const posScroll = this.getPositionScroll();
     const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
@@ -120,7 +125,7 @@ export default class FilmPopupPresenter {
    * Приватный метод рендера комментариев
    */
   _renderComments() {
-    render(this._popupComponent.getCommentsContainer(), this._commentsListComponent, RenderPosition.BEFOREEND);
+    render(this._popupComponent.getCommentsContainer(), this._commentsListComponent);
   }
 
   /**
@@ -133,6 +138,10 @@ export default class FilmPopupPresenter {
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
   }
 
+  /**
+   * Приватный метод, описывающий удаления комментария
+   * @param {Object} evt - объект событий
+   */
   _removeFilmComment(evt) {
     this._posScroll = this.getPositionScroll();
     const commentId = evt.target.closest('.film-details__comment').getAttribute('id');
@@ -141,12 +150,19 @@ export default class FilmPopupPresenter {
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._posScroll);
   }
 
+  /**
+   * Приватный метод, описывающий выбор эмоции при создании комментария
+   * @param {Object} evt - объект событий
+   */
   _addFilmCommentEmotion(evt) {
     const labelEmotion = this._commentsListComponent.getElement().querySelector('.film-details__add-emoji-label');
     const emotion = evt.target.value;
     this._commentsListComponent.renderEmotion(labelEmotion, emotion);
   }
 
+  /**
+   * Метод получения кол-ва прокрученных пикселей
+   */
   getPositionScroll() {
     return document.querySelector('.film-details').scrollTop;
   }

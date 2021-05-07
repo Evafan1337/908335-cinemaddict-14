@@ -3,7 +3,7 @@ import AbstractView from './abstract';
 const UserRank = {
   NOVICE: 'Novice',
   FAN: 'Fan',
-  MOVIE_BUFF: 'Movie Buff'
+  MOVIE_BUFF: 'Movie Buff',
 };
 
 /**
@@ -12,7 +12,6 @@ const UserRank = {
  * @param {number} count - количество просмотренных фильмов
  */
 const profileRating = (count) => {
-  console.log(count);
   if (count > 1 && count <= 10) {
     return UserRank.NOVICE;
   } else if (count > 10 && count <= 20) {

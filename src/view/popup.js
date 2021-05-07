@@ -190,7 +190,7 @@ export default class Popup extends SmartView {
     const type = evt.target.dataset.type;
     this._callback.editClick(evt, Popup.parseDataToFilm(this._data));
     this.updateData({
-      [type]: !this._film[type]
+      [type]: !this._film[type],
     });
   }
 

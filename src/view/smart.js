@@ -20,8 +20,6 @@ export default class Smart extends AbstractView {
    * По сути реализуется изменение полей карточки фильма/попапа
    */
   updateData(update) {
-    console.log('updateData');
-    console.log(update);
     if (!update) {
       return;
     }
