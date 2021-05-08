@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract';
+import SmartView from './smart';
+
 
 /**
  * Функция создания компонента (карточка фильма)
@@ -62,7 +63,7 @@ const createFilmCardTemplate = (film) => {
 /**
  * Класс описывает компонент (карточка фильма)
  */
-export default class FilmCard  extends AbstractView {
+export default class FilmCard  extends SmartView {
 
   /**
    * Конструктор
@@ -130,6 +131,7 @@ export default class FilmCard  extends AbstractView {
 
   /**
    * Реализация обработчика
+   * @param {Object} evt - объект событий
    * Изменение параметров фильма
    */
   _editClickHandler(evt) {

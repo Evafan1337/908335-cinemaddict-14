@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract';
+import SmartView from './smart';
 
 /**
  * Функция создания элемента(элементов) жанров фильма
@@ -79,7 +79,7 @@ const createTemplatePopupFilm = (film) => {
               <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${genre.length > 1 ? 'Genres' : 'Genre'}</td>
               <td class="film-details__cell">
                 ${createGenresTemplate(genre)}
             </tr>
@@ -107,10 +107,11 @@ const createTemplatePopupFilm = (film) => {
 /**
  * Класс описывает компонент попапа
  */
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
 
   /**
    * Конструктор
+   * Вызывается конструктор класса родителя (SmartView)
    * @param {Object} film - фильм
    */
   constructor(film) {
@@ -133,6 +134,9 @@ export default class Popup extends AbstractView {
     return createTemplatePopupFilm(this._film);
   }
 
+  /**
+   * Метод получения элемента(контейнера для комментариев)
+   */
   getCommentsContainer() {
     return this.getElement().querySelector('.film-details__bottom-container');
   }
@@ -174,10 +178,20 @@ export default class Popup extends AbstractView {
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
 
-
+  /**
+   * Реализация обработчика
+   * Изменение параметров фильма
+   * Изменение и перерисовка компонента с помощью
+   * this.updateData, объявленного в SmartView
+   * @param {Object} evt - объект событий
+   */
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(evt);
+    const type = evt.target.dataset.type;
+    this._callback.editClick(evt, Popup.parseDataToFilm(this._data));
+    this.updateData({
+      [type]: !this._film[type],
+    });
   }
 
   /**

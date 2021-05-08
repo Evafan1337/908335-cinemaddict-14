@@ -14,15 +14,19 @@ export default class EmptyPresenter {
   constructor(emptyContainer) {
     this._emptyContainer = emptyContainer;
     this._emptyFilmsComponent = new EmptyFilmsView();
-    this._sort = null;
     this._menu = null;
+
+    this._sort = {
+      watchlist: 0,
+      history: 0,
+      favorites: 0,
+    };
   }
 
   /**
    * Метод инициализации
    */
-  init(sort) {
-    this._sort = sort;
+  init() {
     this._menuComponent = new SiteMenuView(this._sort);
     this._renderEmpty();
   }

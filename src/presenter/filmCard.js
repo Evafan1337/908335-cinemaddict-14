@@ -1,4 +1,4 @@
-import {render, replace} from '../utils';
+import {render, replace, remove} from '../utils';
 import FilmCardView from '../view/film-card';
 
 export default class FilmCardPresenter {
@@ -55,4 +55,10 @@ export default class FilmCardPresenter {
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
   }
 
+  /**
+   * Метод удаления компонента
+   */
+  destroy() {
+    remove(this._cardComponent);
+  }
 }
