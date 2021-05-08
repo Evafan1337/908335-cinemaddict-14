@@ -1,4 +1,4 @@
-import SmartView from './smart';
+import AbstractView from './abstract';
 
 /**
  * Функция создания компонента при отсутствии фильмов
@@ -15,7 +15,7 @@ export const createEmptyFilmsTemplate = () => {
 /**
  * Класс описывает компонент (пустой список фильмов)
  */
-export default class EmptyFilms extends SmartView {
+export default class EmptyFilms extends AbstractView {
 
   /**
    * Метод получения HTML шаблона

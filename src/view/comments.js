@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-import {createElement, render} from '../utils';
+import {createElement} from '../utils/elementActions';
+import {render} from '../utils/render';
+
 
 /**
  * Функция создания шаблона комментария

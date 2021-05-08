@@ -1,10 +1,7 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
-import {
-  render,
-  replace,
-  remove
-} from '../utils';
+import {replace, remove} from '../utils/elementActions';
+import {render} from '../utils/render';
 import {nanoid} from 'nanoid';
 
 export default class FilmPopupPresenter {

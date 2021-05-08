@@ -1,6 +1,6 @@
 import EmptyFilmsView from '../view/empty-films';
 import SiteMenuView from '../view/menu.js';
-import {render} from '../utils';
+import {render} from '../utils/render';
 
 /**
  * Класс описывает презентер пустого списка фильмов

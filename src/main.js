@@ -3,7 +3,7 @@ import CommentedFilmsPresenter from './presenter/commentedFilms';
 import FilmsPresenter from './presenter/films';
 import EmptyPresenter from './presenter/empty';
 import {generateFilms} from './mock/film';
-import {render} from './utils';
+import {render} from './utils/render';
 import FooterStatisticsView from './view/count-films';
 
 // const FILM_COUNT = 0;

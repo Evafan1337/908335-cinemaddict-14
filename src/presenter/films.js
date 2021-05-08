@@ -4,15 +4,20 @@ import SiteMenuView from '../view/menu';
 import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
 import {
+  replace, 
+  remove}
+from '../utils/elementActions';
+import {updateItem} from '../utils/dataActions';
+import {
   render,
-  remove,
-  replace,
+  RenderPosition}
+from '../utils/render';
+import {
   compareValues,
-  RenderPosition,
-  updateItem,
   filmsInfoSort,
-  getFilmsInfoSortLength
-} from '../utils';
+  getFilmsInfoSortLength}
+from '../utils/sort';
+
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
 
