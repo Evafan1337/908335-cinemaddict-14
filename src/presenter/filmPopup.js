@@ -31,14 +31,12 @@ export default class FilmPopupPresenter {
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
     this._commentsListComponent = new CommentsView(this._film.comments);
-
     if (prevPopup && this._container.classList.contains('hide-overflow')) {
+      console.log('prevPopup');
       replace(this._popupComponent, prevPopup);
       this._container.classList.add('hide-overflow');
-      this.restoreHandlers();
+      this.setHandlers();
       this._renderComments();
-      this._popupComponent.restoreHandlers();
-      this._commentsListComponent.restoreHandlers();
       document.querySelector('.film-details').scrollTop = this._posScroll;
     } else {
       this._renderPopup();
@@ -54,7 +52,7 @@ export default class FilmPopupPresenter {
   _renderPopup() {
     render(this._container, this._popupComponent);
     this._container.classList.add('hide-overflow');
-    this.restoreHandlers();
+    this.setHandlers();
     this._handleFormSubmit();
     this._renderComments();
   }
@@ -62,26 +60,30 @@ export default class FilmPopupPresenter {
   /**
    * Приватный метод определения колбэков
    */
-  restoreHandlers() {
+  setHandlers() {
+    console.log('setHandlers');
     this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
     this._popupComponent.setClickHandler(() => this.close());
     this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeFilmComment(evt));
     this._commentsListComponent.setAddCommentEmotionHandler((evt) => this._addFilmCommentEmotion(evt));
-    document.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        this.close();
-      }
-    });
+    document.addEventListener('keydown', this._closePopupHandler);
+    // document.addEventListener('keydown', (evt) => {
+    //   if (evt.key === 'Escape' || evt.key === 'Esc') {
+    //     evt.preventDefault();
+    //     this.close();
+    //   }
+    // });
   }
 
   /**
    * Приватный метод обработчика создания комментария
    */
   _handleFormSubmit() {
-    document.addEventListener('keydown', (evt) => {
+    // document.addEventListener('keydown', (evt) => {
+    this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
       //  check later
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
+        console.log('_handleFormSubmit');
         evt.preventDefault();
         this.submitFormComments();
       }
@@ -126,7 +128,7 @@ export default class FilmPopupPresenter {
   }
 
   /**
-   * Метод инициализации
+   * Приватные метод описывающий изменение попапа ( клик по чекбоксам фильма )
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
@@ -145,6 +147,14 @@ export default class FilmPopupPresenter {
     const commentInd = this._film.comments.findIndex((item) => item.id === commentId);
     this._film.comments.splice(commentInd, 1);
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._posScroll);
+  }
+
+  _closePopupHandler(evt) {
+    console.log('closePopup!');
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.close();
+    }
   }
 
   /**
@@ -170,5 +180,6 @@ export default class FilmPopupPresenter {
   close() {
     remove(this._popupComponent);
     this._container.classList.remove('hide-overflow');
+    document.removeEventListener('keydown', this._closePopupHandler);
   }
 }
