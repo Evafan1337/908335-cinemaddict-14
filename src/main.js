@@ -9,7 +9,8 @@ import FooterStatisticsView from './view/count-films';
 import PagePresenter from './presenter/pagePresenter';
 
 // const FILM_COUNT = 0;
-const FILM_COUNT = 22;
+// const FILM_COUNT = 22;
+const FILM_COUNT = 7;
 
 const films = generateFilms(FILM_COUNT);
 const filmsCount = films.length;

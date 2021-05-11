@@ -20,6 +20,8 @@ export default class FilmPopupPresenter {
     this._addComment = addComment;
     this._changeData = changeData;
     this._posScroll = null;
+
+    this._closePopupHandler = this._closePopupHandler.bind(this);
   }
 
   /**
@@ -150,9 +152,8 @@ export default class FilmPopupPresenter {
   }
 
   _closePopupHandler(evt) {
-    console.log('closePopup!');
     if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
+      console.log('closePopup!');
       this.close();
     }
   }
@@ -178,6 +179,7 @@ export default class FilmPopupPresenter {
    * Закрытие попапа
    */
   close() {
+    console.log('close');
     remove(this._popupComponent);
     this._container.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._closePopupHandler);

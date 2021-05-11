@@ -37,32 +37,39 @@ export default class FilmsList {
     this._filmsContainer = filmsContainer;
     this._renderedFilmsCount = FILM_PER_PAGE;
     this._films = null;
-    this._sort = {};
+    this._filterFilmsCount = {};
     this._menuComponent = null;
     this._filmPresenter = {};
     //  Переименовать в Components
-    this._sortPanelView = new SortPanelView();
-    this._filmListView = new FilmListView();
-    this._loadMoreView = new LoadmoreView();
+    this._sortPanelComponent = new SortPanelView();
+    this._filmListComponent = new FilmListView();
+    this._loadMoreComponent = new LoadmoreView();
     this._profileComponent = null;
-    this._mainFilmList = this._filmListView.getElement().querySelector('.js-film-list-main');
-    this._loadMoreContainer = this._filmListView.getElement().querySelector('.js-films-container');
-    this._topRatedFilmList = this._filmListView.getElement().querySelector('.js-film-list-rated');
-    this._topCommentedFilmList = this._filmListView.getElement().querySelector('.js-film-list-commented');
+    this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
+    this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
+    this._topRatedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
+    this._topCommentedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
     this._handlePopupChange = this._handlePopupChange.bind(this);
-    this._handlePopupRemoveComment = this._handlePopupRemoveComment.bind(this);
-    this._handleAddComment = this._handleAddComment.bind(this);
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment);
+
+    this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
+    // this._handlePopupRemoveComment = this._handlePopupRemoveComment.bind(this);
+    // this._handleAddComment = this._handleAddComment.bind(this);
+    // this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupCommentActions, this._handlePopupCommentActions);
+
     this._sortType = {
       sort: 'default',
       filter: 'all',
     };
     this._historyCount = null;
+
+    this._filterBy = 'all';
+    this._sortBy = 'default';
   }
 
 
@@ -73,8 +80,8 @@ export default class FilmsList {
   init(films) {
     this._films = films.slice();
     this._sourcedFilms = films.slice();
-    this._sort = getFilmsInfoSortLength(filmsInfoSort(this._films));
-    if (this._sort.isViewed > 0) {
+    this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
+    if (this._filterFilmsCount.isViewed > 0) {
       this._renderProfile();
     }
     this._renderFilmsContainer();
@@ -90,8 +97,11 @@ export default class FilmsList {
       this._renderedFilmsCount = renderedFilms;
     }
     let updatedFilms = this._sourcedFilms;
-    this._sort = getFilmsInfoSortLength(filmsInfoSort(this._films));
-    if (this._sort.isViewed > 0) {
+    this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
+
+    console.log(this._filterFilmsCount);
+
+    if (this._filterFilmsCount.isViewed > 0) {
       this._renderProfile();
     }
     if (this._sortType.filter !== 'all') {
@@ -99,6 +109,7 @@ export default class FilmsList {
     }
     if (this._sortType.sort !== 'default') {
       updatedFilms.sort(compareValues(this._sortType.sort, 'desc'));
+      console.log(updatedFilms);
     }
     this._films = updatedFilms;
     this._renderFilms();
@@ -109,7 +120,7 @@ export default class FilmsList {
    * Вызывает методы рендера фильмов (в т.ч в категориях: по рейтингу и кол-ву комментариев)
    */
   _renderFilmsContainer() {
-    render(this._filmsContainer, this._filmListView);
+    render(this._filmsContainer, this._filmListComponent);
     this._renderSort(this._filmsContainer);
     this._renderMenu(this._filmsContainer);
     this._renderFilms();
@@ -121,7 +132,7 @@ export default class FilmsList {
    */
   _renderProfile() {
     const prevProfile = this._profileComponent;
-    this._profileComponent = new ProfileView(this._sort.isViewed);
+    this._profileComponent = new ProfileView(this._filterFilmsCount.isViewed);
     if (prevProfile) {
       replace(this._profileComponent, prevProfile);
     } else {
@@ -134,10 +145,10 @@ export default class FilmsList {
    */
   _renderMenu() {
     const prevMenu = this._menuComponent;
-    this._menuComponent = new SiteMenuView(this._sort, this._sortType.filter);
+    this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._sortType.filter);
     if (prevMenu) {
-      this._sort = getFilmsInfoSortLength(filmsInfoSort(this._films));
-      this._menuComponent = new SiteMenuView(this._sort, this._sortType.filter);
+      this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
+      this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._sortType.filter);
       replace(this._menuComponent, prevMenu);
     } else {
       render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
@@ -161,8 +172,8 @@ export default class FilmsList {
    * Приватный метод отрисовки панели сортировки
    */
   _renderSort() {
-    render(this._filmsContainer, this._sortPanelView, RenderPosition.AFTERBEGIN);
-    this._sortPanelView.setClickHandler((evt) => this._handleSortItemClick(evt));
+    render(this._filmsContainer, this._sortPanelComponent, RenderPosition.AFTERBEGIN);
+    this._sortPanelComponent.setClickHandler((evt) => this._handleSortItemClick(evt));
   }
 
   /**
@@ -182,8 +193,8 @@ export default class FilmsList {
    * Устанавливает обработчик, описанный в this._handleLoadMoreButtonClick
    */
   _renderLoadMore() {
-    render(this._loadMoreContainer, this._loadMoreView);
-    this._loadMoreView.setClickHandler(this._handleLoadMoreButtonClick);
+    render(this._loadMoreContainer, this._loadMoreComponent);
+    this._loadMoreComponent.setClickHandler(this._handleLoadMoreButtonClick);
   }
 
   /**
@@ -212,7 +223,7 @@ export default class FilmsList {
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
     this._renderedFilmsCount = FILM_PER_PAGE;
-    remove(this._loadMoreView);
+    remove(this._loadMoreComponent);
   }
 
   /**
@@ -220,6 +231,11 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmChange(updatedFilm) {
+
+    //  Нужна связка к this._sourcedFilms во вторичных презентерах
+    console.log(updatedFilm);
+    console.log(this._films);
+
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._renderProfile();
@@ -267,8 +283,8 @@ export default class FilmsList {
     this._renderedFilmsCount += FILM_PER_PAGE;
 
     if (this._renderedFilmsCount >= (this._films.length)) {
-      this._loadMoreView.getElement().remove();
-      this._loadMoreView.removeElement();
+      this._loadMoreComponent.getElement().remove();
+      this._loadMoreComponent.removeElement();
       this._renderedFilmsCount = FILM_PER_PAGE;
     }
   }
@@ -289,27 +305,18 @@ export default class FilmsList {
    * @param {Object} evt - объект событий
    */
   _handleSortItemClick(evt) {
-    this._sortPanelView.getActiveMenuLink().classList.remove('sort__button--active');
+    this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
     evt.target.classList.add('sort__button--active');
     this._sortType.sort = evt.target.dataset.sort;
     this.update();
   }
 
   /**
-   * Приватный метод обработки фильма (удаление комментария)
-   * @param {object} updatedFilm - данные о фильме, которые нужно изменить (удалить комментарий)
-   */
-  _handlePopupRemoveComment(updatedFilm) {
-    this._films = updateItem(this._sourcedFilms, updatedFilm);
-    this._filmPresenter[updatedFilm.id].init(updatedFilm);
-    this._popupPresenter.init(updatedFilm);
-  }
-
-  /**
-   * Приватный метод обработки фильма (добавление комментария)
+   * Приватный метод обработки фильма (добавление/удаление комментария комментария)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
    */
-  _handleAddComment(updatedFilm) {
+  _handlePopupCommentActions(updatedFilm) {
+    console.log('_handlePopupCommentActions');
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);
