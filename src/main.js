@@ -6,6 +6,8 @@ import {generateFilms} from './mock/film';
 import {render} from './utils/render';
 import FooterStatisticsView from './view/count-films';
 
+import PagePresenter from './presenter/pagePresenter';
+
 // const FILM_COUNT = 0;
 const FILM_COUNT = 22;
 
@@ -16,25 +18,30 @@ const siteBody = document.querySelector('body');
 const siteMainElement = siteBody.querySelector('.main');
 const siteFooterStatistics = siteBody.querySelector('.footer__statistics');
 
-const filmsPresenter = new FilmsPresenter(siteMainElement);
-const emptyPresenter = new EmptyPresenter(siteMainElement);
+const pagePresenter = new PagePresenter(siteBody, siteMainElement, siteFooterStatistics, films);
+pagePresenter.init();
 
-//	check later
-//	main presenter?
-if (filmsCount > 0) {
-  filmsPresenter.init(films);
-  const ratedFilmsPresenter = new RatedFilmsPresenter(siteMainElement);
-  const commentedFilmsPresenter = new CommentedFilmsPresenter(siteMainElement);
-  ratedFilmsPresenter.init(films);
-  commentedFilmsPresenter.init(films);
-} else {
-  // Замена презентера на обычный компонент (стоит ли?)
-  emptyPresenter.init();
 
-}
+// usual ok
 
-// Замена презентера на обычный компонент
-// const footerPresenter = new FooterPresenter(siteFooterStatistics);
-// footerPresenter.init(filmsCount);
+// const filmsPresenter = new FilmsPresenter(siteMainElement);
+// const emptyPresenter = new EmptyPresenter(siteMainElement);
 
-render(siteFooterStatistics, new FooterStatisticsView(filmsCount));
+// //	check later
+// //	main presenter?
+// if (filmsCount > 0) {
+//   filmsPresenter.init(films);
+//   const ratedFilmsPresenter = new RatedFilmsPresenter(siteMainElement);
+//   const commentedFilmsPresenter = new CommentedFilmsPresenter(siteMainElement);
+//   ratedFilmsPresenter.init(films);
+//   commentedFilmsPresenter.init(films);
+// } else {
+//   // Замена презентера на обычный компонент (стоит ли?)
+//   emptyPresenter.init();
+// }
+
+// // Замена презентера на обычный компонент
+// // const footerPresenter = new FooterPresenter(siteFooterStatistics);
+// // footerPresenter.init(filmsCount);
+
+// render(siteFooterStatistics, new FooterStatisticsView(filmsCount));
