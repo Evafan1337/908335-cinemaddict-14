@@ -1,6 +1,6 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
-import {replace, remove} from '../utils/elementActions';
+import {replace, remove} from '../utils/dom';
 import {render} from '../utils/render';
 import {nanoid} from 'nanoid';
 
@@ -67,21 +67,13 @@ export default class FilmPopupPresenter {
     this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeFilmComment(evt));
     this._commentsListComponent.setAddCommentEmotionHandler((evt) => this._addFilmCommentEmotion(evt));
     document.addEventListener('keydown', this._closePopupHandler);
-    // document.addEventListener('keydown', (evt) => {
-    //   if (evt.key === 'Escape' || evt.key === 'Esc') {
-    //     evt.preventDefault();
-    //     this.close();
-    //   }
-    // });
   }
 
   /**
    * Приватный метод обработчика создания комментария
    */
   _handleFormSubmit() {
-    // document.addEventListener('keydown', (evt) => {
     this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
-      //  check later
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
         evt.preventDefault();
         this.submitFormComments();

@@ -1,4 +1,4 @@
-import {replace, remove} from '../utils/elementActions';
+import {replace, remove} from '../utils/dom';
 import {render} from '../utils/render';
 import FilmCardView from '../view/film-card';
 
@@ -32,7 +32,6 @@ export default class FilmCardPresenter {
 
     if (prevCard) {
       replace(this._cardComponent, prevCard);
-      // remove(prevCard);
     } else {
       this._renderCard();
     }

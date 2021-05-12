@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-import {createElement} from '../utils/elementActions';
+import {createElement} from '../utils/dom';
 import {render} from '../utils/render';
 
 
@@ -121,7 +121,6 @@ export default class Comments extends SmartView {
    * Метод установки обработчиков
    */
   _setInnerHandlers() {
-    //  Может делегирование?
     for (const link of this.getElement().querySelectorAll('.film-details__comment-delete')) {
       link.addEventListener('click', this._deleteClickComment);
     }

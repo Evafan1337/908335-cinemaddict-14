@@ -6,8 +6,8 @@ import ProfileView from '../view/profile';
 import {
   replace,
   remove}
-  from '../utils/elementActions';
-import {updateItem} from '../utils/dataActions';
+  from '../utils/dom';
+import {updateItem} from '../utils/data';
 import {
   render,
   RenderPosition}

@@ -26,7 +26,6 @@ export default class CommentedFilmsPresenter extends FilmsPresenter {
    */
   init(films) {
     this._films = films.slice().sort(compareValues('comments', 'desc')).slice(0, FILM_PER_PAGE);
-    // this._renderFilmsContainer();
     this._renderFilmList();
   }
 

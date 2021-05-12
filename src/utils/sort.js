@@ -10,7 +10,6 @@ export const compareValues = (key, order = 'asc') => {
 
   // 0 если хотя бы в одном из сравниваемых элементов нет нужного св-ва(key)
   return (a, b) => {
-    // if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
     if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)){
       return 0;
     }

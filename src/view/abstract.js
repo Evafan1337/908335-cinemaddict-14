@@ -1,4 +1,4 @@
-import {createElement} from '../utils/elementActions';
+import {createElement} from '../utils/dom';
 
 /**
  * Абстрактный класс для компонентов
