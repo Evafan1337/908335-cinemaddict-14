@@ -1,4 +1,4 @@
-import SmartView from './smart';
+import AbstractView from './abstract';
 
 /**
  * Функция создания счетчика фильмов
@@ -12,7 +12,7 @@ const createFooterStatisticsTemplate = (count) => {
 /**
  * Класс описывает компонент (счетчик фильмов)
  */
-export default class FooterStatistics extends SmartView {
+export default class FooterStatistics extends AbstractView {
 
   /**
    * Конструктор

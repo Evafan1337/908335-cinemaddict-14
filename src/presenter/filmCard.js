@@ -1,4 +1,5 @@
-import {render, replace, remove} from '../utils';
+import {replace, remove} from '../utils/elementActions';
+import {render} from '../utils/render';
 import FilmCardView from '../view/film-card';
 
 export default class FilmCardPresenter {
