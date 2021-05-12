@@ -120,7 +120,8 @@ export default class Popup extends SmartView {
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
-    this._data = Popup.parseFilmToData(film);
+    // this._data = Popup.parseFilmToData(film);
+    this._data = Object.assign({}, film);
     this._setInnerHandlers();
   }
 
@@ -186,9 +187,9 @@ export default class Popup extends SmartView {
    * @param {Object} evt - объект событий
    */
   _editClickHandler(evt) {
-    evt.preventDefault();
+    // evt.preventDefault();
     const type = evt.target.dataset.type;
-    this._callback.editClick(evt, Popup.parseDataToFilm(this._data));
+    this._callback.editClick(evt, this._film);
     this.updateData({
       [type]: !this._film[type],
     });
@@ -203,19 +204,5 @@ export default class Popup extends SmartView {
     for (const control of this.getElement().querySelectorAll('.film-details__control-input')) {
       control.addEventListener('change', this._editClickHandler);
     }
-  }
-
-  /**
-   * Статический метод копирования объектов
-   */
-  static parseFilmToData(film) {
-    return Object.assign({}, film);
-  }
-
-  /**
-   * Статический метод копирования объектов
-   */
-  static parseDataToFilm(data) {
-    return Object.assign({}, data);
   }
 }

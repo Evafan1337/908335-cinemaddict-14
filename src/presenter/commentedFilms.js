@@ -26,22 +26,7 @@ export default class CommentedFilmsPresenter extends FilmsPresenter {
    */
   init(films) {
     this._films = films.slice().sort(compareValues('comments', 'desc')).slice(0, FILM_PER_PAGE);
-    this._renderFilmsContainer();
-  }
-
-  /**
-   * Приватный метод рендера контейнера фильмов
-   * Вызывает метод рендера фильмов
-   */
-  _renderFilmsContainer() {
-    this._renderFilms();
-  }
-
-  /**
-   * Приватный метод отрисовки фильмов
-   * Вызывает метод _renderFilmList
-   */
-  _renderFilms() {
+    // this._renderFilmsContainer();
     this._renderFilmList();
   }
 

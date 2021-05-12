@@ -4,19 +4,19 @@ import SiteMenuView from '../view/menu';
 import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
 import {
-  replace, 
+  replace,
   remove}
-from '../utils/elementActions';
+  from '../utils/elementActions';
 import {updateItem} from '../utils/dataActions';
 import {
   render,
   RenderPosition}
-from '../utils/render';
+  from '../utils/render';
 import {
   compareValues,
   filmsInfoSort,
   getFilmsInfoSortLength}
-from '../utils/sort';
+  from '../utils/sort';
 
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
@@ -40,7 +40,6 @@ export default class FilmsList {
     this._filterFilmsCount = {};
     this._menuComponent = null;
     this._filmPresenter = {};
-    //  Переименовать в Components
     this._sortPanelComponent = new SortPanelView();
     this._filmListComponent = new FilmListView();
     this._loadMoreComponent = new LoadmoreView();
@@ -52,22 +51,11 @@ export default class FilmsList {
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
-    this._handleFilmChange = this._handleFilmChange.bind(this);
-    this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
+    this._handleFilmAction = this._handleFilmAction.bind(this);
+    this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupChange = this._handlePopupChange.bind(this);
-
     this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
-    // this._handlePopupRemoveComment = this._handlePopupRemoveComment.bind(this);
-    // this._handleAddComment = this._handleAddComment.bind(this);
-    // this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment);
     this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupCommentActions, this._handlePopupCommentActions);
-
-    this._sortType = {
-      sort: 'default',
-      filter: 'all',
-    };
-    this._historyCount = null;
-
     this._filterBy = 'all';
     this._sortBy = 'default';
   }
@@ -99,17 +87,14 @@ export default class FilmsList {
     let updatedFilms = this._sourcedFilms;
     this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
 
-    console.log(this._filterFilmsCount);
-
     if (this._filterFilmsCount.isViewed > 0) {
       this._renderProfile();
     }
-    if (this._sortType.filter !== 'all') {
-      updatedFilms = this._sourcedFilms.filter((film) => film[this._sortType.filter]);
+    if (this._filterBy !== 'all') {
+      updatedFilms = this._sourcedFilms.filter((film) => film[this._filterBy]);
     }
-    if (this._sortType.sort !== 'default') {
-      updatedFilms.sort(compareValues(this._sortType.sort, 'desc'));
-      console.log(updatedFilms);
+    if (this._sortBy !== 'default') {
+      updatedFilms.sort(compareValues(this._sortBy, 'desc'));
     }
     this._films = updatedFilms;
     this._renderFilms();
@@ -145,10 +130,10 @@ export default class FilmsList {
    */
   _renderMenu() {
     const prevMenu = this._menuComponent;
-    this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._sortType.filter);
+    this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._filterBy);
     if (prevMenu) {
       this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
-      this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._sortType.filter);
+      this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._filterBy);
       replace(this._menuComponent, prevMenu);
     } else {
       render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
@@ -163,7 +148,7 @@ export default class FilmsList {
    * @param {Object} container - контейнер куда надо отрисовать компонент фильма
    */
   _renderCard(film, container) {
-    const filmPresenter = new FilmCardPresenter(container, this._handleFilmChange, this._handlePopupDisplay);
+    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -230,22 +215,17 @@ export default class FilmsList {
    * Приватный метод обработки фильма (клик по интерфейсу карточки)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
-  _handleFilmChange(updatedFilm) {
-
+  _handleFilmAction(updatedFilm) {
     //  Нужна связка к this._sourcedFilms во вторичных презентерах
-    console.log(updatedFilm);
-    console.log(this._films);
 
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._renderProfile();
     this._renderMenu(this._filmsContainer);
-    if (!updatedFilm[this._sortType.filter]) {
+    if (!updatedFilm[this._filterBy]) {
       this.update(this._renderedFilmsCount);
     } else {
-      this._filmPresenter[updatedFilm.id].forEach((item) => {
-        item.init(updatedFilm);
-      });
+      this._filmPresenter[updatedFilm.id].init(updatedFilm);
     }
   }
 
@@ -253,7 +233,7 @@ export default class FilmsList {
    * Приватный метод обработки открытия попапа (клик по интерфейсу карточки фильма)
    * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
    */
-  _handlePopupDisplay(film) {
+  _handlePopupOpen(film) {
     this._popupPresenter.init(film);
   }
 
@@ -264,7 +244,7 @@ export default class FilmsList {
   _handlePopupChange(updatedFilm) {
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._films = updateItem(this._sourcedFilms, updatedFilm);
-    if (!updatedFilm[this._sortType.filter]) {
+    if (!updatedFilm[this._filterBy]) {
       this.update();
     } else {
       this._filmPresenter[updatedFilm.id].init(updatedFilm);
@@ -294,7 +274,7 @@ export default class FilmsList {
    * @param {Object} evt - объект событий
    */
   _handleFilterItemClick(evt) {
-    this._sortType.filter = evt.target.dataset.sort;
+    this._filterBy = evt.target.dataset.sort;
     this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
     evt.target.classList.add('main-navigation__item--active');
     this.update();
@@ -307,7 +287,7 @@ export default class FilmsList {
   _handleSortItemClick(evt) {
     this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
     evt.target.classList.add('sort__button--active');
-    this._sortType.sort = evt.target.dataset.sort;
+    this._sortBy = evt.target.dataset.sort;
     this.update();
   }
 
@@ -316,7 +296,6 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
    */
   _handlePopupCommentActions(updatedFilm) {
-    console.log('_handlePopupCommentActions');
     this._films = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._popupPresenter.init(updatedFilm);

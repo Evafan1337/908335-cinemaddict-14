@@ -34,7 +34,6 @@ export default class FilmPopupPresenter {
     this._popupComponent = new PopupView(this._film);
     this._commentsListComponent = new CommentsView(this._film.comments);
     if (prevPopup && this._container.classList.contains('hide-overflow')) {
-      console.log('prevPopup');
       replace(this._popupComponent, prevPopup);
       this._container.classList.add('hide-overflow');
       this.setHandlers();
@@ -63,7 +62,6 @@ export default class FilmPopupPresenter {
    * Приватный метод определения колбэков
    */
   setHandlers() {
-    console.log('setHandlers');
     this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
     this._popupComponent.setClickHandler(() => this.close());
     this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeFilmComment(evt));
@@ -85,7 +83,6 @@ export default class FilmPopupPresenter {
     this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
       //  check later
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
-        console.log('_handleFormSubmit');
         evt.preventDefault();
         this.submitFormComments();
       }
@@ -153,7 +150,6 @@ export default class FilmPopupPresenter {
 
   _closePopupHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
-      console.log('closePopup!');
       this.close();
     }
   }
@@ -179,7 +175,6 @@ export default class FilmPopupPresenter {
    * Закрытие попапа
    */
   close() {
-    console.log('close');
     remove(this._popupComponent);
     this._container.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._closePopupHandler);
