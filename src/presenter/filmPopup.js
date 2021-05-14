@@ -3,6 +3,7 @@ import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
 import {render} from '../utils/render';
 import {nanoid} from 'nanoid';
+import he from 'he';
 
 export default class FilmPopupPresenter {
 
@@ -100,7 +101,7 @@ export default class FilmPopupPresenter {
       const newComment = {
         id: nanoid(),
         info: {
-          text: text.value,
+          text: he.encode(text.value),
           author: '',
           emotion: currentEmotion,
         },
