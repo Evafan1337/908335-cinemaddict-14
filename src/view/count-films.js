@@ -20,7 +20,6 @@ export default class FooterStatistics extends AbstractView {
    */
   constructor(count) {
     super();
-    this._element = null;
     this._filmCount = count;
   }
 

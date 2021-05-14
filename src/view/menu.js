@@ -48,8 +48,6 @@ export default class Menu extends AbstractView {
    */
   constructor(sortInfo, sortType) {
     super();
-    this._element = null;
-    this._clickHandler = this._clickHandler.bind(this);
     this._sortInfo = sortInfo;
     this._sortType = sortType;
   }

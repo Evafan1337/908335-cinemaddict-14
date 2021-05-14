@@ -16,6 +16,7 @@ export default class EmptyPresenter {
     this._emptyFilmsComponent = new EmptyFilmsView();
     this._menu = null;
 
+    // check later
     this._sort = {
       watchlist: 0,
       history: 0,

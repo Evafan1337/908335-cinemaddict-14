@@ -77,7 +77,6 @@ export const createCommentsTemplate = (comments) => {
 export default class Comments extends SmartView {
   constructor(comments) {
     super();
-    this._element = null;
     this._comments = comments;
     this._deleteClickComment = this._deleteClickComment.bind(this);
     this._addCommentEmotion = this._addCommentEmotion.bind(this);

@@ -116,9 +116,7 @@ export default class Popup extends SmartView {
    */
   constructor(film) {
     super();
-    this._element = null;
     this._film = film;
-    this._clickHandler = this._clickHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
     this._data = Object.assign({}, film);
     this._setInnerHandlers();

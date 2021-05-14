@@ -5,10 +5,23 @@ import AbstractView from './abstract';
  * @return {string}
  */
 const createSortPanelTemplate = () => {
+
+  const defaultClassName = (sortType === 'default')
+  ? 'sort__button--active'
+  : '';
+
+const dateClassName = (sortType === 'date')
+  ? 'sort__button--active'
+  : '';
+
+const ratingClassName = (sortType === 'rating')
+  ? 'sort__button--active'
+  : '';
+
   return `<ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active" data-sort="default">Sort by default</a></li>
-    <li><a href="#" class="sort__button" data-sort="date">Sort by date</a></li>
-    <li><a href="#" class="sort__button" data-sort="rating">Sort by rating</a></li>
+    <li><a href="#" class="sort__button ${defaultClassName}" data-sort="default">Sort by default</a></li>
+    <li><a href="#" class="sort__button ${dateClassName}" data-sort="date">Sort by date</a></li>
+    <li><a href="#" class="sort__button ${ratingClassName}" data-sort="rating">Sort by rating</a></li>
   </ul>`;
 };
 
@@ -22,9 +35,10 @@ export default class SortPanel extends AbstractView {
    * Вызывается конструктор класса родителя (AbstractView)
    * Производится привязка контекста обработчика к объекту компонента
    */
-  constructor() {
+  constructor(sortBy) {
     super();
     this._clickHandler = this._clickHandler.bind(this);
+    this._sortBy = sortBy;
   }
 
   /**
@@ -33,8 +47,7 @@ export default class SortPanel extends AbstractView {
    * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
-    return createSortPanelTemplate();
-  }
+    return createSortPanelTemplate(this._sortBy);  }
 
   /**
    * Метод получения HTML тега выбранной сортировки
