@@ -4,6 +4,7 @@ import FilmsPresenter from './films';
 import EmptyPresenter from './empty';
 import { render } from '../utils/render';
 import FooterStatisticsView from '../view/count-films';
+import FilmsModel from '../model/films';
 
 export default class PagePresenter {
 
@@ -27,6 +28,10 @@ export default class PagePresenter {
    * Запускает методы инициализации других презентеров
    */
   init () {
+
+    this._filmsModel = new FilmsModel();
+    this._filmsModel.setFilms(this._films);
+
     this._initFilmsPresenter();
     this._initSubFilmsPresenters();
     this._renderFooterComponent();
@@ -39,7 +44,7 @@ export default class PagePresenter {
     if(this._filmsCount == 0) {
       this._initEmptyPresenter();
     }
-    const filmsPresenter = new FilmsPresenter(this._siteMailElement);
+    const filmsPresenter = new FilmsPresenter(this._siteMailElement, this._filmsModel);
     filmsPresenter.init(this._films);
   }
 
@@ -51,8 +56,8 @@ export default class PagePresenter {
       return;
     }
 
-    const ratedFilmsPresenter = new RatedFilmsPresenter(this._siteMailElement);
-    const commentedFilmsPresenter = new CommentedFilmsPresenter(this._siteMailElement);
+    const ratedFilmsPresenter = new RatedFilmsPresenter(this._siteMailElement, this._filmsModel);
+    const commentedFilmsPresenter = new CommentedFilmsPresenter(this._siteMailElement, this._filmsModel);
 
     ratedFilmsPresenter.init(this._films);
     commentedFilmsPresenter.init(this._films);

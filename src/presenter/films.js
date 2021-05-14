@@ -33,10 +33,12 @@ export default class FilmsList {
    * Конструктор попапа
    * @param {Object} container - ссылка на HTML элемент куда надо отрисовать попап
    */
-  constructor(filmsContainer) {
+  constructor(filmsContainer, filmsModel) {
     this._filmsContainer = filmsContainer;
     this._renderedFilmsCount = FILM_PER_PAGE;
-    this._films = null;
+    this._filmsModel = filmsModel;
+    this._films = [];
+    this._sourcedFilms = [];
     this._filterFilmsCount = {};
     this._menuComponent = null;
     this._filmPresenter = {};
@@ -63,11 +65,10 @@ export default class FilmsList {
 
   /**
    * Публичный метод инициализации
-   * @param {Array} films - данные о фильмах
    */
-  init(films) {
-    this._films = films.slice();
-    this._sourcedFilms = films.slice();
+  init() {
+    this._sourcedFilms = this._filmsModel.getFilms();
+    this._films = this._filmsModel.getFilms();
     this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
     if (this._filterFilmsCount.isViewed > 0) {
       this._renderProfile();

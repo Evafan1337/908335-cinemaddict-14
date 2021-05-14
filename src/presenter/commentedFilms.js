@@ -14,18 +14,19 @@ export default class CommentedFilmsPresenter extends FilmsPresenter {
    * Конструктор попапа
    * @param {Object} container - ссылка на HTML элемент куда надо отрисовывать элементы
    */
-  constructor(filmsContainer) {
+  constructor(filmsContainer, filmsModel) {
     super();
     this._filmsContainer = filmsContainer;
     this._mainFilmList = siteBody.querySelector('.js-film-list-commented');
+    this._filmsModel = filmsModel;
   }
 
   /**
    * Публичный метод инициализации
-   * @param {Array} films - данные о фильмах
    */
-  init(films) {
-    this._films = films.slice().sort(compareValues('comments', 'desc')).slice(0, FILM_PER_PAGE);
+  init() {
+    this._sourcedFilms = this._filmsModel.getFilms();
+    this._films = this._filmsModel.getFilms().slice().sort(compareValues(`comments`, `desc`)).slice(0, FILM_PER_PAGE);
     this._renderFilmList();
   }
 
