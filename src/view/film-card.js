@@ -26,6 +26,12 @@ const createFilmCardTemplate = (film) => {
     ? 'film-card__controls-item--active'
     : '';
 
+  const formatDuration = () => {
+    let hours = Math.trunc(time/60);
+    let minutes = time % 60;
+    return hours + `h ` + minutes + ` m`;
+  };
+
   /**
    * Функция сокращения описания фильма для отображения в карточке фильма
    * @return {string} slicedDescription - сокращенное описание фильма
@@ -45,7 +51,7 @@ const createFilmCardTemplate = (film) => {
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${year}</span>
-            <span class="film-card__duration">${time}</span>
+            <span class="film-card__duration">${formatDuration()}</span>
             <span class="film-card__genre">${genre[0]}</span>
           </p>
           <img class="film-card__poster js-open-popup" src="./images/posters/${info.poster}" alt="">

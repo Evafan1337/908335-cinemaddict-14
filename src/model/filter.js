@@ -17,7 +17,7 @@ export default class Filter extends Observer {
       sort,
       filter
     };
-    this._notify({sortType: this._sortType, sort: this._filterFilmsCount});
+    this._notifyChanges();
   }
 
   getSortType() {
@@ -30,11 +30,17 @@ export default class Filter extends Observer {
     this._filterFilmsCount = filterFilmsCount;
     //
     this._notify({sortType: this._sortType, sort: this._filterFilmsCount});
+    this._notifyChanges();
   }
 
   getSort() {
     console.log('getSort');
     return this._filterFilmsCount;
+  }
+
+  _notifyChanges() {
+    this._notify({sortType: this._sortType, sort: this._sort});
+    this._notify({sortType: this._sortType, sort: this._sort});
   }
 
 }

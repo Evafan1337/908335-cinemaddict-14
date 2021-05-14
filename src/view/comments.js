@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 import SmartView from './smart';
 import {createElement} from '../utils/dom';
 import {render} from '../utils/render';
@@ -19,12 +21,14 @@ const createCommentTemplate = (comment) => {
               <p class="film-details__comment-text">${text}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
-                <span class="film-details__comment-day">${dayjs(date).format('YYYY/MM/DD HH:mm')}</span>
+                <span class="film-details__comment-day">${dayjs().to(dayjs(date))}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>`;
 };
+//  Подумать над вынесением dayjs обработки в отдельный оператор
+
 
 /**
  * Функция создания элемента картинки

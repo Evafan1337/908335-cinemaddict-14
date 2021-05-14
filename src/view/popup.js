@@ -20,6 +20,13 @@ const createTemplatePopupFilm = (film) => {
   const {info, time, date, rating, isFavorite, isViewed, isWatchlist, description, regisseur, screenwriters, actors, country, genre} = film;
   const fullDate = dayjs(date).format('DD MMMM YYYY');
 
+  //  Мб утилиты?
+  const formatDuration = () => {
+    let hours = Math.trunc(time/60);
+    let minutes = time % 60;
+    return hours + `h ` + minutes + ` m`;
+  };
+
   const watchlistCheck = isWatchlist
     ? 'checked'
     : '';
@@ -72,7 +79,7 @@ const createTemplatePopupFilm = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${time}</td>
+              <td class="film-details__cell">${formatDuration()}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>

@@ -152,6 +152,7 @@ export default class FilmPopupPresenter {
    * @param {Object} evt - объект событий
    */
   _addFilmCommentEmotion(evt) {
+    this._posScroll = this.getPositionScroll();
     const labelEmotion = this._commentsListComponent.getElement().querySelector('.film-details__add-emoji-label');
     const emotion = evt.target.value;
     this._commentsListComponent.renderEmotion(labelEmotion, emotion);
