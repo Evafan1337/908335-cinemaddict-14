@@ -120,11 +120,8 @@ export default class FilmsList {
     if (filter !== `all`) {
       updatedFilms = films.filter((film) => film[filter]);
     }
-    if (this._sortType.sort !== `default`) {
-      updatedFilms.sort(compareValues(this._sortType.sort, `desc`));
-      if (sort !== `default`) {
-        updatedFilms.sort(compareValues(sort, `desc`));
-      }
+    if (sort !== `default`) {
+      updatedFilms.sort(compareValues(sort, `desc`));
     }
   }
 

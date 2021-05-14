@@ -31,7 +31,7 @@ export default class RatedFilmsPresenter extends FilmsPresenter {
     this._filterModel = filterModel;
     this._films = [];
     this._filmsPerPage = filmsPerPage;
-    this._renderedFilmsCount = null;
+    this._renderedFilmsCount = filmsPerPage;
     this._sourcedFilms = [];
     this._filmPresenter = {};
     this._filmList = new FilmListRated();
@@ -54,14 +54,10 @@ export default class RatedFilmsPresenter extends FilmsPresenter {
     this._renderFilmsContainer();
   }
 
-  observeFilms(films, updatedFilm) {
+  observeFilms(films) {
     this._clearList();
-    this._sourcedFilms = films.slice().sort(compareValues(`rating`, `desc`));
+    this._sourcedFilms = films.slice();
     let updatedFilms = this._sourcedFilms;
-
-    if (updatedFilm === null) {
-      return this._sourcedFilms;
-    }
 
     this._films = updatedFilms.slice().sort(compareValues(`rating`, `desc`));
     this._renderFilms();
