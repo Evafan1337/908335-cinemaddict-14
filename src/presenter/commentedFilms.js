@@ -41,8 +41,8 @@ export default class CommentedFilmsPresenter extends FilmsPresenter {
    * Публичный метод инициализации
    */
   init() {
-    this._sourcedFilms = this._filmsModel.getFilms().sort(compareValues(`comments`, `desc`));
-    this._films = this._filmsModel.getFilms().sort(compareValues(`comments`, `desc`));
+    this._sourcedFilms = this._filmsModel.getFilms();
+    this._films = this._sourcedFilms.slice().sort(compareValues(`comments`, `desc`));
     this._renderedFilmsCount = this._filmsPerPage;
     this._renderFilmsContainer();
   }

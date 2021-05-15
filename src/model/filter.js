@@ -6,23 +6,26 @@ export default class Filter extends Observer {
     console.log('Filter constructor');
     super();
     this._filterFilmsCount = null;
-    this._sortType = {};
+    this._sortBy = null;
+    this._filterBy = null;
   }
 
   //  Переработать аргументацию
-  setSortType(sort, filter, stats) {
+  setSortType(sortBy, filterBy, stats) {
     console.log('setSortType');
-    console.log(sort);
-    console.log(filter);
-    this._sortType = {
-      sort,
-      filter
-    };
+    console.log(sortBy);
+    console.log(filterBy);
+    console.log(stats);
+
+    this._sortBy = sortBy;
+    this._filterBy = filterBy;
+    this._stats = stats;
+
     this._notifyChanges();
   }
 
   getSortType() {
-    return this._sortType;
+    return this._sortBy;
   }
 
   setSort(filterFilmsCount) {
@@ -30,7 +33,7 @@ export default class Filter extends Observer {
     console.log(filterFilmsCount);
     this._filterFilmsCount = filterFilmsCount;
     //
-    this._notify({sortType: this._sortType, sort: this._filterFilmsCount});
+    this._notify({sortBy: this._sortBy, sort: this._filterFilmsCount});
     this._notifyChanges();
   }
 
@@ -40,8 +43,8 @@ export default class Filter extends Observer {
   }
 
   _notifyChanges() {
-    this._notify({sortType: this._sortType, sort: this._sort});
-    this._notify({sortType: this._sortType, sort: this._sort});
+    this._notify({sortBy: this._sortBy, sort: this._sort});
+    this._notify({sortBy: this._sortBy, sort: this._sort});
   }
 
 }

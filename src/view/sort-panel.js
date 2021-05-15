@@ -5,17 +5,17 @@ import SmartView from "./smart";
  * Функция создания компонента сортировки
  * @return {string}
  */
-const createSortPanelTemplate = () => {
+const createSortPanelTemplate = (sortBy) => {
 
-  const defaultClassName = (sortType === 'default')
+  const defaultClassName = (sortBy === 'default')
   ? 'sort__button--active'
   : '';
 
-const dateClassName = (sortType === 'date')
+const dateClassName = (sortBy === 'date')
   ? 'sort__button--active'
   : '';
 
-const ratingClassName = (sortType === 'rating')
+const ratingClassName = (sortBy === 'rating')
   ? 'sort__button--active'
   : '';
 

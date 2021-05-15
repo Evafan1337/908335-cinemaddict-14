@@ -47,14 +47,14 @@ export default class FilmsList {
     this._filterBy = this._filterModel.getSortType().filterBy;
     this._sortBy = this._filterModel.getSortType().sortBy;
 
-    this._filterModel.addObserver(() => this.observeFilms(this._sourcedFilms, null));
+    this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
     this._filterPresenter = filterPresenter;
     this._filmPresenter = {};
     this._sourcedFilms = [];
 
     this._films = [];
-    this._stats = null;
+    this._statsComponent = null;
     this._filterFilmsCount = {};
     this._menuComponent = null;
     this._sortPanelComponent = new SortPanelView();
@@ -66,8 +66,8 @@ export default class FilmsList {
     this._topRatedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
     this._topCommentedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
-    this._handleSortItemClick = this._handleSortItemClick.bind(this);
-    this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
+    // this._handleSortItemClick = this._handleSortItemClick.bind(this);
+    // this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleFilmAction = this._handleFilmAction.bind(this);
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
@@ -82,12 +82,14 @@ export default class FilmsList {
    * Публичный метод инициализации
    */
   init() {
+    console.log('films.js init');
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
-    this._renderFilmsContainer();
     //  naming
-    this._stats = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getSort().history));
+    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getSort().history));
+    this._renderFilmsContainer();
+    console.log(this._statsComponent);
   }
 
   /**
@@ -117,11 +119,10 @@ export default class FilmsList {
   }
 
   observeFilms(films) {
-    this._sortType = this._filterModel.getSortType();
     this._sourcedFilms = films.slice();
     this._clearList();
     let updatedFilms = this._sourcedFilms;
-    if (this._sortType.filter !== `all` || this._sortType.sort !== `default`) {
+    if (this._filterModel.getSortType().filter !== `all` || this._filterModel.getSortType().sort !== `default`) {
       const {filter, sort} = this._filterModel.getSortType();
       if (filter !== `all`) {
         updatedFilms = films.filter((film) => film[filter]);
@@ -134,7 +135,7 @@ export default class FilmsList {
       }
     }
 
-    if (this._sortType.stats === true) {
+    if (this._filterModel.getSortType().stats === true) {
       this._hide();
     } else {
       this._show();
@@ -151,18 +152,18 @@ export default class FilmsList {
   }
 
   _handleStatsDisplay() {
-    this._stats.show();
+    this._statsComponent.show();
     this._filmList.hide();
     this._filterPresenter.hideSort();
   }
 
   _hide() {
-    this._stats.show();
+    this._statsComponent.show();
     this._filmList.hide();
   }
 
   _show() {
-    this._stats.hide();
+    this._statsComponent.hide();
     this._filmList.show();
   }
 
@@ -177,8 +178,9 @@ export default class FilmsList {
       this._renderProfile();
     }
     this._renderFilms();
-    render(this._filmsContainer, this._stats.getElement(), RenderPosition.BEFOREEND);
-    this._stats.hide();
+    render(this._filmsContainer, this._statsComponent, RenderPosition.BEFOREEND);
+    console.log(this._statsComponent);
+    this._statsComponent.hide();
   }
 
   /**
@@ -336,12 +338,5 @@ export default class FilmsList {
   _handlePopupCommentActions(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
-
-    //  check later
-    this._filterModel.setSort({
-      watchlist: this._filmsModel.getFilms().slice().filter((item) => item.isWatchlist).length,
-      history: this._filmsModel.getFilms().slice().filter((item) => item.isViewed).length,
-      favorites: this._filmsModel.getFilms().slice().filter((item) => item.isFavorite).length,
-    });
   }
 }

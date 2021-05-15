@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-
+import {formatDuration} from "../utils/time";
 
 /**
  * Функция создания компонента (карточка фильма)
@@ -25,12 +25,6 @@ const createFilmCardTemplate = (film) => {
   const favoriteClassName = isFavorite
     ? 'film-card__controls-item--active'
     : '';
-
-  const formatDuration = () => {
-    let hours = Math.trunc(time/60);
-    let minutes = time % 60;
-    return hours + `h ` + minutes + ` m`;
-  };
 
   /**
    * Функция сокращения описания фильма для отображения в карточке фильма

@@ -9,11 +9,18 @@ import {
   render}
   from '../utils/render';
 
+import {
+  RenderPosition}
+  from '../utils/const';
+
 export default class FilterPresenter {
   constructor(filterContainer, filterModel, filmsModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
+
+    console.log(this._filmsModel);
+
     this._filmsModel.addObserver(this.observeFilter.bind(this));
     this._menuComponent = null;
     this._sortPanelComponent = null;
@@ -29,6 +36,19 @@ export default class FilterPresenter {
 
   observeFilter() {
     this.init();
+
+    //  check later
+
+    const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(films));
+    console.log(filmsInfoSortLength);
+ 
+    this._filterModel.setSort(filmsInfoSortLength);
+    // this._filterModel.setSort({
+    //   watchlist: films.slice().filter((item) => item.isWatchlist).length,
+    //   history: films.slice().filter((item) => item.isViewed).length,
+    //   favorites: films.slice().filter((item) => item.isFavorite).length,
+    // });
+
   }
 
   _renderMenu() {
@@ -37,7 +57,7 @@ export default class FilterPresenter {
     if (prevMenu) {
       replace(this._menuComponent, prevMenu);
     } else {
-      render(this._filterContainer, this._menuComponent.getElement(), RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._menuComponent, RenderPosition.BEFOREEND);
     }
     this._menuComponent.setClickHandler(this._handleFilterItemClick);
     this._menuComponent.setClickStatsHandler(this._handleStatsItemClick);

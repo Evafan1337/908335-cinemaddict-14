@@ -75,7 +75,7 @@ export default class PagePresenter {
       this._initEmptyPresenter();
     }
 
-    const filterPresenter = new FilterPresenter(this._siteMailElement, filterModel);
+    const filterPresenter = new FilterPresenter(this._siteMailElement, filterModel, this._filmsModel);
     const filmsPresenter = new FilmsPresenter(this._siteMailElement, this._filmsModel, filterModel, filterPresenter, FilmsPerSection.MAIN);
     filmsPresenter.init(this._films);
   }
@@ -88,9 +88,9 @@ export default class PagePresenter {
       return;
     }
 
-    const filmsExtraContainer = siteMainElement.querySelector(`.films`);
-    const ratedFilmsPresenter = new RatedFilmsPresenter(filmsExtraContainer, this._filmsModel, filterPresenter, FilmsPerSection.RATED);
-    const commentedFilmsPresenter = new CommentedFilmsPresenter(filmsExtraContainer, this._filmsModel, filterPresenter, FilmsPerSection.COMMENTED);
+    this._filmsExtraContainer = this._siteMainElement.querySelector('.films');
+    const ratedFilmsPresenter = new RatedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, filterPresenter, FilmsPerSection.RATED);
+    const commentedFilmsPresenter = new CommentedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, filterPresenter, FilmsPerSection.COMMENTED);
 
     ratedFilmsPresenter.init(this._films);
     commentedFilmsPresenter.init(this._films);
@@ -111,7 +111,7 @@ export default class PagePresenter {
     render(this._siteFooterStatistics, new FooterStatisticsView(this._filmsCount));
   }
 
-  this._renderStats() {
+  _renderStats() {
     render(siteMainElement, new StatsView(films, `ALL_TIME`, `Sci-Fighter`).getElement(), RenderPosition.BEFOREEND);
   }
 

@@ -4,6 +4,7 @@ export default class Observer {
   }
 
   addObserver(observer) {
+    console.log('addObserver');
     this._observers.push(observer);
   }
 
