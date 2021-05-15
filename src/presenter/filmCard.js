@@ -16,6 +16,8 @@ export default class FilmCardPresenter {
     this._cardComponent = null;
     this._changeData = changeData;
     this._showPopup = showPopup;
+
+    // console.log(this._showPopup);
   }
 
   /**

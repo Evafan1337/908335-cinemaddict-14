@@ -4,7 +4,7 @@ export default class Observer {
   }
 
   addObserver(observer) {
-    console.log('addObserver');
+    console.log('addObserver:', observer);
     this._observers.push(observer);
   }
 
@@ -13,6 +13,18 @@ export default class Observer {
   }
 
   _notify(...values) {
-    this._observers.forEach((observer) => observer(...values));
+    console.log(this._observers);
+    console.log('_notify:', ...values);
+    // console.log(values);
+    console.log('this._observers:',this._observers);
+    // this._observers.forEach((observer) => observer(...values));
+    this._observers.forEach((observer) => {
+      // console.log('forEach');
+      // console.log(observer);
+      console.log('_notify next step');
+      console.log(...values);
+      console.log(observer);
+      observer(...values);
+    })
   }
 }

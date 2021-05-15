@@ -119,6 +119,7 @@ export default class Popup extends SmartView {
     super();
     this._film = film;
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
     this._data = Object.assign({}, film);
     this._setInnerHandlers();
   }

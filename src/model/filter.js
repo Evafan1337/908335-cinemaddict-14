@@ -3,20 +3,19 @@ import Observer from "./observer";
 // Смотреть на именование
 export default class Filter extends Observer {
   constructor() {
-    console.log('Filter constructor');
     super();
     this._filterFilmsCount = null;
     this._sortBy = null;
     this._filterBy = null;
   }
 
-  //  Переработать аргументацию
+  /**
+   * Установить значение сортировки и фильтрации
+   * @param {String} - sortBy - значение сортировки
+   * @param {String} - filterBy - значение фильтрации
+   * @param {Object} - stats - объект статистики
+   */
   setSortType(sortBy, filterBy, stats) {
-    console.log('setSortType');
-    console.log(sortBy);
-    console.log(filterBy);
-    console.log(stats);
-
     this._sortBy = sortBy;
     this._filterBy = filterBy;
     this._stats = stats;
@@ -24,27 +23,36 @@ export default class Filter extends Observer {
     this._notifyChanges();
   }
 
+  /**
+   * Получить "значение" сортировки
+   * @return {string} - значение сортировки
+   */
   getSortType() {
     return this._sortBy;
   }
 
+  getFilterType() {
+    return this._filterBy;
+  }
+
+  /**
+   * Установить значение отсортированных фильмов
+   * @param {Object} - filterFilmsCount - объект значений сортировки
+   */
   setSort(filterFilmsCount) {
-    console.log('setSort');
-    console.log(filterFilmsCount);
     this._filterFilmsCount = filterFilmsCount;
-    //
-    this._notify({sortBy: this._sortBy, sort: this._filterFilmsCount});
     this._notifyChanges();
   }
 
+  /**
+   * Получить "значение" сортировки ( количество фильмов )
+   */
   getSort() {
-    console.log('getSort');
     return this._filterFilmsCount;
   }
 
   _notifyChanges() {
-    this._notify({sortBy: this._sortBy, sort: this._sort});
-    this._notify({sortBy: this._sortBy, sort: this._sort});
+    this._notify({sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
   }
 
 }

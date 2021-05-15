@@ -13,14 +13,16 @@ import {
   RenderPosition}
   from '../utils/const';
 
+import {
+  getFilmsInfoSortLength,
+  filmsInfoSort}
+  from '../utils/sort';
+
 export default class FilterPresenter {
   constructor(filterContainer, filterModel, filmsModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
-
-    console.log(this._filmsModel);
-
     this._filmsModel.addObserver(this.observeFilter.bind(this));
     this._menuComponent = null;
     this._sortPanelComponent = null;
@@ -39,16 +41,10 @@ export default class FilterPresenter {
 
     //  check later
 
-    const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(films));
+    const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     console.log(filmsInfoSortLength);
  
     this._filterModel.setSort(filmsInfoSortLength);
-    // this._filterModel.setSort({
-    //   watchlist: films.slice().filter((item) => item.isWatchlist).length,
-    //   history: films.slice().filter((item) => item.isViewed).length,
-    //   favorites: films.slice().filter((item) => item.isFavorite).length,
-    // });
-
   }
 
   _renderMenu() {

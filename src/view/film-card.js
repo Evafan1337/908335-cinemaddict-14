@@ -73,6 +73,7 @@ export default class FilmCard  extends SmartView {
     super();
     this._film = film;
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   /**

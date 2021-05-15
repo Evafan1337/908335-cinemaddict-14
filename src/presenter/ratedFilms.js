@@ -1,6 +1,7 @@
 import FilmsPresenter from './films';
-import FilmCardPresenter from "./filmCard";
-import FilmPopupPresenter from "./filmPopup";
+import FilmCardPresenter from './filmCard';
+import FilmPopupPresenter from './filmPopup';
+import FilmListRatedView from '../view/films-list-rated';
 import {compareValues} from '../utils/sort';
 import {
   remove}
@@ -15,9 +16,8 @@ const siteBody = document.querySelector('body');
 
 /**
  * Класс описывает презентер списка фильмов отсортированных по рейтингу
- * Наследник FilmsPresenter
  */
-export default class RatedFilmsPresenter extends FilmsPresenter {
+export default class RatedFilmsPresenter {
 
   /**
    * Конструктор попапа
@@ -34,7 +34,7 @@ export default class RatedFilmsPresenter extends FilmsPresenter {
     this._renderedFilmsCount = filmsPerPage;
     this._sourcedFilms = [];
     this._filmPresenter = {};
-    this._filmList = new FilmListRated();
+    this._filmList = new FilmListRatedView();
     this._mainFilmList = null;
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
@@ -64,6 +64,9 @@ export default class RatedFilmsPresenter extends FilmsPresenter {
   }
 
   _renderFilmsContainer() {
+
+    console.log(this._filterPresenter);
+
     this._filterPresenter.init();
     render(this._filmsContainer, this._filmList.getElement(), RenderPosition.BEFOREEND);
     this._mainFilmList = this._filmList.getElement().querySelector(`.js-film-list-rated`);

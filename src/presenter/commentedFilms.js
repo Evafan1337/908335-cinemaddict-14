@@ -1,6 +1,9 @@
 import FilmsPresenter from './films';
+import FilmListCommentedView from '../view/films-list-commented';
 import {compareValues} from '../utils/sort';
 import {render, RenderPosition} from '../utils/render';
+import FilmCardPresenter from './filmCard';
+import FilmPopupPresenter from './filmPopup';
 
 
 const FILM_PER_PAGE = 2;
@@ -10,7 +13,7 @@ const siteBody = document.querySelector('body');
  * Класс описывает презентер списка фильмов отсортированных по кол-ву комментариев
  * Наследник FilmsPresenter
  */
-export default class CommentedFilmsPresenter extends FilmsPresenter {
+export default class CommentedFilmsPresenter {
 
   /**
    * Конструктор попапа
@@ -27,14 +30,14 @@ export default class CommentedFilmsPresenter extends FilmsPresenter {
     this._renderedFilmsCount = null;
     this._sourcedFilms = [];
     this._filmPresenter = {};
-    this._filmList = new FilmListCommented();
+    this._filmList = new FilmListCommentedView();
     this._mainFilmList = null;
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
     this._handlePopupChange = this._handlePopupChange.bind(this);
     this._handleAddComment = this._handleAddComment.bind(this);
     this._handlePopupRemoveComment = this._handlePopupRemoveComment.bind(this);
-    this._popup = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment);
   }
 
   /**
@@ -93,22 +96,22 @@ export default class CommentedFilmsPresenter extends FilmsPresenter {
   }
 
   _handlePopupDisplay(film) {
-    this._popup.init(film);
+    this._popupPresenter.init(film);
   }
 
   _handlePopupRemoveComment(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
-    this._popup.init(updatedFilm);
+    this._popupPresenter.init(updatedFilm);
   }
 
   _handlePopupChange(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
-    this._popupPresenter.init(updatedFilm);
+    this._popupPresenterPresenter.init(updatedFilm);
   }
 
   _handleAddComment(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
-    this._popup.init(updatedFilm);
+    this._popupPresenter.init(updatedFilm);
   }
 
   _clearList() {
