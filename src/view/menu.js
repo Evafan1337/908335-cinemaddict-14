@@ -88,4 +88,15 @@ export default class Menu extends AbstractView {
       btn.addEventListener('click', this._clickHandler);
     }
   }
+
+
+  _clickStatsHandler(evt) {
+    evt.preventDefault();
+    this._callback.statsClick(evt);
+  }
+
+  setClickStatsHandler(callback) {
+    this._callback.statsClick = callback;
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._clickStatsHandler);
+  }
 }

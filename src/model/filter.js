@@ -9,7 +9,8 @@ export default class Filter extends Observer {
     this._sortType = {};
   }
 
-  setSortType(sort, filter) {
+  //  Переработать аргументацию
+  setSortType(sort, filter, stats) {
     console.log('setSortType');
     console.log(sort);
     console.log(filter);

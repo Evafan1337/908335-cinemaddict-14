@@ -1,4 +1,5 @@
 import AbstractView from './abstract';
+import SmartView from "./smart";
 
 /**
  * Функция создания компонента сортировки
@@ -28,7 +29,7 @@ const ratingClassName = (sortType === 'rating')
 /**
  * Класс описывает панель сортировки
  */
-export default class SortPanel extends AbstractView {
+export default class SortPanel extends SmartView {
 
   /**
    * Конструктор

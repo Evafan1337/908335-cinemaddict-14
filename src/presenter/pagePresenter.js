@@ -3,8 +3,9 @@ import CommentedFilmsPresenter from './commentedFilms';
 import FilmsPresenter from './films';
 import EmptyPresenter from './empty';
 import FilterPresenter from './filter';
-import { render } from '../utils/render';
+import { render, RenderPosition } from '../utils/render';
 import FooterStatisticsView from '../view/count-films';
+import StatsView from '../view/count-films';
 import FilmsModel from '../model/films';
 import FilterModel from '../model/filter';
 
@@ -40,6 +41,7 @@ export default class PagePresenter {
     //  check later
     this._filterBy = 'all';
     this._sortBy = 'default';
+    this._stats = false;
   }
 
   /**
@@ -54,6 +56,7 @@ export default class PagePresenter {
     this._initFilmsPresenter();
     this._initSubFilmsPresenters();
     this._renderFooterComponent();
+    this._renderStats();
   }
 
   /**
@@ -62,13 +65,13 @@ export default class PagePresenter {
   _initFilmsPresenter () {
 
     const filterModel = new FilterModel();
-    filterModel.setSortType(this._sortBy, this._filterBy);
+    filterModel.setSortType(this._sortBy, this._filterBy, this._stats);
 
     this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
 
     filterModel.setSort(this._filterFilmsCount);
 
-    if(this._filmsCount == 0) {
+    if(this._filmsModel.getFilms().length == 0) {
       this._initEmptyPresenter();
     }
 
@@ -81,7 +84,7 @@ export default class PagePresenter {
    * Метод инициализации презентеров "вторичных" списков фильмов
    */
   _initSubFilmsPresenters () {
-    if(this._filmsCount == 0) {
+    if(this._filmsModel.getFilms().length == 0) {
       return;
     }
 
@@ -106,6 +109,10 @@ export default class PagePresenter {
    */
   _renderFooterComponent () {
     render(this._siteFooterStatistics, new FooterStatisticsView(this._filmsCount));
+  }
+
+  this._renderStats() {
+    render(siteMainElement, new StatsView(films, `ALL_TIME`, `Sci-Fighter`).getElement(), RenderPosition.BEFOREEND);
   }
 
 }

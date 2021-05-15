@@ -3,6 +3,7 @@ import LoadmoreView from '../view/loadmore';
 import SiteMenuView from '../view/menu';
 import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
+import StatsView from '../view/stats';
 import {
   replace,
   remove}
@@ -17,6 +18,9 @@ import {
   filmsInfoSort,
   getFilmsInfoSortLength}
   from '../utils/sort';
+import {
+  profileRating
+} from '../utils/const';
 
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
@@ -50,6 +54,7 @@ export default class FilmsList {
     this._sourcedFilms = [];
 
     this._films = [];
+    this._stats = null;
     this._filterFilmsCount = {};
     this._menuComponent = null;
     this._sortPanelComponent = new SortPanelView();
@@ -81,6 +86,8 @@ export default class FilmsList {
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
     this._renderFilmsContainer();
+    //  naming
+    this._stats = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getSort().history));
   }
 
   /**
@@ -114,21 +121,49 @@ export default class FilmsList {
     this._sourcedFilms = films.slice();
     this._clearList();
     let updatedFilms = this._sourcedFilms;
+    if (this._sortType.filter !== `all` || this._sortType.sort !== `default`) {
+      const {filter, sort} = this._filterModel.getSortType();
+      if (filter !== `all`) {
+        updatedFilms = films.filter((film) => film[filter]);
+      }
+      if (sort !== `default`) {
+        updatedFilms.sort(compareValues(sort, `desc`));
+        if (sort !== `default`) {
+          updatedFilms.sort(compareValues(sort, `desc`));
+        }
+      }
+    }
 
-    updatedFilms = films.filter((film) => film[this._sortType.filter]);
-    const {filter, sort} = this._filterModel.getSortType();
-    if (filter !== `all`) {
-      updatedFilms = films.filter((film) => film[filter]);
+    if (this._sortType.stats === true) {
+      this._hide();
+    } else {
+      this._show();
     }
-    if (sort !== `default`) {
-      updatedFilms.sort(compareValues(sort, `desc`));
-    }
+
+    this._films = updatedFilms;
+    this._renderFilms();
   }
 
   observeProfileHistory({sort}) {
     if (sort.history > 0) {
       this._renderProfile();
     }
+  }
+
+  _handleStatsDisplay() {
+    this._stats.show();
+    this._filmList.hide();
+    this._filterPresenter.hideSort();
+  }
+
+  _hide() {
+    this._stats.show();
+    this._filmList.hide();
+  }
+
+  _show() {
+    this._stats.hide();
+    this._filmList.show();
   }
 
   /**
@@ -142,6 +177,8 @@ export default class FilmsList {
       this._renderProfile();
     }
     this._renderFilms();
+    render(this._filmsContainer, this._stats.getElement(), RenderPosition.BEFOREEND);
+    this._stats.hide();
   }
 
   /**
