@@ -6,10 +6,16 @@ export const StatPeriodMap = {
   YEAR: `year`
 };
 
-const UserRank = {
+export const UserRank = {
   NOVICE: 'Novice',
   FAN: 'Fan',
   MOVIE_BUFF: 'Movie Buff',
+};
+
+export const FilmsPerSection = {
+  MAIN: 5,
+  COMMENTED: 2,
+  RATED: 2,
 };
 
 export const RenderPosition = {

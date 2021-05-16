@@ -1,6 +1,5 @@
 import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
-import SiteMenuView from '../view/menu';
 import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
 import StatsView from '../view/stats';
@@ -8,7 +7,6 @@ import {
   replace,
   remove}
   from '../utils/dom';
-import {updateItem} from '../utils/data';
 import {
   render,
   RenderPosition}
@@ -25,7 +23,6 @@ import {
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
 
-const FILM_PER_PAGE = 5;
 const siteBody = document.querySelector('body');
 
 /**
@@ -34,8 +31,12 @@ const siteBody = document.querySelector('body');
 export default class FilmsList {
 
   /**
-   * Конструктор попапа
-   * @param {Object} container - ссылка на HTML элемент куда надо отрисовать попап
+   * @param {Object} filmsContainer - ссылка на HTML элемент куда надо отрисовывать элементы
+   * @param {Object} filmsModel - модель фильмов
+   * @param {Object} filterModel - модель фильтра
+   * @param {Object} filterPresenter - презентер фильтра
+   * @param {number} filmsPerPage - количество фильмов для отрисовки за "проход"
+   * @constructor
    */
   constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage) {
 
@@ -47,7 +48,7 @@ export default class FilmsList {
     this._filmsModel.addObserver(this.observeFilms.bind(this));
     this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
-    
+
     //  Параметры сортировки и фильтрации
     this._filterBy = this._filterModel.getFilterBy();
     this._sortBy = this._filterModel.getSortBy();
@@ -60,7 +61,7 @@ export default class FilmsList {
     this._filterFilmsCount = {};
     this._renderedFilmsCount = filmsPerPage;
     this._filmsPerPage = filmsPerPage;
-    
+
     //  Компоненты
     this._statsComponent = null;
     this._menuComponent = null;
@@ -98,7 +99,7 @@ export default class FilmsList {
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
-    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getFilterFilmsCount().isViewed));
+    this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterFilmsCount().isViewed));
     this._renderFilmsContainer();
   }
 
@@ -108,7 +109,6 @@ export default class FilmsList {
    * Которые будут перерисованы
    */
   observeFilms(films) {
-    console.log('observeFilms => films:',films);
     this._sourcedFilms = films.slice();
     this._clearList();
     let updatedFilms = this._sourcedFilms;
@@ -134,8 +134,13 @@ export default class FilmsList {
     this._renderFilms();
   }
 
+  /**
+   * Обработчик который будет исполнятся при _notify
+   * @param {Object} filterFilmsCount - количество фильмов
+   * Проверяет на наличие просмотренных фильмов
+   * Если есть то рисует плашку профиля
+   */
   observeProfileHistory({filterFilmsCount}) {
-    console.log('observeProfileHistory');
     if (filterFilmsCount.isViewed > 0) {
       this._renderProfile();
     }
@@ -150,10 +155,9 @@ export default class FilmsList {
   }
 
   /**
-   * Приватный метод показа интерфейса и скрытие статистики (противоположность this._hide) 
+   * Приватный метод показа интерфейса и скрытие статистики (противоположность this._hide)
    */
   _show() {
-    console.log('_show');
     this._statsComponent.hide();
     this._filmListComponent.show();
   }
@@ -161,7 +165,7 @@ export default class FilmsList {
   /**
    * Приватный метод рендера контейнера фильмов
    * Вызывает метод инициализации презентера фильтров
-   * Вызывает методы рендера фильмов ()
+   * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
     this._filterPresenter.init();
@@ -182,10 +186,8 @@ export default class FilmsList {
     const prevProfile = this._profileComponent;
     this._profileComponent = new ProfileView(this._filterModel.getFilterFilmsCount().isViewed);
     if (prevProfile) {
-      console.log('prevProfile');
       replace(this._profileComponent, prevProfile);
     } else {
-      console.log('this._profileComponent render');
       render(siteBody.querySelector('.header'), this._profileComponent);
     }
   }
@@ -204,7 +206,6 @@ export default class FilmsList {
    * @param {number} to - индекс до какого элемента необходимо произвести отрисовку
    */
   _renderFilmList(from, to) {
-    console.log('_renderFilmList => this._films =',this._films);
     this._films
       .slice(from, to)
       .forEach((film) => this._renderCard(film, this._mainFilmList));

@@ -1,8 +1,7 @@
 import MenuView from '../view/menu';
 import SortPanelView from '../view/sort-panel';
 import {
-  replace,
-  remove}
+  replace}
   from '../utils/dom';
 
 import {
@@ -10,34 +9,55 @@ import {
   from '../utils/render';
 
 import {
-  RenderPosition}
-  from '../utils/const';
-
-import {
   getFilmsInfoSortLength,
   filmsInfoSort}
   from '../utils/sort';
 
+/**
+ * Класс описывает презентер списка фильмов
+ */
 export default class FilterPresenter {
+
+  /**
+   * @param {Object} filterContainer - ссылка на HTML элемент куда надо отрисовывать элементы
+   * @param {Object} filmsModel - модель фильмов
+   * @param {Object} filterModel - модель фильтра
+   * @constructor
+   */
   constructor(filterContainer, filterModel, filmsModel) {
+    //  Ссылки на DOM узлы
     this._filterContainer = filterContainer;
+
+    //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._filmsModel.addObserver(this.observeFilter.bind(this));
+
+    //  Компоненты
     this._menuComponent = null;
     this._sortPanelComponent = null;
+
+    //  Слушатели
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleStatsItemClick = this._handleStatsItemClick.bind(this);
   }
 
+  /**
+   * Публичный метод инициализации
+   * Вызывает методы рендера меню (фильтрации) и сортировки
+   */
   init() {
     this._renderMenu();
     this._renderSort();
   }
 
+  /**
+   * Обработчик который будет исполнятся при _notify
+   * Пересчитывает количество фильмов по параметрам фильтра
+   * И вызывает метод инициализации презентера
+   */
   observeFilter() {
-    //  По сути пересчитываем значение кол-ва фильмов в фильтрах
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();
@@ -99,18 +119,27 @@ export default class FilterPresenter {
     evt.target.classList.add('sort__button--active');
   }
 
+  /**
+   * Обработчик клика по элементам компонента статистики
+   * @param {Object} evt - объект события
+   */
   _handleStatsItemClick(evt) {
-    console.log('_handleStatsItemClick');
     this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true);
     this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
     evt.target.classList.add('main-navigation__item--active');
     this._hideSort();
   }
 
+  /**
+   * Приватный метод скрытия сортировки
+   */
   _hideSort() {
     this._sortPanelComponent.hide();
   }
 
+  /**
+   * Приватный метод показа сортировки
+   */
   _showSort() {
     this._sortPanelComponent.show();
   }

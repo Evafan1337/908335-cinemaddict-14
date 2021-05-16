@@ -8,8 +8,8 @@ import {render} from '../utils/render';
 export default class EmptyPresenter {
 
   /**
-   * Конструктор презентера
    * @param {emptyContainer} - ссылка на HTML элемент куда надо отрисовать пустой список фильмов
+   * @constructor
    */
   constructor(emptyContainer) {
     this._emptyContainer = emptyContainer;

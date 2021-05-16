@@ -13,7 +13,6 @@ const siteBody = document.querySelector('body');
 export default class CommentedFilmsPresenter {
 
   /**
-   * Конструктор попапа
    * @param {Object} filmsContainer - ссылка на HTML элемент куда надо отрисовывать элементы
    * @param {Object} filmsModel - модель фильмов
    * @param {Object} filterModel - модель фильтра

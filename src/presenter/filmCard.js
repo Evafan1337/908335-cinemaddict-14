@@ -8,16 +8,22 @@ import FilmCardView from '../view/film-card';
 export default class FilmCardPresenter {
 
   /**
-   * Конструктор презентера
    * @param {Object} filmContainer - ссылка на HTML элемент куда надо отрисовать карточку фильма
    * @param {Function} changeData - функция изменения данных
    * @param {Function} showPopup - функция открытия попапа
    * @constructor
    */
   constructor(filmContainer, changeData, showPopup) {
+    //  Ссылки на DOM узлы
     this._filmContainer = filmContainer;
+
+    //  Данные
     this._film = null;
+
+    //  Компоненты
     this._cardComponent = null;
+
+    //  Функции
     this._changeData = changeData;
     this._showPopup = showPopup;
   }
