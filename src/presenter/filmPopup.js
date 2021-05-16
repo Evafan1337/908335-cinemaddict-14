@@ -88,6 +88,7 @@ export default class FilmPopupPresenter {
    * Обновление моков
    */
   submitFormComments() {
+    console.log('submitFormComments');
     const posScroll = this.getPositionScroll();
     const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
     const emotions = document.querySelectorAll('.film-details__emoji-item');

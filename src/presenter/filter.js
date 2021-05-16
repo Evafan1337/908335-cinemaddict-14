@@ -32,7 +32,6 @@ export default class FilterPresenter {
   }
 
   init() {
-    console.log('init FilterPresenter');
     this._renderMenu();
     this._renderSort();
   }
@@ -48,16 +47,8 @@ export default class FilterPresenter {
    * Приватный метод рендера меню (фильтации)
    */
   _renderMenu() {
-    console.log('filter.js : _renderMenu');
     const prevMenu = this._menuComponent;
-
-    console.log(this._filterModel.getSort());
-
     this._menuComponent = new MenuView(this._filterModel.getSort(), this._filterModel.getFilterType());
-
-    // console.log(this._menuComponent);
-    let copy = Object.assign({}, this._menuComponent);
-    console.log(copy);
 
     if (prevMenu) {
       replace(this._menuComponent, prevMenu);
@@ -68,14 +59,25 @@ export default class FilterPresenter {
     this._menuComponent.setClickStatsHandler(this._handleStatsItemClick);
   }
 
+  /**
+   * Обработчик клика по кнопкам фильтрации
+   * @param {Object} evt - объект события
+   */
   _handleFilterItemClick(evt) {
+
+    if(evt.target.tagName !== 'A') {
+      return;
+    }
+
     this._showSort();
-    //  dataset
-    this._filterModel.setSortType(this._filterModel.getSortType(), evt.target.getAttribute('data-sort'), false);
+    this._filterModel.setSortType(this._filterModel.getSortType(), evt.target.dataset.filter, false);
     this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
     evt.target.classList.add('main-navigation__item--active');
   }
 
+  /**
+   * Приватный метод рендера компонента сортировки
+   */
   _renderSort() {
     const sortPanelComponent = this._sortPanelComponent;
     this._sortPanelComponent = new SortPanelView(this._filterModel.getSortType());
@@ -84,22 +86,24 @@ export default class FilterPresenter {
     } else {
       render(this._filterContainer, this._sortPanelComponent);
     }
-    // this._sortPanelComponent.setClickHandler((evt) => this._handleSortItemClick(evt));
     this._sortPanelComponent.setClickHandler(this._handleSortItemClick);
   }
 
+  /**
+   * Обработчик клика по кнопкам сортировки
+   * @param {Object} evt - объект события
+   */
   _handleSortItemClick(evt) {
-    //  dataset?
-    this._filterModel.setSortType(evt.target.getAttribute('data-sort'), this._filterModel.getFilterType(), false);
+    this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterType(), false);
     this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
     evt.target.classList.add('sort__button--active');
-    //this.update();
   }
 
   _handleStatsItemClick(evt) {
+    console.log('_handleStatsItemClick');
     this._filterModel.setSortType(this._filterModel.getSortType(), this._filterModel.getFilterType(), true);
-    this._menu.getActiveMenuLink().classList.remove(`main-navigation__item--active`);
-    evt.target.classList.add(`main-navigation__item--active`);
+    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
+    evt.target.classList.add('main-navigation__item--active');
     this._hideSort();
   }
 

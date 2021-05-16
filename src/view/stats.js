@@ -1,15 +1,15 @@
-import SmartView from "./smart.js";
-import dayjs from "dayjs";
+import SmartView from './smart.js';
+import dayjs from 'dayjs';
 import {StatPeriodMap} from '../utils/const';
-import Chart from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const getStatsDataForPeriod = {
   [StatPeriodMap.ALL_TIME]: (films) => films,
-  [StatPeriodMap.TODAY]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, `day`))),
-  [StatPeriodMap.WEEK]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, `week`))),
-  [StatPeriodMap.MONTH]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, `month`))),
-  [StatPeriodMap.YEAR]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, `year`)))
+  [StatPeriodMap.TODAY]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, 'day'))),
+  [StatPeriodMap.WEEK]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, 'week'))),
+  [StatPeriodMap.MONTH]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, 'month'))),
+  [StatPeriodMap.YEAR]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, 'year'))),
 };
 
 const getGenresStats = (films) => {
@@ -66,14 +66,14 @@ const renderChart = (statisticCtx, films) => {
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
-    type: `horizontalBar`,
+    type: 'horizontalBar',
     data: {
       labels,
       datasets: [{
         data: counts,
-        backgroundColor: `#ffe800`,
-        hoverBackgroundColor: `#ffe800`,
-        anchor: `start`
+        backgroundColor: '#ffe800',
+        hoverBackgroundColor: '#ffe800',
+        anchor: 'start'
       }]
     },
     options: {
@@ -82,16 +82,16 @@ const renderChart = (statisticCtx, films) => {
           font: {
             size: 20
           },
-          color: `#ffffff`,
-          anchor: `start`,
-          align: `start`,
+          color: '#ffffff',
+          anchor: 'start',
+          align: 'start',
           offset: 40,
         }
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: `#ffffff`,
+            fontColor: '#ffffff',
             padding: 100,
             fontSize: 20
           },
@@ -124,7 +124,6 @@ const renderChart = (statisticCtx, films) => {
 
 const createStatsTemplate = (localData) => {
   const {films, currentPeriod, userTitle} = localData;
-
   const filmsWatchedAmount = films.length;
   const {hours, minutes} = getTotalDuration(films);
   const topGenre = getTopGenre(films);
@@ -137,15 +136,15 @@ const createStatsTemplate = (localData) => {
     </p>
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${StatPeriodMap.ALL_TIME === currentPeriod ? `checked` : ``}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${StatPeriodMap.ALL_TIME === currentPeriod ? 'checked' : ''}>
       <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${StatPeriodMap.TODAY === currentPeriod ? `checked` : ``}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${StatPeriodMap.TODAY === currentPeriod ? 'checked' : ''}>
       <label for="statistic-today" class="statistic__filters-label">Today</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${StatPeriodMap.WEEK === currentPeriod ? `checked` : ``}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${StatPeriodMap.WEEK === currentPeriod ? 'checked' : ''}>
       <label for="statistic-week" class="statistic__filters-label">Week</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${StatPeriodMap.MONTH === currentPeriod ? `checked` : ``}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${StatPeriodMap.MONTH === currentPeriod ? 'checked' : ''}>
       <label for="statistic-month" class="statistic__filters-label">Month</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${StatPeriodMap.YEAR === currentPeriod ? `checked` : ``}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${StatPeriodMap.YEAR === currentPeriod ? 'checked' : ''}>
       <label for="statistic-year" class="statistic__filters-label">Year</label>
     </form>
     <ul class="statistic__text-list">
@@ -203,7 +202,7 @@ export default class Stats extends SmartView {
   }
 
   _setInnerHandler() {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._statsPeriodChangeHandler);
+    this.getElement().querySelector('.statistic__filters').addEventListener('change', this._statsPeriodChangeHandler);
   }
 
   restoreHandlers() {
@@ -216,7 +215,7 @@ export default class Stats extends SmartView {
       this._chart = null;
     }
 
-    const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
+    const statisticCtx = this.getElement().querySelector('.statistic__chart');
     this._chart = renderChart(statisticCtx, this._data.films);
   }
 }

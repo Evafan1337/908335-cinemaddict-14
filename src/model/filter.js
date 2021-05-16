@@ -1,29 +1,36 @@
 import Observer from "./observer";
 
-// Смотреть на именование
+
+/**
+ * Класс описывает модель фильмов
+ * @extends Observer
+ */
 export default class Filter extends Observer {
+
+  /**
+   * Конструктор
+   * Объявляются служебные поля
+   * Параметры фильтрации и сортировки
+   * @constructor
+   */
   constructor() {
     super();
     this._filterFilmsCount = null;
     this._sortBy = null;
     this._filterBy = null;
+    this._showStatsFlag = null;
   }
 
   /**
    * Установить значение сортировки и фильтрации
    * @param {String} - sortBy - значение сортировки
    * @param {String} - filterBy - значение фильтрации
-   * @param {Object} - stats - объект статистики
+   * @param {Object} - showStatsFlag - объект статистики
    */
-  setSortType(sortBy, filterBy, stats) {
-
-    console.log('setSortType');
-    console.log(sortBy);
-    console.log(filterBy);
-
+  setSortType(sortBy, filterBy, showStatsFlag) {
     this._sortBy = sortBy;
     this._filterBy = filterBy;
-    this._stats = stats;
+    this._showStatsFlag = showStatsFlag;
 
     this._notifyChanges();
   }
@@ -36,16 +43,25 @@ export default class Filter extends Observer {
     return this._sortBy;
   }
 
+  /**
+   * Получить "значение" фильтрации
+   * @return {string} - значение фильтрации
+   */
   getFilterType() {
     return this._filterBy;
   }
 
+  /**
+   * Получить "значение" флага статистики (True/False)
+   * @return {string} - значение флага
+   */
   getStats() {
-    this._stats;
+    return this._showStatsFlag;
   }
 
   /**
    * Установить значение отсортированных фильмов
+   * Уведомить подписчиков
    * @param {Object} - filterFilmsCount - объект значений сортировки
    */
   setSort(filterFilmsCount) {
@@ -57,12 +73,13 @@ export default class Filter extends Observer {
    * Получить "значение" сортировки ( количество фильмов )
    */
   getSort() {
-    // console.log(this);
     return this._filterFilmsCount;
   }
 
+  /**
+   * Обертка над методом уведомления подписчиков класса родителя (Observer)
+   */
   _notifyChanges() {
-    console.log('_notifyChanges');
     this._notify({filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
   }
 

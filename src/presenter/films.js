@@ -39,11 +39,6 @@ export default class FilmsList {
    */
   constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage) {
 
-    //  Презентеры
-    this._filmPresenter = {};
-    this._filterPresenter = filterPresenter;
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupCommentActions, this._handlePopupCommentActions);
-
     //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
@@ -88,6 +83,11 @@ export default class FilmsList {
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
     this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
+
+    //  Презентеры
+    this._filmPresenter = {};
+    this._filterPresenter = filterPresenter;
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupCommentActions, this._handlePopupCommentActions);
   }
 
 
@@ -98,7 +98,7 @@ export default class FilmsList {
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
-    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getSort().history));
+    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getSort().isViewed));
     this._renderFilmsContainer();
   }
 
@@ -141,18 +141,19 @@ export default class FilmsList {
     }
   }
 
-  _handleStatsDisplay() {
-    this._statsComponent.show();
-    this._filmListComponent.hide();
-    this._filterPresenter.hideSort();
-  }
-
+  /**
+   * Приватный метод скрытия интерфейса для показа статистики
+   */
   _hide() {
     this._statsComponent.show();
     this._filmListComponent.hide();
   }
 
+  /**
+   * Приватный метод показа интерфейса и скрытие статистики (противоположность this._hide) 
+   */
   _show() {
+    console.log('_show');
     this._statsComponent.hide();
     this._filmListComponent.show();
   }
@@ -180,8 +181,10 @@ export default class FilmsList {
     const prevProfile = this._profileComponent;
     this._profileComponent = new ProfileView(this._filterModel.getSort().isViewed);
     if (prevProfile) {
+      console.log('prevProfile');
       replace(this._profileComponent, prevProfile);
     } else {
+      console.log('this._profileComponent render');
       render(siteBody.querySelector('.header'), this._profileComponent);
     }
   }
@@ -234,10 +237,7 @@ export default class FilmsList {
    * То дополнительно вызывает метод рендера кнопки ShowMore
    */
   _renderFilms() {
-    // console.log('_renderFilms');
-    // console.log('this._films.length ==', this._films.length);
     this._renderFilmList(0, Math.min(this._films.length, this._renderedFilmsCount));
-
     if (this._films.length > this._renderedFilmsCount) {
       this._renderLoadMore();
     }
@@ -249,8 +249,6 @@ export default class FilmsList {
    * Удаляется кнопка showMore
    */
   _clearList() {
-    // console.log('_clearList');
-    //  Перебираем все презентеры
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -265,6 +263,7 @@ export default class FilmsList {
    */
   _handleFilmAction(updatedFilm) {
     console.log('_handleFilmAction');
+    console.log(this);
     //  Нужна связка к this._sourcedFilms во вторичных презентерах
     this._filmsModel.updateFilm(updatedFilm);
   }
@@ -286,6 +285,8 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handlePopupAction(updatedFilm) {
+    console.log('_handlePopupAction');
+    console.log(this._filmsModel);
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
@@ -310,6 +311,8 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
    */
   _handlePopupCommentActions(updatedFilm) {
+    console.log('_handlePopupCommentActions');
+    console.log(this);
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }

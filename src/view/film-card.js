@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-import {formatDuration} from "../utils/time";
+import {formatDuration} from '../utils/time';
 
 /**
  * Функция создания компонента (карточка фильма)
@@ -45,7 +45,7 @@ const createFilmCardTemplate = (film) => {
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${year}</span>
-            <span class="film-card__duration">${formatDuration()}</span>
+            <span class="film-card__duration">${formatDuration(time)}</span>
             <span class="film-card__genre">${genre[0]}</span>
           </p>
           <img class="film-card__poster js-open-popup" src="./images/posters/${info.poster}" alt="">
