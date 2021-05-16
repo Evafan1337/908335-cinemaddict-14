@@ -70,7 +70,7 @@ export default class PagePresenter {
 
     this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
 
-    this._filterModel.setSort(this._filterFilmsCount);
+    this._filterModel.setFilterFilmsCount(this._filterFilmsCount);
 
     if(this._filmsModel.getFilms().length == 0) {
       this._initEmptyPresenter();

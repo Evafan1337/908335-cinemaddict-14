@@ -1,5 +1,4 @@
-import AbstractView from './abstract';
-import SmartView from "./smart";
+import SmartView from './smart';
 
 /**
  * Функция создания компонента сортировки
@@ -8,16 +7,16 @@ import SmartView from "./smart";
 const createSortPanelTemplate = (sortBy) => {
 
   const defaultClassName = (sortBy === 'default')
-  ? 'sort__button--active'
-  : '';
+    ? 'sort__button--active'
+    : '';
 
-const dateClassName = (sortBy === 'date')
-  ? 'sort__button--active'
-  : '';
+  const dateClassName = (sortBy === 'date')
+    ? 'sort__button--active'
+    : '';
 
-const ratingClassName = (sortBy === 'rating')
-  ? 'sort__button--active'
-  : '';
+  const ratingClassName = (sortBy === 'rating')
+    ? 'sort__button--active'
+    : '';
 
   return `<ul class="sort">
     <li><a href="#" class="sort__button ${defaultClassName}" data-sort="default">Sort by default</a></li>

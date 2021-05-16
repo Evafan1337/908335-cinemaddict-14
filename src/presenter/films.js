@@ -49,8 +49,8 @@ export default class FilmsList {
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
     
     //  Параметры сортировки и фильтрации
-    this._filterBy = this._filterModel.getSortType().filterBy;
-    this._sortBy = this._filterModel.getSortType().sortBy;
+    this._filterBy = this._filterModel.getFilterBy();
+    this._sortBy = this._filterModel.getSortBy();
 
     //  Данные
     this._sourcedFilms = [];
@@ -98,7 +98,7 @@ export default class FilmsList {
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
-    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getSort().isViewed));
+    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getFilterFilmsCount().isViewed));
     this._renderFilmsContainer();
   }
 
@@ -113,8 +113,8 @@ export default class FilmsList {
     this._clearList();
     let updatedFilms = this._sourcedFilms;
 
-    const filterBy = this._filterModel.getFilterType();
-    const sortBy = this._filterModel.getSortType();
+    const filterBy = this._filterModel.getFilterBy();
+    const sortBy = this._filterModel.getSortBy();
 
     if (filterBy !== 'all') {
       updatedFilms = films.filter((film) => film[filterBy]);
@@ -124,7 +124,7 @@ export default class FilmsList {
       updatedFilms.sort(compareValues(sortBy, 'desc'));
     }
 
-    if (this._filterModel.getStats() === true) {
+    if (this._filterModel.getShowStatsFlag() === true) {
       this._hide();
     } else {
       this._show();
@@ -160,12 +160,13 @@ export default class FilmsList {
 
   /**
    * Приватный метод рендера контейнера фильмов
-   * Вызывает методы рендера фильмов (в т.ч в категориях: по рейтингу и кол-ву комментариев)
+   * Вызывает метод инициализации презентера фильтров
+   * Вызывает методы рендера фильмов ()
    */
   _renderFilmsContainer() {
     this._filterPresenter.init();
     render(this._filmsContainer, this._filmListComponent);
-    if (this._filterModel.getSort().isViewed > 0) {
+    if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
       this._renderProfile();
     }
     this._renderFilms();
@@ -179,7 +180,7 @@ export default class FilmsList {
    */
   _renderProfile() {
     const prevProfile = this._profileComponent;
-    this._profileComponent = new ProfileView(this._filterModel.getSort().isViewed);
+    this._profileComponent = new ProfileView(this._filterModel.getFilterFilmsCount().isViewed);
     if (prevProfile) {
       console.log('prevProfile');
       replace(this._profileComponent, prevProfile);
@@ -262,9 +263,6 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmAction(updatedFilm) {
-    console.log('_handleFilmAction');
-    console.log(this);
-    //  Нужна связка к this._sourcedFilms во вторичных презентерах
     this._filmsModel.updateFilm(updatedFilm);
   }
 
@@ -277,7 +275,7 @@ export default class FilmsList {
 
     //Можно брать из модели...
     const currentFilterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
-    this._filterModel.setSort(currentFilterFilmsCount);
+    this._filterModel.setFilterFilmsCount(currentFilterFilmsCount);
   }
 
   /**
@@ -285,8 +283,6 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handlePopupAction(updatedFilm) {
-    console.log('_handlePopupAction');
-    console.log(this._filmsModel);
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
@@ -311,8 +307,6 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
    */
   _handlePopupCommentActions(updatedFilm) {
-    console.log('_handlePopupCommentActions');
-    console.log(this);
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }

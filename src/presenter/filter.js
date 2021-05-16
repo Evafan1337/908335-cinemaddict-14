@@ -39,7 +39,7 @@ export default class FilterPresenter {
   observeFilter() {
     //  По сути пересчитываем значение кол-ва фильмов в фильтрах
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
-    this._filterModel.setSort(filmsInfoSortLength);
+    this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();
   }
 
@@ -48,12 +48,12 @@ export default class FilterPresenter {
    */
   _renderMenu() {
     const prevMenu = this._menuComponent;
-    this._menuComponent = new MenuView(this._filterModel.getSort(), this._filterModel.getFilterType());
+    this._menuComponent = new MenuView(this._filterModel.getFilterFilmsCount(), this._filterModel.getFilterBy());
 
     if (prevMenu) {
       replace(this._menuComponent, prevMenu);
     } else {
-      render(this._filterContainer, this._menuComponent, RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._menuComponent);
     }
     this._menuComponent.setClickHandler(this._handleFilterItemClick);
     this._menuComponent.setClickStatsHandler(this._handleStatsItemClick);
@@ -70,7 +70,7 @@ export default class FilterPresenter {
     }
 
     this._showSort();
-    this._filterModel.setSortType(this._filterModel.getSortType(), evt.target.dataset.filter, false);
+    this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false);
     this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
     evt.target.classList.add('main-navigation__item--active');
   }
@@ -80,7 +80,7 @@ export default class FilterPresenter {
    */
   _renderSort() {
     const sortPanelComponent = this._sortPanelComponent;
-    this._sortPanelComponent = new SortPanelView(this._filterModel.getSortType());
+    this._sortPanelComponent = new SortPanelView(this._filterModel.getSortBy());
     if (sortPanelComponent) {
       replace(this._sortPanelComponent, sortPanelComponent);
     } else {
@@ -94,14 +94,14 @@ export default class FilterPresenter {
    * @param {Object} evt - объект события
    */
   _handleSortItemClick(evt) {
-    this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterType(), false);
+    this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterBy(), false);
     this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
     evt.target.classList.add('sort__button--active');
   }
 
   _handleStatsItemClick(evt) {
     console.log('_handleStatsItemClick');
-    this._filterModel.setSortType(this._filterModel.getSortType(), this._filterModel.getFilterType(), true);
+    this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true);
     this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
     evt.target.classList.add('main-navigation__item--active');
     this._hideSort();

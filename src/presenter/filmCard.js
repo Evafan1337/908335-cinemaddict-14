@@ -2,6 +2,9 @@ import {replace, remove} from '../utils/dom';
 import {render} from '../utils/render';
 import FilmCardView from '../view/film-card';
 
+/**
+ * Класс описывает презентер карточки фильма
+ */
 export default class FilmCardPresenter {
 
   /**
@@ -9,6 +12,7 @@ export default class FilmCardPresenter {
    * @param {Object} filmContainer - ссылка на HTML элемент куда надо отрисовать карточку фильма
    * @param {Function} changeData - функция изменения данных
    * @param {Function} showPopup - функция открытия попапа
+   * @constructor
    */
   constructor(filmContainer, changeData, showPopup) {
     this._filmContainer = filmContainer;
@@ -16,8 +20,6 @@ export default class FilmCardPresenter {
     this._cardComponent = null;
     this._changeData = changeData;
     this._showPopup = showPopup;
-
-    // console.log(this._showPopup);
   }
 
   /**

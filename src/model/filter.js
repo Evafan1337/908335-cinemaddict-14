@@ -1,5 +1,4 @@
-import Observer from "./observer";
-
+import Observer from './observer';
 
 /**
  * Класс описывает модель фильмов
@@ -39,7 +38,7 @@ export default class Filter extends Observer {
    * Получить "значение" сортировки
    * @return {string} - значение сортировки
    */
-  getSortType() {
+  getSortBy() {
     return this._sortBy;
   }
 
@@ -47,7 +46,7 @@ export default class Filter extends Observer {
    * Получить "значение" фильтрации
    * @return {string} - значение фильтрации
    */
-  getFilterType() {
+  getFilterBy() {
     return this._filterBy;
   }
 
@@ -55,7 +54,7 @@ export default class Filter extends Observer {
    * Получить "значение" флага статистики (True/False)
    * @return {string} - значение флага
    */
-  getStats() {
+  getShowStatsFlag() {
     return this._showStatsFlag;
   }
 
@@ -64,7 +63,7 @@ export default class Filter extends Observer {
    * Уведомить подписчиков
    * @param {Object} - filterFilmsCount - объект значений сортировки
    */
-  setSort(filterFilmsCount) {
+  setFilterFilmsCount(filterFilmsCount) {
     this._filterFilmsCount = filterFilmsCount;
     this._notifyChanges();
   }
@@ -72,7 +71,7 @@ export default class Filter extends Observer {
   /**
    * Получить "значение" сортировки ( количество фильмов )
    */
-  getSort() {
+  getFilterFilmsCount() {
     return this._filterFilmsCount;
   }
 
@@ -82,5 +81,4 @@ export default class Filter extends Observer {
   _notifyChanges() {
     this._notify({filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
   }
-
 }

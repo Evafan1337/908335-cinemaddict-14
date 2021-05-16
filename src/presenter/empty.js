@@ -16,11 +16,10 @@ export default class EmptyPresenter {
     this._emptyFilmsComponent = new EmptyFilmsView();
     this._menu = null;
 
-    // check later
-    this._sort = {
-      watchlist: 0,
-      history: 0,
-      favorites: 0,
+    this._filterFilmsCount = {
+      isWatchlist: 0,
+      isViewed: 0,
+      isFavorite: 0,
     };
   }
 
@@ -28,7 +27,7 @@ export default class EmptyPresenter {
    * Метод инициализации
    */
   init() {
-    this._menuComponent = new SiteMenuView(this._sort);
+    this._menuComponent = new SiteMenuView(this._filterFilmsCount);
     this._renderEmpty();
   }
 
