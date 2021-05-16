@@ -17,6 +17,7 @@ export default class Abstract {
     this._callback = {};
     this._element = null;
     this._data = {};
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   /**
@@ -25,6 +26,15 @@ export default class Abstract {
    */
   getTemplate() {
     throw new Error('Abstract method not implemented: getTemplate');
+  }
+
+  /**
+   * Метод отработки слушателя
+   * @param {Object} evt - объект событий
+   */
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 
   /**

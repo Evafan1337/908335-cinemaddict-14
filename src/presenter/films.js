@@ -116,19 +116,15 @@ export default class FilmsList {
     const filterBy = this._filterModel.getFilterType();
     const sortBy = this._filterModel.getSortType();
 
-    if (filterBy !== 'all' || sortBy !== 'default') {
-
-      filterBy = this._filterModel.getFilterType();
-      sortBy = this._filterModel.getSortType();
-      if (filterBy !== 'all') {
-        updatedFilms = films.filter((film) => film[filterBy]);
-      }
-      if (sortBy !== 'default') {
-        updatedFilms.sort(compareValues(sortBy, 'desc'));
-      }
+    if (filterBy !== 'all') {
+      updatedFilms = films.filter((film) => film[filterBy]);
     }
 
-    if (this._filterModel.getSortType().stats === true) {
+    if (sortBy !== 'default') {
+      updatedFilms.sort(compareValues(sortBy, 'desc'));
+    }
+
+    if (this._filterModel.getStats() === true) {
       this._hide();
     } else {
       this._show();

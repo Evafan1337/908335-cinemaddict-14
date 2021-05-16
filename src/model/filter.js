@@ -40,6 +40,10 @@ export default class Filter extends Observer {
     return this._filterBy;
   }
 
+  getStats() {
+    this._stats;
+  }
+
   /**
    * Установить значение отсортированных фильмов
    * @param {Object} - filterFilmsCount - объект значений сортировки

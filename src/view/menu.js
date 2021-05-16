@@ -51,6 +51,7 @@ export default class Menu extends AbstractView {
     super();
     this._sortInfo = sortInfo;
     this._sortType = sortType;
+    this._clickStatsHandler = this._clickStatsHandler.bind(this);
   }
 
   /**
@@ -62,15 +63,6 @@ export default class Menu extends AbstractView {
   getTemplate() {
     console.log(this._sortType);
     return createMenuTemplate(this._sortInfo, this._sortType);
-  }
-
-  /**
-   * Метод отработки слушателя
-   * @param {Object} evt - объект событий
-   */
-  _clickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click(evt);
   }
 
   /**

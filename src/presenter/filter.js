@@ -38,12 +38,8 @@ export default class FilterPresenter {
   }
 
   observeFilter() {
-
-    //  check later
-    //  Уместное именование
+    //  По сути пересчитываем значение кол-ва фильмов в фильтрах
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
-    console.log(filmsInfoSortLength);
-    
     this._filterModel.setSort(filmsInfoSortLength);
     this.init();
   }
@@ -64,7 +60,6 @@ export default class FilterPresenter {
     console.log(copy);
 
     if (prevMenu) {
-      console.log('prevMenu');
       replace(this._menuComponent, prevMenu);
     } else {
       render(this._filterContainer, this._menuComponent, RenderPosition.BEFOREEND);
@@ -75,14 +70,15 @@ export default class FilterPresenter {
 
   _handleFilterItemClick(evt) {
     this._showSort();
-    this._filterModel.setSortType(this._filterModel.getSortType().sort, evt.target.getAttribute(`data-sort`), false);
-    this._menu.getActiveMenuLink().classList.remove(`main-navigation__item--active`);
-    evt.target.classList.add(`main-navigation__item--active`);
+    //  dataset
+    this._filterModel.setSortType(this._filterModel.getSortType(), evt.target.getAttribute('data-sort'), false);
+    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
+    evt.target.classList.add('main-navigation__item--active');
   }
 
   _renderSort() {
     const sortPanelComponent = this._sortPanelComponent;
-    this._sortPanelComponent = new SortPanelView(this._filterModel.getSortType().sort);
+    this._sortPanelComponent = new SortPanelView(this._filterModel.getSortType());
     if (sortPanelComponent) {
       replace(this._sortPanelComponent, sortPanelComponent);
     } else {
@@ -94,24 +90,24 @@ export default class FilterPresenter {
 
   _handleSortItemClick(evt) {
     //  dataset?
-    this._filterModel.setSortType(evt.target.getAttribute(`data-sort`), this._filterModel.getSortType().filter, false);
-    this._sortPanelComponent.getActiveMenuLink().classList.remove(`sort__button--active`);
-    evt.target.classList.add(`sort__button--active`);
+    this._filterModel.setSortType(evt.target.getAttribute('data-sort'), this._filterModel.getFilterType(), false);
+    this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
+    evt.target.classList.add('sort__button--active');
     //this.update();
   }
 
   _handleStatsItemClick(evt) {
-    this._filterModel.setSortType(this._filterModel.getSortType().sort, this._filterModel.getSortType().filter, true);
+    this._filterModel.setSortType(this._filterModel.getSortType(), this._filterModel.getFilterType(), true);
     this._menu.getActiveMenuLink().classList.remove(`main-navigation__item--active`);
     evt.target.classList.add(`main-navigation__item--active`);
     this._hideSort();
   }
 
   _hideSort() {
-    this._sortPanel.hide();
+    this._sortPanelComponent.hide();
   }
 
   _showSort() {
-    this._sortPanel.show();
+    this._sortPanelComponent.show();
   }
 }
