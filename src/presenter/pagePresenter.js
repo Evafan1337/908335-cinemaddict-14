@@ -54,9 +54,10 @@ export default class PagePresenter {
     this._filmsModel.setFilms(this._films);
 
     this._initFilmsPresenter();
-    // this._initSubFilmsPresenters();
+    this._initSubFilmsPresenters();
     this._renderFooterComponent();
-    this._renderStats();
+    //  check later
+    // this._renderStats();
   }
 
   /**
@@ -84,6 +85,7 @@ export default class PagePresenter {
    * Метод инициализации презентеров "вторичных" списков фильмов
    */
   _initSubFilmsPresenters () {
+    console.log('_initSubFilmsPresenters');
     if(this._filmsModel.getFilms().length == 0) {
       return;
     }

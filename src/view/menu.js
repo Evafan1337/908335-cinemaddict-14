@@ -8,6 +8,7 @@ import AbstractView from './abstract';
 const createMenuTemplate = (filmsInfo, sortType) => {
 
   const {isWatchlist, isViewed, isFavorite} = filmsInfo;
+  console.log(filmsInfo);
 
   const allFilmsClassName = (sortType === 'all')
     ? 'main-navigation__item--active'
@@ -59,6 +60,7 @@ export default class Menu extends AbstractView {
    * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
+    console.log(this._sortType);
     return createMenuTemplate(this._sortInfo, this._sortType);
   }
 

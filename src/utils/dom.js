@@ -18,6 +18,10 @@ export const createElement = (template) => {
  * @return {Object} oldChild - старый элемент
  */
 export const replace = (newChild, oldChild) => {
+
+  // console.log(newChild);
+  // console.log(oldChild);
+
   if (oldChild instanceof AbstractView) {
     oldChild = oldChild.getElement();
   }

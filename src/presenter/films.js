@@ -103,31 +103,10 @@ export default class FilmsList {
   }
 
   /**
-   * Приватный метод обновление наполнения списка фильмов
-   * @param {number} renderedFilms - количество отрисованных фильмов
+   * Обработчик который будет исполнятся при _notify
+   * @param {Array} films - результирующий массив фильмов (данные)
+   * Которые будут перерисованы
    */
-  update(renderedFilms) {
-    this._clearList();
-    if (renderedFilms) {
-      this._renderedFilmsCount = renderedFilms;
-    }
-    let updatedFilms = this._sourcedFilms;
-    this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
-
-    if (this._filterModel.getSort.history > 0) {
-      this._renderProfile();
-    }
-    if (this._filterModel.getSortType().filter !== 'all') {
-      updatedFilms = this._sourcedFilms.filter((film) => film[this._filterModel.getSortType().filter]);
-    }
-    if (this._filterModel.getSortType().sort !== 'default') {
-      updatedFilms.sort(compareValues(this._filterModel.getSortType().sort, 'desc'));
-    }
-    this._films = updatedFilms;
-    this._filterPresenter.init();
-    this._renderFilms();
-  }
-
   observeFilms(films) {
     console.log('observeFilms => films:',films);
     this._sourcedFilms = films.slice();
@@ -212,22 +191,6 @@ export default class FilmsList {
   }
 
   /**
-   * Приватный метод рендера меню (фильтации)
-   */
-  _renderMenu() {
-    const prevMenu = this._menuComponent;
-    this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._filterBy);
-    if (prevMenu) {
-      this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
-      this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._filterBy);
-      replace(this._menuComponent, prevMenu);
-    } else {
-      render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
-    }
-    this._menuComponent.setClickHandler((evt) => this._handleFilterItemClick(evt));
-  }
-
-  /**
    * Приватный метод отрисовки панели сортировки
    */
   _renderSort() {
@@ -306,7 +269,6 @@ export default class FilmsList {
    */
   _handleFilmAction(updatedFilm) {
     console.log('_handleFilmAction');
-    console.log(updatedFilm);
     //  Нужна связка к this._sourcedFilms во вторичных презентерах
     this._filmsModel.updateFilm(updatedFilm);
   }
@@ -318,6 +280,7 @@ export default class FilmsList {
   _handlePopupOpen(film) {
     this._popupPresenter.init(film);
 
+    //Можно брать из модели...
     const currentFilterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
     this._filterModel.setSort(currentFilterFilmsCount);
   }

@@ -16,6 +16,11 @@ export default class Filter extends Observer {
    * @param {Object} - stats - объект статистики
    */
   setSortType(sortBy, filterBy, stats) {
+
+    console.log('setSortType');
+    console.log(sortBy);
+    console.log(filterBy);
+
     this._sortBy = sortBy;
     this._filterBy = filterBy;
     this._stats = stats;
@@ -48,11 +53,13 @@ export default class Filter extends Observer {
    * Получить "значение" сортировки ( количество фильмов )
    */
   getSort() {
+    // console.log(this);
     return this._filterFilmsCount;
   }
 
   _notifyChanges() {
-    this._notify({sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
+    console.log('_notifyChanges');
+    this._notify({filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
   }
 
 }

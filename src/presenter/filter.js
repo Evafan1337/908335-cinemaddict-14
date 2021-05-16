@@ -32,25 +32,39 @@ export default class FilterPresenter {
   }
 
   init() {
+    console.log('init FilterPresenter');
     this._renderMenu();
     this._renderSort();
   }
 
   observeFilter() {
-    this.init();
 
     //  check later
-
+    //  Уместное именование
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     console.log(filmsInfoSortLength);
- 
+    
     this._filterModel.setSort(filmsInfoSortLength);
+    this.init();
   }
 
+  /**
+   * Приватный метод рендера меню (фильтации)
+   */
   _renderMenu() {
+    console.log('filter.js : _renderMenu');
     const prevMenu = this._menuComponent;
-    this._menuComponent = new MenuView(this._filterModel.getSort(), this._filterModel.getSortType().filter);
+
+    console.log(this._filterModel.getSort());
+
+    this._menuComponent = new MenuView(this._filterModel.getSort(), this._filterModel.getFilterType());
+
+    // console.log(this._menuComponent);
+    let copy = Object.assign({}, this._menuComponent);
+    console.log(copy);
+
     if (prevMenu) {
+      console.log('prevMenu');
       replace(this._menuComponent, prevMenu);
     } else {
       render(this._filterContainer, this._menuComponent, RenderPosition.BEFOREEND);

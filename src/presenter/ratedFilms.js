@@ -48,6 +48,7 @@ export default class RatedFilmsPresenter {
    * Публичный метод инициализации
    */
   init() {
+    console.log('ratedFilms init');
     this._sourcedFilms = this._filmsModel.getFilms();
     this._films = this._sourcedFilms.slice().sort(compareValues(`comments`, `desc`));
     this._renderedFilmsCount = this._filmsPerPage;
@@ -65,7 +66,7 @@ export default class RatedFilmsPresenter {
 
   _renderFilmsContainer() {
 
-    console.log(this._filterPresenter);
+    console.log('ratedFilms: _renderFilmsContainer');
 
     this._filterPresenter.init();
     render(this._filmsContainer, this._filmList.getElement(), RenderPosition.BEFOREEND);
