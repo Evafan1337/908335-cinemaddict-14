@@ -1,4 +1,4 @@
-const FILM_RATED_COUNT = 2;
+import FILM_RATED_COUNT from './const';
 
 /**
  * Функция сравнения значений ( используется в sort())

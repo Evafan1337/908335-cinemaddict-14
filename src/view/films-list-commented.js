@@ -8,6 +8,10 @@ const createFilmListTemplate = () => {
     </section>`;
 };
 
+/**
+ * Класс описывает компонент (контейнер для фильмов в топе по кол-ву комментариев)
+ * @extends AbstractView
+ */
 export default class FilmsListCommented extends AbstractView {
   getTemplate() {
     return createFilmListTemplate();

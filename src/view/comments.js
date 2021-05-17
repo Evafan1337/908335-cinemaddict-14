@@ -77,6 +77,7 @@ export const createCommentsTemplate = (comments) => {
 
 /**
  * Класс описывает компонент (список комментариев попапа)
+ * @extends SmartView
  */
 export default class Comments extends SmartView {
   constructor(comments) {

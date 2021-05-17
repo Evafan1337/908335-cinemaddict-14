@@ -27,13 +27,13 @@ const createSortPanelTemplate = (sortBy) => {
 
 /**
  * Класс описывает панель сортировки
+ * @extends SmartView
  */
 export default class SortPanel extends SmartView {
 
   /**
-   * Конструктор
-   * Вызывается конструктор класса родителя (AbstractView)
-   * Производится привязка контекста обработчика к объекту компонента
+   * @constructor
+   * @param {string} sortBy - параметр сортировки
    */
   constructor(sortBy) {
     super();

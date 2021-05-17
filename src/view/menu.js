@@ -39,11 +39,12 @@ const createMenuTemplate = (filmsInfo, sortType) => {
 
 /**
  * Класс описывает компонент меню
+ * @extends AbstractView
  */
 export default class Menu extends AbstractView {
 
   /**
-   * Конструктор
+   * @constructor
    * @param {Object} filmsInfo - данные о фильмах
    */
   constructor(sortInfo, sortType) {
@@ -81,11 +82,19 @@ export default class Menu extends AbstractView {
     }
   }
 
+  /**
+   * Метод отработки слушателя "статистики"
+   * @param {Object} evt - объект событий
+   */
   _clickStatsHandler(evt) {
     evt.preventDefault();
     this._callback.statsClick(evt);
   }
 
+  /**
+   * Метод установки слушателя на блок статистики
+   * @param {function} callback - функция, которая будет исполняться при слушателе
+   */
   setClickStatsHandler(callback) {
     this._callback.statsClick = callback;
     this.getElement().querySelector('.main-navigation__additional').addEventListener('click', this._clickStatsHandler);

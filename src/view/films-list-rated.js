@@ -8,6 +8,10 @@ const createFilmListTemplate = () => {
     </section>`;
 };
 
+/**
+ * Класс описывает компонент (контейнер для фильмов в топе по рейтингу)
+ * @extends AbstractView
+ */
 export default class FilmsListRated extends AbstractView {
   getTemplate() {
     return createFilmListTemplate();

@@ -12,20 +12,32 @@ const getStatsDataForPeriod = {
   [StatPeriodMap.YEAR]: (films, now = dayjs()) => films.filter((film) => dayjs(film.watchedData).isAfter(now.subtract(1, 'year'))),
 };
 
+/**
+ * Метод получения массива данных о жанрах фильмов (подсчет)
+ * @param {Object} films - данные
+ * @return {Object}
+ */
 const getGenresStats = (films) => {
-  const genresStats = {};
-  films.reduce((acc, film) => acc.concat(film.genre), [])
-    .forEach((genre) => {
-      if (genresStats[genre]) {
-        genresStats[genre]++;
-        return;
+  let genresStats = {};
+  genresStats = films.reduce((result, film) =>{
+    film.genre.forEach((genreValue) => {
+      if(!result[genreValue]) {
+        result[genreValue] = 1;
+      } else {
+        result[genreValue]++;
       }
-      genresStats[genre] = 1;
     });
+    return result;
+  }, []);
 
   return genresStats;
 };
 
+/**
+ * Метод получения топового жанра
+ * @param {Array} films - данные
+ * @return {string}
+ */
 const getTopGenre = (films) => {
   if (films.length === 0) {
     return false;
@@ -34,6 +46,11 @@ const getTopGenre = (films) => {
   return Object.entries(genresStats).sort((a, b) => b[1] - a[1])[0][0];
 };
 
+/**
+ * Метод получения всего просмотренного хронометража
+ * @param {Array} films - данные
+ * @return {object}
+ */
 const getTotalDuration = (films) => {
   let j = 0;
   for (let i = 0; i < films.length; i++) {
@@ -44,7 +61,14 @@ const getTotalDuration = (films) => {
   return {hours, minutes};
 };
 
+/**
+ * Метод рендера
+ * @param {object} statisticCtx - HTML элемент для отрисовки
+ * @param {object} films - данные
+ * @return {object}
+ */
 const renderChart = (statisticCtx, films) => {
+
   if (films.length === 0) {
     return false;
   }
@@ -52,6 +76,7 @@ const renderChart = (statisticCtx, films) => {
   const labels = [];
   const counts = [];
 
+  //  Заполняются именования и счетчики для диаграммы
   Object
     .entries(getGenresStats(films))
     .sort((a, b) => b[1] - a[1])
@@ -73,57 +98,62 @@ const renderChart = (statisticCtx, films) => {
         data: counts,
         backgroundColor: '#ffe800',
         hoverBackgroundColor: '#ffe800',
-        anchor: 'start'
-      }]
+        anchor: 'start',
+      }],
     },
     options: {
       plugins: {
         datalabels: {
           font: {
-            size: 20
+            size: 20,
           },
           color: '#ffffff',
           anchor: 'start',
           align: 'start',
           offset: 40,
-        }
+        },
       },
       scales: {
         yAxes: [{
           ticks: {
             fontColor: '#ffffff',
             padding: 100,
-            fontSize: 20
+            fontSize: 20,
           },
           gridLines: {
             display: false,
-            drawBorder: false
+            drawBorder: false,
           },
-          barThickness: 24
+          barThickness: 24,
         }],
         xAxes: [{
           ticks: {
             display: false,
-            beginAtZero: true
+            beginAtZero: true,
           },
           gridLines: {
             display: false,
-            drawBorder: false
+            drawBorder: false,
           },
         }],
       },
       legend: {
-        display: false
+        display: false,
       },
       tooltips: {
-        enabled: false
-      }
-    }
+        enabled: false,
+      },
+    },
   });
 };
 
-const createStatsTemplate = (localData) => {
-  const {films, currentPeriod, userTitle} = localData;
+/**
+ * Функция создания компонента (блок статистики)
+ * @param {object} userData - данные пользователя по просмотрам
+ * @return {string}
+ */
+const createStatsTemplate = (userData) => {
+  const {films, currentPeriod, userRank} = userData;
   const filmsWatchedAmount = films.length;
   const {hours, minutes} = getTotalDuration(films);
   const topGenre = getTopGenre(films);
@@ -132,7 +162,7 @@ const createStatsTemplate = (localData) => {
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">${userTitle}</span>
+      <span class="statistic__rank-label">${userRank}</span>
     </p>
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
@@ -168,13 +198,24 @@ const createStatsTemplate = (localData) => {
   `;
 };
 
+/**
+ * Класс описывает блок статистики
+ * @extends SmartView
+ */
 export default class Stats extends SmartView {
-  constructor(films, currentPeriod, userTitle) {
+
+  /**
+   * @constructor
+   * @param {object} films - данные о фильмах
+   * @param {string} currentPeriod - текущий период отображения статистики
+   * @param {string} userRank - ранг пользователя
+   */
+  constructor(films, currentPeriod, userRank) {
     super();
     this._films = films;
     this._currentPeriod = currentPeriod;
-    this._userTitle = userTitle;
-    this._data = {films: this._films, currentPeriod: this._currentPeriod, userTitle: this._userTitle};
+    this._userRank = userRank;
+    this._data = {films: this._films, currentPeriod: this._currentPeriod, userRank: this._userRank};
 
     this._chart = null;
     this._setChart();
@@ -183,10 +224,19 @@ export default class Stats extends SmartView {
     this._setInnerHandler();
   }
 
+  /**
+   * Метод получения HTML шаблона
+   * Вызывает внешнюю функцию createStatsTemplate
+   * @return {string} - HTML код созданного элемента
+   */
   getTemplate() {
     return createStatsTemplate(this._data);
   }
 
+  /**
+   * Метод отработки слушателя (выбор периода отображения)
+   * @param {Object} evt - объект событий
+   */
   _statsPeriodChangeHandler(evt) {
     evt.preventDefault();
     const newStatsPeriod = evt.target.value;
@@ -201,15 +251,24 @@ export default class Stats extends SmartView {
     this.updateData({films: filteredFilms, currentPeriod: this._currentPeriod});
   }
 
+  /**
+   * Метод установки обработчика
+   */
   _setInnerHandler() {
     this.getElement().querySelector('.statistic__filters').addEventListener('change', this._statsPeriodChangeHandler);
   }
 
+  /**
+   * Метод восстановления обработчиков
+   */
   restoreHandlers() {
     this._setInnerHandler();
     this._setChart();
   }
 
+  /**
+   * Метод установки доски
+   */
   _setChart() {
     if (this._chart !== null) {
       this._chart = null;

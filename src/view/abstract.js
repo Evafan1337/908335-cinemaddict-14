@@ -8,7 +8,7 @@ import {createElement} from '../utils/dom';
 export default class Abstract {
 
   /**
-   * Конструктор
+   * @constructor
    */
   constructor() {
     if (new.target === Abstract) {

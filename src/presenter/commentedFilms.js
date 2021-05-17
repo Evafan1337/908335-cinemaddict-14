@@ -46,9 +46,8 @@ export default class CommentedFilmsPresenter {
     this._handleFilmAction = this._handleFilmAction.bind(this);
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
-    this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
     //  Презентеры
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupCommentActions, this._handlePopupCommentActions);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction);
     this._filterPresenter = filterPresenter;
     this._filmPresenter = {};
 
@@ -67,6 +66,7 @@ export default class CommentedFilmsPresenter {
   /**
    * Обработчик который будет исполнятся при _notify
    * @param {Array} films - результирующий массив фильмов (данные)
+   * @param {Object} updatedFilm - данные фильма, который подвергся изменению
    * Которые будут перерисованы
    * По сути предусматривает изменение списка фильмов в "Most commented"
    */
@@ -144,18 +144,10 @@ export default class CommentedFilmsPresenter {
 
   /**
    * Приватный метод обработки фильма (клик по интерфейсу попапа)
+   * И добавление/удаление комментария
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handlePopupAction(updatedFilm) {
-    this._filmsModel.updateFilm(updatedFilm);
-    this._popupPresenterPresenter.init(updatedFilm);
-  }
-
-  /**
-   * Приватный метод обработки фильма (добавление/удаление комментария комментария)
-   * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
-   */
-  _handlePopupCommentActions(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }

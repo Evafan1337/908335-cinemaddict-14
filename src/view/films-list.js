@@ -1,4 +1,3 @@
-import AbstractView from './abstract';
 import SmartView from './smart';
 
 
@@ -18,6 +17,7 @@ const createFilmListTemplate = () => {
 
 /**
  * Класс описывает компонент (контейнер для отрисовки в них фильмов)
+ * @extends SmartView
  */
 export default class FilmList extends SmartView {
 

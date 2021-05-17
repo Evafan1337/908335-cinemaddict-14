@@ -83,12 +83,12 @@ export default class FilmsList {
     this._handleFilmAction = this._handleFilmAction.bind(this);
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
-    this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
+    // this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
 
     //  Презентеры
     this._filmPresenter = {};
     this._filterPresenter = filterPresenter;
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupCommentActions, this._handlePopupCommentActions);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction);
   }
 
 
@@ -282,6 +282,7 @@ export default class FilmsList {
   /**
    * Приватный метод обработки фильма (клик по интерфейсу попапа)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
+   * И добавление/удаление комментария
    */
   _handlePopupAction(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
@@ -301,14 +302,5 @@ export default class FilmsList {
       this._loadMoreComponent.removeElement();
       this._renderedFilmsCount = this._filmsPerPage;
     }
-  }
-
-  /**
-   * Приватный метод обработки фильма (добавление/удаление комментария комментария)
-   * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
-   */
-  _handlePopupCommentActions(updatedFilm) {
-    this._filmsModel.updateFilm(updatedFilm);
-    this._popupPresenter.init(updatedFilm);
   }
 }

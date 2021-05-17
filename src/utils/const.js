@@ -1,9 +1,9 @@
 export const StatPeriodMap = {
-  ALL_TIME: `all-time`,
-  TODAY: `today`,
-  WEEK: `week`,
-  MONTH: `month`,
-  YEAR: `year`
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
 
 export const UserRank = {
@@ -18,11 +18,11 @@ export const FilmsPerSection = {
   RATED: 2,
 };
 
-export const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
-
+/**
+ * Метод выборки звания пользователя
+ * В зависимости от количества просмотренных фильмов
+ * @param {number} count - количество просмотренных фильмов
+ */
 export const profileRating = (count) => {
   if (count > 1 && count <= 10) {
     return UserRank.NOVICE;
@@ -32,3 +32,5 @@ export const profileRating = (count) => {
     return UserRank.MOVIE_BAFF;
   }
 };
+
+export const FILM_RATED_COUNT = 2;

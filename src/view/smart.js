@@ -5,8 +5,13 @@ import AbstractView from './abstract';
  * Смарт класс инкапсулирует в себе бизнес-логику
  * для обновления данных и перерисовки самого себя
  * без привлечения методов презентера (модели)
+ * @extends AbstractView
  */
 export default class Smart extends AbstractView {
+
+  /**
+   * @constructor
+   */
   constructor() {
     super();
     this._data = {};
@@ -46,11 +51,17 @@ export default class Smart extends AbstractView {
     this.restoreHandlers();
   }
 
+  /**
+   * Показать элемент
+   */
   show() {
-    this.getElement().classList.remove(`visually-hidden`);
+    this.getElement().classList.remove('visually-hidden');
   }
 
+  /**
+   * Скрыть элемент
+   */
   hide() {
-    this.getElement().classList.add(`visually-hidden`);
+    this.getElement().classList.add('visually-hidden');
   }
 }

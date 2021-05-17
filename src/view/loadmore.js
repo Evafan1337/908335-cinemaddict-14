@@ -10,13 +10,9 @@ const createLoadmoreTemplate = () => {
 
 /**
  * Класс описывает компонент (кнопку подгрузки фильмов)
+ * @extends AbstractView
  */
 export default class Loadmore extends AbstractView {
-
-  constructor() {
-    super();
-    this._clickHandler = this._clickHandler.bind(this);
-  }
 
   /**
    * Метод получения HTML шаблона
@@ -25,15 +21,6 @@ export default class Loadmore extends AbstractView {
    */
   getTemplate() {
     return createLoadmoreTemplate();
-  }
-
-  /**
-   * Метод отработки слушателя
-   * @param {Object} evt - объект событий
-   */
-  _clickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click();
   }
 
   /**

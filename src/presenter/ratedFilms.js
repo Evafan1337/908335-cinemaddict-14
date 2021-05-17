@@ -1,17 +1,12 @@
-import FilmsPresenter from './films';
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
 import FilmListRatedView from '../view/films-list-rated';
 import {compareValues} from '../utils/sort';
 import {
-  remove}
-  from '../utils/dom';
-import {
   render,
   RenderPosition}
   from '../utils/render';
 
-const FILM_PER_PAGE = 2;
 const siteBody = document.querySelector('body');
 
 /**
@@ -20,60 +15,88 @@ const siteBody = document.querySelector('body');
 export default class RatedFilmsPresenter {
 
   /**
-   * Конструктор попапа
-   * @param {Object} container - ссылка на HTML элемент куда надо отрисовывать элементы
+   * @param {Object} filmsContainer - ссылка на HTML элемент куда надо отрисовывать элементы
+   * @param {Object} filmsModel - модель фильмов
+   * @param {Object} filterModel - модель фильтра
+   * @param {Object} filterPresenter - презентер фильтра
+   * @param {number} filmsPerPage - количество фильмов для отрисовки за "проход"
+   * @constructor
    */
   constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage) {
-    this._filterPresenter = filterPresenter;
+    //  Ссылки на DOM узлы
     this._filmsContainer = filmsContainer;
+    this._mainFilmList = null;
+
+    //  Модели
+    this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._filmsModel.addObserver(this.observeFilms.bind(this));
-    this._filterModel = filterModel;
-    this._films = [];
+
+    //  Счетчики
     this._filmsPerPage = filmsPerPage;
     this._renderedFilmsCount = filmsPerPage;
+
+    //  Данные
+    this._films = [];
     this._sourcedFilms = [];
-    this._filmPresenter = {};
+
+    //  Компоненты
     this._filmList = new FilmListRatedView();
-    this._mainFilmList = null;
-    this._handleFilmChange = this._handleFilmChange.bind(this);
-    this._handlePopupDisplay = this._handlePopupDisplay.bind(this);
-    this._handlePopupChange = this._handlePopupChange.bind(this);
-    this._handleAddComment = this._handleAddComment.bind(this);
-    this._handlePopupRemoveComment = this._handlePopupRemoveComment.bind(this);
-    this._popup = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment);
+
+    //  Слушатели
+    this._handleFilmAction = this._handleFilmAction.bind(this);
+    this._handlePopupOpen = this._handlePopupOpen.bind(this);
+    this._handlePopupAction = this._handlePopupAction.bind(this);
+
+    //  Презентеры
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction);
+    this._filterPresenter = filterPresenter;
+    this._filmPresenter = {};
   }
 
   /**
    * Публичный метод инициализации
    */
   init() {
-    console.log('ratedFilms init');
     this._sourcedFilms = this._filmsModel.getFilms();
-    this._films = this._sourcedFilms.slice().sort(compareValues(`comments`, `desc`));
+    this._films = this._sourcedFilms.slice().sort(compareValues('comments', 'desc'));
     this._renderedFilmsCount = this._filmsPerPage;
     this._renderFilmsContainer();
   }
 
+  /**
+   * Обработчик который будет исполнятся при _notify
+   * @param {Array} films - результирующий массив фильмов (данные)
+   * Которые будут перерисованы
+   * По сути предусматривает изменение списка фильмов в "Top rated"
+   */
   observeFilms(films) {
     this._clearList();
     this._sourcedFilms = films.slice();
-    let updatedFilms = this._sourcedFilms;
+    const updatedFilms = this._sourcedFilms;
 
-    this._films = updatedFilms.slice().sort(compareValues(`rating`, `desc`));
+    this._films = updatedFilms.slice().sort(compareValues('rating', 'desc'));
     this._renderFilms();
   }
 
+  /**
+   * Приватный метод рендера контейнера фильмов
+   * Вызывает метод инициализации презентера фильтров
+   * Вызывает методы рендера фильмов ()
+   */
   _renderFilmsContainer() {
-
-    console.log('ratedFilms: _renderFilmsContainer');
-
     this._filterPresenter.init();
     render(this._filmsContainer, this._filmList.getElement(), RenderPosition.BEFOREEND);
-    this._mainFilmList = this._filmList.getElement().querySelector(`.js-film-list-rated`);
+    this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-rated');
     this._renderFilms();
   }
 
+  /**
+   * Приватный метод рендера определенной карточки фильма
+   * Вызывает метод инициализации презентера карточки фильма (FilmCardPresenter)
+   * @param {Object} film - данные о фильме
+   * @param {Object} container - контейнер куда надо отрисовать компонент фильма
+   */
   _renderCard(film, container) {
     const filmPresenter = new FilmCardPresenter(container, this._handleFilmChange, this._handlePopupDisplay);
     filmPresenter.init(film);
@@ -91,35 +114,46 @@ export default class RatedFilmsPresenter {
       .forEach((film) => this._renderCard(film, this._mainFilmList));
   }
 
+  /**
+   * Приватный метод отрисовки фильмов
+   * Вызывает метод _renderFilmList
+   */
   _renderFilms() {
     this._renderFilmList(0, Math.min(this._films.length, this._renderedFilmsCount));
   }
 
 
-  _handleFilmChange(updatedFilm) {
+  /**
+   * Приватный метод обработки фильма (клик по интерфейсу карточки)
+   * @param {object} updatedFilm - данные о фильме, которые нужно изменить
+   */
+  _handleFilmAction(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
   }
 
-  _handlePopupDisplay(film) {
-    this._popup.init(film);
+  /**
+   * Приватный метод обработки открытия попапа (клик по интерфейсу карточки фильма)
+   * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
+   */
+  _handlePopupOpen(film) {
+    this._popupPresenter.init(film);
   }
 
-  _handlePopupRemoveComment(updatedFilm) {
-    this._filmsModel.updateFilm(updatedFilm);
-    this._popup.init(updatedFilm);
-  }
-
-  _handlePopupChange(updatedFilm) {
+  /**
+   * Приватный метод обработки фильма (клик по интерфейсу попапа)
+   * И добавление/удаление комментария
+   * @param {object} updatedFilm - данные о фильме, которые нужно изменить
+   */
+  _handlePopupAction(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
 
-  //  Объединить можно же
-  _handleAddComment(updatedFilm) {
-    this._filmsModel.updateFilm(updatedFilm);
-    this._popup.init(updatedFilm);
-  }
-
+  /**
+   * Приватный метод очистки списка фильмов
+   * Удаляются презентеры (компоненты)
+   * Удаляется кнопка showMore
+   */
   _clearList() {
     Object
       .values(this._filmPresenter)

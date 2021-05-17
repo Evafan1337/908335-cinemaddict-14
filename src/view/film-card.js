@@ -62,11 +62,12 @@ const createFilmCardTemplate = (film) => {
 
 /**
  * Класс описывает компонент (карточка фильма)
+ * @extends SmartView
  */
 export default class FilmCard  extends SmartView {
 
   /**
-   * Конструктор
+   * @constructor
    * @param {Object} film - данные о фильме
    */
   constructor(film) {
