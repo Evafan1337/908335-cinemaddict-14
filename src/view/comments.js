@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 import SmartView from './smart';
-import {createElement} from '../utils/elementActions';
+import {createElement} from '../utils/dom';
 import {render} from '../utils/render';
 
 
@@ -19,12 +21,14 @@ const createCommentTemplate = (comment) => {
               <p class="film-details__comment-text">${text}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
-                <span class="film-details__comment-day">${dayjs(date).format('YYYY/MM/DD HH:mm')}</span>
+                <span class="film-details__comment-day">${dayjs().to(dayjs(date))}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>`;
 };
+//  Подумать над вынесением dayjs обработки в отдельный оператор
+
 
 /**
  * Функция создания элемента картинки
@@ -73,11 +77,11 @@ export const createCommentsTemplate = (comments) => {
 
 /**
  * Класс описывает компонент (список комментариев попапа)
+ * @extends SmartView
  */
 export default class Comments extends SmartView {
   constructor(comments) {
     super();
-    this._element = null;
     this._comments = comments;
     this._deleteClickComment = this._deleteClickComment.bind(this);
     this._addCommentEmotion = this._addCommentEmotion.bind(this);
@@ -121,7 +125,6 @@ export default class Comments extends SmartView {
    * Метод установки обработчиков
    */
   _setInnerHandlers() {
-    //  Может делегирование?
     for (const link of this.getElement().querySelectorAll('.film-details__comment-delete')) {
       link.addEventListener('click', this._deleteClickComment);
     }

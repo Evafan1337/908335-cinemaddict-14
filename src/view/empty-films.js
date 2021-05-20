@@ -14,6 +14,7 @@ export const createEmptyFilmsTemplate = () => {
 
 /**
  * Класс описывает компонент (пустой список фильмов)
+ * @extends AbstractView
  */
 export default class EmptyFilms extends AbstractView {
 

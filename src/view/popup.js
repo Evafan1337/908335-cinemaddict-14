@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
+import {formatDuration} from '../utils/time';
 
 /**
  * Функция создания элемента(элементов) жанров фильма
@@ -72,7 +73,7 @@ const createTemplatePopupFilm = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${time}</td>
+              <td class="film-details__cell">${formatDuration(time)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -106,21 +107,20 @@ const createTemplatePopupFilm = (film) => {
 
 /**
  * Класс описывает компонент попапа
+ * @extends SmartView
  */
 export default class Popup extends SmartView {
 
   /**
-   * Конструктор
+   * @constructor
    * Вызывается конструктор класса родителя (SmartView)
    * @param {Object} film - фильм
    */
   constructor(film) {
     super();
-    this._element = null;
     this._film = film;
-    this._clickHandler = this._clickHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
-    // this._data = Popup.parseFilmToData(film);
+    this._clickHandler = this._clickHandler.bind(this);
     this._data = Object.assign({}, film);
     this._setInnerHandlers();
   }

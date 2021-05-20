@@ -2,31 +2,62 @@ import RatedFilmsPresenter from './ratedFilms';
 import CommentedFilmsPresenter from './commentedFilms';
 import FilmsPresenter from './films';
 import EmptyPresenter from './empty';
+import FilterPresenter from './filter';
 import { render } from '../utils/render';
 import FooterStatisticsView from '../view/count-films';
+import FilmsModel from '../model/films';
+import FilterModel from '../model/filter';
 
+import {
+  filmsInfoSort,
+  getFilmsInfoSortLength}
+  from '../utils/sort';
+
+import {
+  FilmsPerSection}
+  from '../utils/const';
+
+/**
+ * Класс описывает презентер страницы
+ * Создан для регулирования вызовов презентеров и отрисовки компонентов
+ */
 export default class PagePresenter {
 
   /**
-   * Конструктор
    * @param {Object} siteBody - HTML элемент (тег body)
    * @param {Object} siteMainElement - HTML элемент (контейнер главного списка фильмов)
    * @param {Object} siteFooterStatistics - HTML элемент (контейнер для компонента кол-ва фильмов)
    * @param {Object} films - массив с данными о фильмах
+   * @constructor
    */
   constructor (siteBody, siteMainElement, siteFooterStatistics, films) {
     this._siteBody = siteBody;
-    this._siteMailElement = siteMainElement;
+    this._siteMainElement = siteMainElement;
     this._siteFooterStatistics = siteFooterStatistics;
     this._films = films;
     this._filmsCount = films.length;
+
+    this._filterBy = 'all';
+    this._sortBy = 'default';
+    this._showStatsFlag = false;
   }
 
   /**
    * Метод иницализации презентера
+   * Обьявляет модели
+   * Устанавливает данные
    * Запускает методы инициализации других презентеров
    */
   init () {
+    this._filmsModel = new FilmsModel();
+    this._filmsModel.setFilms(this._films);
+
+    this._filterModel = new FilterModel();
+    this._filterModel.setSortType(this._sortBy, this._filterBy, this._showStatsFlag);
+
+    this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
+    this._filterModel.setFilterFilmsCount(this._filterFilmsCount);
+
     this._initFilmsPresenter();
     this._initSubFilmsPresenters();
     this._renderFooterComponent();
@@ -36,33 +67,37 @@ export default class PagePresenter {
    * Метод инициализации презентера главного списка фильмов
    */
   _initFilmsPresenter () {
-    if(this._filmsCount == 0) {
+
+    if(this._filmsModel.getFilms().length == 0) {
       this._initEmptyPresenter();
     }
-    const filmsPresenter = new FilmsPresenter(this._siteMailElement);
-    filmsPresenter.init(this._films);
+
+    this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);
+    this._filmsPresenter = new FilmsPresenter(this._siteMainElement, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.MAIN);
+    this._filmsPresenter.init(this._films);
   }
 
   /**
    * Метод инициализации презентеров "вторичных" списков фильмов
    */
   _initSubFilmsPresenters () {
-    if(this._filmsCount == 0) {
+    if(this._filmsModel.getFilms().length == 0) {
       return;
     }
 
-    const ratedFilmsPresenter = new RatedFilmsPresenter(this._siteMailElement);
-    const commentedFilmsPresenter = new CommentedFilmsPresenter(this._siteMailElement);
+    this._filmsExtraContainer = this._siteMainElement.querySelector('.films');
+    this._ratedFilmsPresenter = new RatedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.RATED);
+    this._commentedFilmsPresenter = new CommentedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.COMMENTED);
 
-    ratedFilmsPresenter.init(this._films);
-    commentedFilmsPresenter.init(this._films);
+    this._ratedFilmsPresenter.init(this._films);
+    this._commentedFilmsPresenter.init(this._films);
   }
 
   /**
    * Метод инициализации презентера при отсутствии фильмов
    */
   _initEmptyPresenter () {
-    const emptyPresenter = new EmptyPresenter(this._siteMailElement);
+    const emptyPresenter = new EmptyPresenter(this._siteMainElement);
     emptyPresenter.init();
   }
 

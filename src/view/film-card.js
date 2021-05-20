@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import SmartView from './smart';
-
+import {formatDuration} from '../utils/time';
 
 /**
  * Функция создания компонента (карточка фильма)
@@ -45,7 +45,7 @@ const createFilmCardTemplate = (film) => {
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${year}</span>
-            <span class="film-card__duration">${time}</span>
+            <span class="film-card__duration">${formatDuration(time)}</span>
             <span class="film-card__genre">${genre[0]}</span>
           </p>
           <img class="film-card__poster js-open-popup" src="./images/posters/${info.poster}" alt="">
@@ -62,19 +62,19 @@ const createFilmCardTemplate = (film) => {
 
 /**
  * Класс описывает компонент (карточка фильма)
+ * @extends SmartView
  */
 export default class FilmCard  extends SmartView {
 
   /**
-   * Конструктор
+   * @constructor
    * @param {Object} film - данные о фильме
    */
   constructor(film) {
     super();
-    this._element = null;
     this._film = film;
-    this._clickHandler = this._clickHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   /**

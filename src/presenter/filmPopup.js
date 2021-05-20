@@ -1,26 +1,37 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
-import {replace, remove} from '../utils/elementActions';
+import {replace, remove} from '../utils/dom';
 import {render} from '../utils/render';
 import {nanoid} from 'nanoid';
+import he from 'he';
 
 export default class FilmPopupPresenter {
 
   /**
-   * Конструктор попапа
    * @param {Object} container - ссылка на HTML элемент куда надо отрисовать попап
    * @param {Function} changeData - функция изменения данных
+   * @constructor
    */
   constructor(container, changeData, deleteComment, addComment) {
+    //  Ссылки на DOM узлы
     this._container = container;
+
+    //  Данные
     this._film = null;
+
+    //  Компоненты
     this._popupComponent = null;
-    this._deleteComment = deleteComment;
     this._commentsListComponent = null;
+
+    //  Функции
+    this._deleteComment = deleteComment;
     this._addComment = addComment;
     this._changeData = changeData;
+
+    //  Прочее
     this._posScroll = null;
 
+    //  Слушатели
     this._closePopupHandler = this._closePopupHandler.bind(this);
   }
 
@@ -64,24 +75,16 @@ export default class FilmPopupPresenter {
   setHandlers() {
     this._popupComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
     this._popupComponent.setClickHandler(() => this.close());
-    this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeFilmComment(evt));
-    this._commentsListComponent.setAddCommentEmotionHandler((evt) => this._addFilmCommentEmotion(evt));
+    this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeComment(evt));
+    this._commentsListComponent.setAddCommentEmotionHandler((evt) => this._addCommentEmotion(evt));
     document.addEventListener('keydown', this._closePopupHandler);
-    // document.addEventListener('keydown', (evt) => {
-    //   if (evt.key === 'Escape' || evt.key === 'Esc') {
-    //     evt.preventDefault();
-    //     this.close();
-    //   }
-    // });
   }
 
   /**
    * Приватный метод обработчика создания комментария
    */
   _handleFormSubmit() {
-    // document.addEventListener('keydown', (evt) => {
     this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
-      //  check later
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
         evt.preventDefault();
         this.submitFormComments();
@@ -92,7 +95,7 @@ export default class FilmPopupPresenter {
   /**
    * Метод обработки формы добавления комментария
    * Создание объекта комментария
-   * Обновление моков
+   * Обновление исходных данных
    */
   submitFormComments() {
     const posScroll = this.getPositionScroll();
@@ -108,7 +111,7 @@ export default class FilmPopupPresenter {
       const newComment = {
         id: nanoid(),
         info: {
-          text: text.value,
+          text: he.encode(text.value),
           author: '',
           emotion: currentEmotion,
         },
@@ -140,7 +143,7 @@ export default class FilmPopupPresenter {
    * Приватный метод, описывающий удаления комментария
    * @param {Object} evt - объект событий
    */
-  _removeFilmComment(evt) {
+  _removeComment(evt) {
     this._posScroll = this.getPositionScroll();
     const commentId = evt.target.closest('.film-details__comment').getAttribute('id');
     const commentInd = this._film.comments.findIndex((item) => item.id === commentId);
@@ -148,6 +151,10 @@ export default class FilmPopupPresenter {
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._posScroll);
   }
 
+  /**
+   * Приватный метод, описывающий закрытие попапа
+   * @param {Object} evt - объект событий
+   */
   _closePopupHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       this.close();
@@ -158,7 +165,8 @@ export default class FilmPopupPresenter {
    * Приватный метод, описывающий выбор эмоции при создании комментария
    * @param {Object} evt - объект событий
    */
-  _addFilmCommentEmotion(evt) {
+  _addCommentEmotion(evt) {
+    this._posScroll = this.getPositionScroll();
     const labelEmotion = this._commentsListComponent.getElement().querySelector('.film-details__add-emoji-label');
     const emotion = evt.target.value;
     this._commentsListComponent.renderEmotion(labelEmotion, emotion);

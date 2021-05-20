@@ -1,25 +1,5 @@
 import AbstractView from './abstract';
-
-const UserRank = {
-  NOVICE: 'Novice',
-  FAN: 'Fan',
-  MOVIE_BUFF: 'Movie Buff',
-};
-
-/**
- * Метод выборки звания пользователя
- * В зависимости от количества просмотренных фильмов
- * @param {number} count - количество просмотренных фильмов
- */
-const profileRating = (count) => {
-  if (count > 1 && count <= 10) {
-    return UserRank.NOVICE;
-  } else if (count > 10 && count <= 20) {
-    return UserRank.FAN;
-  } else {
-    return UserRank.MOVIE_BUFF;
-  }
-};
+import {profileRating} from '../utils/const';
 
 /**
  * Функция создания шаблона звания пользователя
@@ -36,11 +16,16 @@ const createProfileTemplate = (count) => {
 
 /**
  * Класс описывает компонент "звания пользователя"
+ * @extends AbstractView
  */
 export default class Profile extends AbstractView {
+
+  /**
+   * @constructor
+   * @param {number} count - количество просмотренных фильмов (счетчик)
+   */
   constructor(count) {
     super();
-    this._element = null;
     this._count = count;
   }
 

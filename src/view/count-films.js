@@ -11,16 +11,16 @@ const createFooterStatisticsTemplate = (count) => {
 
 /**
  * Класс описывает компонент (счетчик фильмов)
+ * @extends AbstractView
  */
 export default class FooterStatistics extends AbstractView {
 
   /**
-   * Конструктор
+   * @constructor
    * @param {number} count - количество подсчитанных фильмов (счетчик)
    */
   constructor(count) {
     super();
-    this._element = null;
     this._filmCount = count;
   }
 

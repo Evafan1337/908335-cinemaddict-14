@@ -1,13 +1,12 @@
 import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
-import SiteMenuView from '../view/menu';
 import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
+import StatsView from '../view/stats';
 import {
   replace,
   remove}
-  from '../utils/elementActions';
-import {updateItem} from '../utils/dataActions';
+  from '../utils/dom';
 import {
   render,
   RenderPosition}
@@ -17,11 +16,13 @@ import {
   filmsInfoSort,
   getFilmsInfoSortLength}
   from '../utils/sort';
+import {
+  profileRating
+} from '../utils/const';
 
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
 
-const FILM_PER_PAGE = 5;
 const siteBody = document.querySelector('body');
 
 /**
@@ -30,85 +31,151 @@ const siteBody = document.querySelector('body');
 export default class FilmsList {
 
   /**
-   * Конструктор попапа
-   * @param {Object} container - ссылка на HTML элемент куда надо отрисовать попап
+   * @param {Object} filmsContainer - ссылка на HTML элемент куда надо отрисовывать элементы
+   * @param {Object} filmsModel - модель фильмов
+   * @param {Object} filterModel - модель фильтра
+   * @param {Object} filterPresenter - презентер фильтра
+   * @param {number} filmsPerPage - количество фильмов для отрисовки за "проход"
+   * @constructor
    */
-  constructor(filmsContainer) {
-    this._filmsContainer = filmsContainer;
-    this._renderedFilmsCount = FILM_PER_PAGE;
-    this._films = null;
+  constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage) {
+
+    //  Модели
+    this._filterModel = filterModel;
+    this._filmsModel = filmsModel;
+
+    //  Добавление наблюдателей - обработчиков
+    this._filmsModel.addObserver(this.observeFilms.bind(this));
+    this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
+    this._filterModel.addObserver(this.observeProfileHistory.bind(this));
+
+    //  Параметры сортировки и фильтрации
+    this._filterBy = this._filterModel.getFilterBy();
+    this._sortBy = this._filterModel.getSortBy();
+
+    //  Данные
+    this._sourcedFilms = [];
+    this._films = [];
+
+    //  Счетчики
     this._filterFilmsCount = {};
+    this._renderedFilmsCount = filmsPerPage;
+    this._filmsPerPage = filmsPerPage;
+
+    //  Компоненты
+    this._statsComponent = null;
     this._menuComponent = null;
-    this._filmPresenter = {};
     this._sortPanelComponent = new SortPanelView();
     this._filmListComponent = new FilmListView();
     this._loadMoreComponent = new LoadmoreView();
     this._profileComponent = null;
+
+    //  Ссылки на DOM узлы
+    this._filmsContainer = filmsContainer;
+    //  Верное ли именование?
     this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
     this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
     this._topRatedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
     this._topCommentedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
+
+    //  Слушатели
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
-    this._handleSortItemClick = this._handleSortItemClick.bind(this);
-    this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleFilmAction = this._handleFilmAction.bind(this);
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
-    this._handlePopupChange = this._handlePopupChange.bind(this);
-    this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupCommentActions, this._handlePopupCommentActions);
-    this._filterBy = 'all';
-    this._sortBy = 'default';
+    this._handlePopupAction = this._handlePopupAction.bind(this);
+    // this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
+
+    //  Презентеры
+    this._filmPresenter = {};
+    this._filterPresenter = filterPresenter;
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction);
   }
 
 
   /**
    * Публичный метод инициализации
-   * @param {Array} films - данные о фильмах
    */
-  init(films) {
-    this._films = films.slice();
-    this._sourcedFilms = films.slice();
-    this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
-    if (this._filterFilmsCount.isViewed > 0) {
-      this._renderProfile();
-    }
+  init() {
+    this._sourcedFilms = this._filmsModel.getFilms().slice();
+    this._films = this._sourcedFilms.slice();
+    this._renderedFilmsCount = this._filmsPerPage;
+    this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterFilmsCount().isViewed));
     this._renderFilmsContainer();
   }
 
   /**
-   * Приватный метод обновление наполнения списка фильмов
-   * @param {number} renderedFilms - количество отрисованных фильмов
+   * Обработчик который будет исполнятся при _notify
+   * @param {Array} films - результирующий массив фильмов (данные)
+   * Которые будут перерисованы
    */
-  update(renderedFilms) {
+  observeFilms(films) {
+    this._sourcedFilms = films.slice();
     this._clearList();
-    if (renderedFilms) {
-      this._renderedFilmsCount = renderedFilms;
-    }
     let updatedFilms = this._sourcedFilms;
-    this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
 
-    if (this._filterFilmsCount.isViewed > 0) {
-      this._renderProfile();
+    const filterBy = this._filterModel.getFilterBy();
+    const sortBy = this._filterModel.getSortBy();
+
+    if (filterBy !== 'all') {
+      updatedFilms = films.filter((film) => film[filterBy]);
     }
-    if (this._filterBy !== 'all') {
-      updatedFilms = this._sourcedFilms.filter((film) => film[this._filterBy]);
+
+    if (sortBy !== 'default') {
+      updatedFilms.sort(compareValues(sortBy, 'desc'));
     }
-    if (this._sortBy !== 'default') {
-      updatedFilms.sort(compareValues(this._sortBy, 'desc'));
+
+    if (this._filterModel.getShowStatsFlag() === true) {
+      this._hide();
+    } else {
+      this._show();
     }
+
     this._films = updatedFilms;
     this._renderFilms();
   }
 
   /**
+   * Обработчик который будет исполнятся при _notify
+   * @param {Object} filterFilmsCount - количество фильмов
+   * Проверяет на наличие просмотренных фильмов
+   * Если есть то рисует плашку профиля
+   */
+  observeProfileHistory({filterFilmsCount}) {
+    if (filterFilmsCount.isViewed > 0) {
+      this._renderProfile();
+    }
+  }
+
+  /**
+   * Приватный метод скрытия интерфейса для показа статистики
+   */
+  _hide() {
+    this._statsComponent.show();
+    this._filmListComponent.hide();
+  }
+
+  /**
+   * Приватный метод показа интерфейса и скрытие статистики (противоположность this._hide)
+   */
+  _show() {
+    this._statsComponent.hide();
+    this._filmListComponent.show();
+  }
+
+  /**
    * Приватный метод рендера контейнера фильмов
-   * Вызывает методы рендера фильмов (в т.ч в категориях: по рейтингу и кол-ву комментариев)
+   * Вызывает метод инициализации презентера фильтров
+   * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
+    this._filterPresenter.init();
     render(this._filmsContainer, this._filmListComponent);
-    this._renderSort(this._filmsContainer);
-    this._renderMenu(this._filmsContainer);
+    if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
+      this._renderProfile();
+    }
     this._renderFilms();
+    render(this._filmsContainer, this._statsComponent);
+    this._statsComponent.hide();
   }
 
   /**
@@ -117,40 +184,12 @@ export default class FilmsList {
    */
   _renderProfile() {
     const prevProfile = this._profileComponent;
-    this._profileComponent = new ProfileView(this._filterFilmsCount.isViewed);
+    this._profileComponent = new ProfileView(this._filterModel.getFilterFilmsCount().isViewed);
     if (prevProfile) {
       replace(this._profileComponent, prevProfile);
     } else {
       render(siteBody.querySelector('.header'), this._profileComponent);
     }
-  }
-
-  /**
-   * Приватный метод рендера меню (фильтации)
-   */
-  _renderMenu() {
-    const prevMenu = this._menuComponent;
-    this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._filterBy);
-    if (prevMenu) {
-      this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
-      this._menuComponent = new SiteMenuView(this._filterFilmsCount, this._filterBy);
-      replace(this._menuComponent, prevMenu);
-    } else {
-      render(this._filmsContainer, this._menuComponent, RenderPosition.AFTERBEGIN);
-    }
-    this._menuComponent.setClickHandler((evt) => this._handleFilterItemClick(evt));
-  }
-
-  /**
-   * Приватный метод рендера определенной карточки фильма
-   * Вызывает метод инициализации презентера карточки фильма (FilmCardPresenter)
-   * @param {Object} film - данные о фильме
-   * @param {Object} container - контейнер куда надо отрисовать компонент фильма
-   */
-  _renderCard(film, container) {
-    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
-    filmPresenter.init(film);
-    this._filmPresenter[film.id] = filmPresenter;
   }
 
   /**
@@ -172,6 +211,17 @@ export default class FilmsList {
       .forEach((film) => this._renderCard(film, this._mainFilmList));
   }
 
+  /**
+   * Приватный метод рендера определенной карточки фильма
+   * Вызывает метод инициализации презентера карточки фильма (FilmCardPresenter)
+   * @param {Object} film - данные о фильме
+   * @param {Object} container - контейнер куда надо отрисовать компонент фильма
+   */
+  _renderCard(film, container) {
+    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
+    filmPresenter.init(film);
+    this._filmPresenter[film.id] = filmPresenter;
+  }
 
   /**
    * Приватный метод рендера кнопки ShowMore
@@ -190,8 +240,7 @@ export default class FilmsList {
    */
   _renderFilms() {
     this._renderFilmList(0, Math.min(this._films.length, this._renderedFilmsCount));
-
-    if (this._films.length > FILM_PER_PAGE) {
+    if (this._films.length > this._renderedFilmsCount) {
       this._renderLoadMore();
     }
   }
@@ -202,12 +251,11 @@ export default class FilmsList {
    * Удаляется кнопка showMore
    */
   _clearList() {
-    //  Перебираем все презентеры
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
-    this._renderedFilmsCount = FILM_PER_PAGE;
+    this._filterPresenter = {};
     remove(this._loadMoreComponent);
   }
 
@@ -216,17 +264,7 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmAction(updatedFilm) {
-    //  Нужна связка к this._sourcedFilms во вторичных презентерах
-
-    this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
-    this._films = updateItem(this._sourcedFilms, updatedFilm);
-    this._renderProfile();
-    this._renderMenu(this._filmsContainer);
-    if (!updatedFilm[this._filterBy]) {
-      this.update(this._renderedFilmsCount);
-    } else {
-      this._filmPresenter[updatedFilm.id].init(updatedFilm);
-    }
+    this._filmsModel.updateFilm(updatedFilm);
   }
 
   /**
@@ -235,22 +273,19 @@ export default class FilmsList {
    */
   _handlePopupOpen(film) {
     this._popupPresenter.init(film);
+
+    //Можно брать из модели...
+    const currentFilterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
+    this._filterModel.setFilterFilmsCount(currentFilterFilmsCount);
   }
 
   /**
    * Приватный метод обработки фильма (клик по интерфейсу попапа)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
+   * И добавление/удаление комментария
    */
-  _handlePopupChange(updatedFilm) {
-    this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
-    this._films = updateItem(this._sourcedFilms, updatedFilm);
-    if (!updatedFilm[this._filterBy]) {
-      this.update();
-    } else {
-      this._filmPresenter[updatedFilm.id].init(updatedFilm);
-    }
-    this._renderProfile();
-    this._renderMenu(this._filmsContainer);
+  _handlePopupAction(updatedFilm) {
+    this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
 
@@ -259,45 +294,13 @@ export default class FilmsList {
    * Передается аргументом в методе _renderLoadMore
    */
   _handleLoadMoreButtonClick() {
-    this._renderFilmList(this._renderedFilmsCount, this._renderedFilmsCount + FILM_PER_PAGE);
-    this._renderedFilmsCount += FILM_PER_PAGE;
+    this._renderFilmList(this._renderedFilmsCount, this._renderedFilmsCount + this._filmsPerPage);
+    this._renderedFilmsCount += this._filmsPerPage;
 
     if (this._renderedFilmsCount >= (this._films.length)) {
       this._loadMoreComponent.getElement().remove();
       this._loadMoreComponent.removeElement();
-      this._renderedFilmsCount = FILM_PER_PAGE;
+      this._renderedFilmsCount = this._filmsPerPage;
     }
-  }
-
-  /**
-   * Приватный метод, описывающий клик по панели фильтрации
-   * @param {Object} evt - объект событий
-   */
-  _handleFilterItemClick(evt) {
-    this._filterBy = evt.target.dataset.sort;
-    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
-    evt.target.classList.add('main-navigation__item--active');
-    this.update();
-  }
-
-  /**
-   * Приватный метод, описывающий клик по панели сортировки
-   * @param {Object} evt - объект событий
-   */
-  _handleSortItemClick(evt) {
-    this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
-    evt.target.classList.add('sort__button--active');
-    this._sortBy = evt.target.dataset.sort;
-    this.update();
-  }
-
-  /**
-   * Приватный метод обработки фильма (добавление/удаление комментария комментария)
-   * @param {object} updatedFilm - данные о фильме, которые нужно изменить (добавить комментарий)
-   */
-  _handlePopupCommentActions(updatedFilm) {
-    this._films = updateItem(this._sourcedFilms, updatedFilm);
-    this._filmPresenter[updatedFilm.id].init(updatedFilm);
-    this._popupPresenter.init(updatedFilm);
   }
 }
