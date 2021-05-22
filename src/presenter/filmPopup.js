@@ -1,9 +1,11 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
-import {render} from '../utils/render';
+import {render, RenderPosition} from '../utils/render';
 import {nanoid} from 'nanoid';
 import he from 'he';
+import getRandomInteger from '../utils/data';
+
 
 export default class FilmPopupPresenter {
 
@@ -12,7 +14,7 @@ export default class FilmPopupPresenter {
    * @param {Function} changeData - функция изменения данных
    * @constructor
    */
-  constructor(container, changeData, deleteComment, addComment) {
+  constructor(container, changeData, deleteComment, addComment, api) {
     //  Ссылки на DOM узлы
     this._container = container;
 
@@ -33,6 +35,9 @@ export default class FilmPopupPresenter {
 
     //  Слушатели
     this._closePopupHandler = this._closePopupHandler.bind(this);
+
+    //  Общение с сервером
+    this._api = api;
   }
 
   /**
@@ -41,9 +46,17 @@ export default class FilmPopupPresenter {
    */
   init(film) {
     this._film = film;
+
+    this._api.getComments(this._film.id).then((comments) => {
+      this._commentsListComponent = comments;
+    })
+    .catch(() => {
+      this._commentsListComponent = [];
+    });
+
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
-    this._commentsListComponent = new CommentsView(this._film.comments);
+    // this._commentsListComponent = new CommentsView(this._film.comments);
     if (prevPopup && this._container.classList.contains('hide-overflow')) {
       replace(this._popupComponent, prevPopup);
       this._container.classList.add('hide-overflow');
@@ -186,5 +199,42 @@ export default class FilmPopupPresenter {
     remove(this._popupComponent);
     this._container.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._closePopupHandler);
+  }
+
+  static adaptToClient(comment) {
+    const adaptedComment = Object.assign(
+        {},
+        comment,
+        {
+          info: {
+            author: comment.author,
+            text: comment.comment,
+            emotion: comment.emotion,
+          },
+        }
+    );
+
+    delete adaptedComment.author;
+    delete adaptedComment.comment;
+    delete adaptedComment.emotion;
+
+    return adaptedComment;
+  }
+
+  static adaptToServer(comment) {
+    const adaptedComment = Object.assign(
+        {},
+        comment,
+        {
+          "author": comment.info.author,
+          "comment": comment.info.text,
+          "emotion": comment.info.emotion,
+
+        }
+    );
+
+    delete adaptedComment.info;
+
+    return adaptedComment;
   }
 }

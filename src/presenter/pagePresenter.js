@@ -30,7 +30,7 @@ export default class PagePresenter {
    * @param {Object} films - массив с данными о фильмах
    * @constructor
    */
-  constructor (siteBody, siteMainElement, siteFooterStatistics, films) {
+  constructor (siteBody, siteMainElement, siteFooterStatistics, films, api) {
     this._siteBody = siteBody;
     this._siteMainElement = siteMainElement;
     this._siteFooterStatistics = siteFooterStatistics;
@@ -40,6 +40,8 @@ export default class PagePresenter {
     this._filterBy = 'all';
     this._sortBy = 'default';
     this._showStatsFlag = false;
+
+    this._api = api;
   }
 
   /**
@@ -49,7 +51,24 @@ export default class PagePresenter {
    * Запускает методы инициализации других презентеров
    */
   init () {
+
+    this._emptyPresenter = new EmptyPresenter(this._siteMainElement);
+
     this._filmsModel = new FilmsModel();
+
+    // this._api.getFilms().then((films) => {
+    //   console.log('then');
+    //   console.log(films);
+    //   this._filmsModel.setFilms(films);
+    //   console.log(this._filmsModel.getFilms());
+    // })
+    //   .catch(() => {
+    //     console.log('catch');
+    //     this._filmsModel.setFilms([]);
+    //     console.log(this._filmsModel.getFilms());
+    // });
+
+
     this._filmsModel.setFilms(this._films);
 
     this._filterModel = new FilterModel();
@@ -73,7 +92,7 @@ export default class PagePresenter {
     }
 
     this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);
-    this._filmsPresenter = new FilmsPresenter(this._siteMainElement, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.MAIN);
+    this._filmsPresenter = new FilmsPresenter(this._siteMainElement, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.MAIN, this._emptyPresenter, this._api);
     this._filmsPresenter.init(this._films);
   }
 
@@ -97,15 +116,14 @@ export default class PagePresenter {
    * Метод инициализации презентера при отсутствии фильмов
    */
   _initEmptyPresenter () {
-    const emptyPresenter = new EmptyPresenter(this._siteMainElement);
-    emptyPresenter.init();
+    this._emptyPresenter.init();
   }
 
   /**
    * Метод рендера нижнего компонента счетчика фильмов
    */
   _renderFooterComponent () {
-    render(this._siteFooterStatistics, new FooterStatisticsView(this._filmsCount));
+    render(this._siteFooterStatistics, new FooterStatisticsView(this._filmsModel.getFilms().length));
   }
 
 }

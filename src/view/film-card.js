@@ -8,7 +8,7 @@ import {formatDuration} from '../utils/time';
  * @return {string}
  */
 const createFilmCardTemplate = (film) => {
-
+  console.log(film);
   const {id, info, time, date, rating, isFavorite, isViewed, isWatchlist, genre, comments, description} = film;
 
   const year = dayjs(date).format('YYYY');
@@ -48,7 +48,7 @@ const createFilmCardTemplate = (film) => {
             <span class="film-card__duration">${formatDuration(time)}</span>
             <span class="film-card__genre">${genre[0]}</span>
           </p>
-          <img class="film-card__poster js-open-popup" src="./images/posters/${info.poster}" alt="">
+          <img class="film-card__poster js-open-popup" src="./${info.poster}" alt="">
           <p class="film-card__description">${sliceDescription()}</p>
           <a class="film-card__comments js-open-popup">${comments.length} comments</a>
           <div class="film-card__controls">

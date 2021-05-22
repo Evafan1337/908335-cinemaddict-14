@@ -5,6 +5,7 @@ import {
   from '../utils/dom';
 
 import {
+  RenderPosition,
   render}
   from '../utils/render';
 

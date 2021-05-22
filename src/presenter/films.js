@@ -2,6 +2,7 @@ import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
 import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
+import LoadingView from '../view/loading';
 import StatsView from '../view/stats';
 import {
   replace,
@@ -38,7 +39,7 @@ export default class FilmsList {
    * @param {number} filmsPerPage - количество фильмов для отрисовки за "проход"
    * @constructor
    */
-  constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage) {
+  constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage, emptyPresenter, api) {
 
     //  Модели
     this._filterModel = filterModel;
@@ -62,6 +63,12 @@ export default class FilmsList {
     this._renderedFilmsCount = filmsPerPage;
     this._filmsPerPage = filmsPerPage;
 
+    //  Флаги
+    this._isLoading = true;
+
+    //  Общение с сервером
+    this._api = api;
+
     //  Компоненты
     this._statsComponent = null;
     this._menuComponent = null;
@@ -73,8 +80,10 @@ export default class FilmsList {
     //  Ссылки на DOM узлы
     this._filmsContainer = filmsContainer;
     //  Верное ли именование?
-    this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
-    this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
+    // this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
+    // this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
+    this._mainFilmList = null;
+    this._loadMoreContainer = null;
     this._topRatedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
     this._topCommentedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
 
@@ -89,6 +98,7 @@ export default class FilmsList {
     this._filmPresenter = {};
     this._filterPresenter = filterPresenter;
     this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction);
+    this._emptyPresenter = emptyPresenter;
   }
 
 
@@ -96,6 +106,8 @@ export default class FilmsList {
    * Публичный метод инициализации
    */
   init() {
+    this._emptyPresenter.destroy();
+    remove(this._loadingComponent);
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
@@ -109,6 +121,12 @@ export default class FilmsList {
    * Которые будут перерисованы
    */
   observeFilms(films) {
+
+    if (this._isLoading) {
+      this._renderLoading();
+      this.init();
+    }
+
     this._sourcedFilms = films.slice();
     this._clearList();
     let updatedFilms = this._sourcedFilms;
@@ -162,14 +180,30 @@ export default class FilmsList {
     this._filmListComponent.show();
   }
 
+  _renderLoading() {
+    render(this._filmsContainer, this._loadingComponent.getElement(), RenderPosition.BEFOREEND);
+  }
+
   /**
    * Приватный метод рендера контейнера фильмов
    * Вызывает метод инициализации презентера фильтров
    * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
-    this._filterPresenter.init();
-    render(this._filmsContainer, this._filmListComponent);
+    // this._filterPresenter.init();
+    // render(this._filmsContainer, this._filmListComponent);
+    let prevList = this._filmList;
+    this._filmList = new FilmListView();
+
+    if (prevList) {
+      replace(this._filmList, prevList);
+    } else {
+      render(this._filmsContainer, this._filmList.getElement(), RenderPosition.BEFOREEND);
+
+    this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-main');
+    this._loadMoreContainer = this._filmList.getElement().querySelector('.js-films-container');
+
+
     if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
       this._renderProfile();
     }
