@@ -1,14 +1,14 @@
 import Films from './model/films';
-import FilmPopupPresenter from "./presenter/filmPopup";
+import CommentsModel from './model/comments';
 
 const Method = {
   GET: 'GET',
-  PUT: 'PUT'
+  PUT: 'PUT',
 };
 
 const SuccessHTTPStatusRange = {
   MIN: 200,
-  MAX: 299
+  MAX: 299,
 };
 
 export default class Api {
@@ -23,18 +23,18 @@ export default class Api {
       .then((films) => films.map(Films.adaptToClient));
   }
 
-  getComments(filmId) {
-    return this._load({url: 'comments/' + filmId})
+  getComments(film) {
+    return this._load({url: 'comments/' + film.id})
       .then(Api.toJSON)
-      .then((comments) => comments.map(FilmPopupPresenter.adaptToClient));
+      .then((comments) => comments.map(CommentsModel.adaptToClient));
   }
 
   updateFilm(film) {
     return this._load({
-      url: 'movies/${film.id}',
+      url: `movies/${film.id}`,
       method: Method.PUT,
       body: JSON.stringify(Films.adaptToServer(film)),
-      headers: new Headers({"Content-Type": 'application/json'})
+      headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
       .then(Films.adaptToClient);
@@ -44,13 +44,13 @@ export default class Api {
     url,
     method = Method.GET,
     body = null,
-    headers = new Headers()
+    headers = new Headers(),
   }) {
     headers.append('Authorization', this._authorization);
 
     return fetch(
-        `${this._endPoint}/${url}`,
-        {method, body, headers}
+      `${this._endPoint}/${url}`,
+      {method, body, headers},
     )
       .then(Api.checkStatus)
       .catch(Api.catchError);

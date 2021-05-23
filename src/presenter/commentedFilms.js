@@ -4,6 +4,8 @@ import {render} from '../utils/render';
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
 
+import CommentsModel from '../model/comments';
+
 //  Может в утилиты?
 const siteBody = document.querySelector('body');
 
@@ -20,13 +22,14 @@ export default class CommentedFilmsPresenter {
    * @param {number} filmsPerPage - количество фильмов для отрисовки за "проход"
    * @constructor
    */
-  constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage) {
+  constructor(filmsContainer, filmsModel, filterModel, filmsPerPage, api) {
 
     //  Ссылки на DOM узлы
     this._filmsContainer = filmsContainer;
     this._mainFilmList = null;
 
     //  Модели
+    this._commentsModel = new CommentsModel();
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._filmsModel.addObserver(this.observeFilms.bind(this));
@@ -34,6 +37,9 @@ export default class CommentedFilmsPresenter {
     //  Счетчики
     this._filmsPerPage = filmsPerPage;
     this._renderedFilmsCount = null;
+
+    //  Флаги
+    this._isLoading = true;
 
     //  Данные
     this._films = [];
@@ -47,8 +53,8 @@ export default class CommentedFilmsPresenter {
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
     //  Презентеры
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction);
-    this._filterPresenter = filterPresenter;
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment, this._commentsModel);
+    // this._filterPresenter = filterPresenter;
     this._filmPresenter = {};
 
   }
@@ -60,7 +66,10 @@ export default class CommentedFilmsPresenter {
     this._sourcedFilms = this._filmsModel.getFilms();
     this._films = this._sourcedFilms.slice().sort(compareValues('comments', 'desc'));
     this._renderedFilmsCount = this._filmsPerPage;
-    this._renderFilmsContainer();
+
+    if (this._films.length > 0) {
+      this._renderFilmsContainer();
+    }
   }
 
   /**
@@ -71,6 +80,11 @@ export default class CommentedFilmsPresenter {
    * По сути предусматривает изменение списка фильмов в "Most commented"
    */
   observeFilms(films, updatedFilm) {
+
+    if (this._isLoading) {
+      this.init();
+    }
+
     this._clearList();
     this._sourcedFilms = films.slice().sort(compareValues('comments', 'desc'));
     const updatedFilms = this._sourcedFilms;
@@ -89,7 +103,7 @@ export default class CommentedFilmsPresenter {
    * Вызывает методы рендера фильмов ()
    */
   _renderFilmsContainer() {
-    this._filterPresenter.init();
+    // this._filterPresenter.init();
     render(this._filmsContainer, this._filmListComponent);
     this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
     this._renderFilms();
@@ -139,7 +153,13 @@ export default class CommentedFilmsPresenter {
    * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
    */
   _handlePopupOpen(film) {
-    this._popupPresenter.init(film);
+    this._api.getComments(film).then((comments) => {
+      this._commentsModel.setCommentsFilm(comments, film);
+    })
+      .catch(() => {
+        this._commentsModel.setCommentsFilm([], {});
+      });
+    this._popupPresenter.init(film, this._commentsModel.getCommentsFilm());
   }
 
   /**

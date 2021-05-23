@@ -8,7 +8,6 @@ import {formatDuration} from '../utils/time';
  * @return {string}
  */
 const createFilmCardTemplate = (film) => {
-  console.log(film);
   const {id, info, time, date, rating, isFavorite, isViewed, isWatchlist, genre, comments, description} = film;
 
   const year = dayjs(date).format('YYYY');

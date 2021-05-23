@@ -24,6 +24,8 @@ import {
 import FilmCardPresenter from './filmCard';
 import FilmPopupPresenter from './filmPopup';
 
+import CommentsModel from '../model/comments';
+
 const siteBody = document.querySelector('body');
 
 /**
@@ -44,6 +46,7 @@ export default class FilmsList {
     //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
+    this._commentsModel = new CommentsModel();
 
     //  Добавление наблюдателей - обработчиков
     this._filmsModel.addObserver(this.observeFilms.bind(this));
@@ -75,7 +78,9 @@ export default class FilmsList {
     this._sortPanelComponent = new SortPanelView();
     this._filmListComponent = new FilmListView();
     this._loadMoreComponent = new LoadmoreView();
+    this._loadingComponent = new LoadingView();
     this._profileComponent = null;
+    this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterBy().isViewed));
 
     //  Ссылки на DOM узлы
     this._filmsContainer = filmsContainer;
@@ -97,7 +102,7 @@ export default class FilmsList {
     //  Презентеры
     this._filmPresenter = {};
     this._filterPresenter = filterPresenter;
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction, this._commentsModel);
     this._emptyPresenter = emptyPresenter;
   }
 
@@ -106,13 +111,17 @@ export default class FilmsList {
    * Публичный метод инициализации
    */
   init() {
-    this._emptyPresenter.destroy();
-    remove(this._loadingComponent);
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
-    this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterFilmsCount().isViewed));
-    this._renderFilmsContainer();
+
+    remove(this._loadingComponent);
+    this._filterPresenter.init();
+    if (this._sourcedFilms.length > 0) {
+      this._renderFilmsContainer();
+    } else {
+      this._emptyPresenter.init();
+    }
   }
 
   /**
@@ -127,8 +136,8 @@ export default class FilmsList {
       this.init();
     }
 
-    this._sourcedFilms = films.slice();
     this._clearList();
+    this._sourcedFilms = films.slice();
     let updatedFilms = this._sourcedFilms;
 
     const filterBy = this._filterModel.getFilterBy();
@@ -149,7 +158,13 @@ export default class FilmsList {
     }
 
     this._films = updatedFilms;
-    this._renderFilms();
+
+    if (this._films.length > 0) {
+      this._emptyPresenter.destroy();
+      this._renderFilms();
+    } else {
+      this._emptyPresenter.init();
+    }
   }
 
   /**
@@ -168,20 +183,24 @@ export default class FilmsList {
    * Приватный метод скрытия интерфейса для показа статистики
    */
   _hide() {
-    this._statsComponent.show();
-    this._filmListComponent.hide();
+    if (this._statsComponent !== null) {
+      this._statsComponent.show();
+      this._filmListComponent.hide();
+    }
   }
 
   /**
    * Приватный метод показа интерфейса и скрытие статистики (противоположность this._hide)
    */
   _show() {
-    this._statsComponent.hide();
-    this._filmListComponent.show();
+    if (this._statsComponent !== null) {
+      this._statsComponent.hide();
+      this._filmListComponent.show();
+    }
   }
 
   _renderLoading() {
-    render(this._filmsContainer, this._loadingComponent.getElement(), RenderPosition.BEFOREEND);
+    render(this._filmsContainer, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   /**
@@ -190,27 +209,36 @@ export default class FilmsList {
    * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
-    // this._filterPresenter.init();
-    // render(this._filmsContainer, this._filmListComponent);
     let prevList = this._filmList;
     this._filmList = new FilmListView();
 
     if (prevList) {
       replace(this._filmList, prevList);
     } else {
-      render(this._filmsContainer, this._filmList.getElement(), RenderPosition.BEFOREEND);
-
-    this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-main');
-    this._loadMoreContainer = this._filmList.getElement().querySelector('.js-films-container');
-
-
-    if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
-      this._renderProfile();
+      render(this._filmsContainer, this._filmList, RenderPosition.BEFOREEND);
     }
-    this._renderFilms();
-    render(this._filmsContainer, this._statsComponent);
-    this._statsComponent.hide();
+      this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-main');
+      this._loadMoreContainer = this._filmList.getElement().querySelector('.js-films-container');
+
+
+      if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
+        this._renderProfile();
+      }
+      this._renderFilms();
+      this._renderStats();
+      this._statsComponent.hide();
   }
+
+  _renderStats() {
+    let prevStats = this._stats;
+    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getFilterBy().isViewed));
+    if (prevStats) {
+      replace(this._statsComponent, prevStats);
+    } else {
+      render(this._filmsContainer, this._statsComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
 
   /**
    * Приватный метод рендера звания пользователя
@@ -289,7 +317,6 @@ export default class FilmsList {
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
-    this._filterPresenter = {};
     remove(this._loadMoreComponent);
   }
 
@@ -298,7 +325,9 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmAction(updatedFilm) {
-    this._filmsModel.updateFilm(updatedFilm);
+    this._api.updateFilm(updatedFilm).then((update) => {
+      this._filmsModel.updateFilm(update);
+    });
   }
 
   /**
@@ -306,11 +335,15 @@ export default class FilmsList {
    * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
    */
   _handlePopupOpen(film) {
-    this._popupPresenter.init(film);
 
-    //Можно брать из модели...
-    const currentFilterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
-    this._filterModel.setFilterFilmsCount(currentFilterFilmsCount);
+    this._api.getComments(film).then((comments) => {
+      this._commentsModel.setCommentsFilm(comments, film);
+    })
+      .catch(() => {
+        this._commentsModel.setCommentsFilm([], {});
+      });
+
+    this._popupPresenter.init(film);
   }
 
   /**
@@ -320,7 +353,11 @@ export default class FilmsList {
    */
   _handlePopupAction(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
-    this._popupPresenter.init(updatedFilm);
+    // this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
+    this._api.updateFilm(updatedFilm).then((update) => {
+      this._filmsModel.updateFilm(update);
+      this._popupPresenter.init(update, this._commentsModel.getCommentsFilm());
+    });
   }
 
   /**
