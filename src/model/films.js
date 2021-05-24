@@ -80,7 +80,7 @@ export default class Films extends Observer {
         isViewed: film.user_details.already_watched,
         isFavorite: film.user_details.favorite,
         watchedData: film.user_details.watching_date,
-      }
+      },
     );
 
     delete adaptedFilm.film_info;

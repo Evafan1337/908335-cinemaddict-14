@@ -1,5 +1,3 @@
-import RatedFilmsPresenter from './ratedFilms';
-import CommentedFilmsPresenter from './commentedFilms';
 import FilmsPresenter from './films';
 import EmptyPresenter from './empty';
 import FilterPresenter from './filter';
@@ -74,22 +72,6 @@ export default class PagePresenter {
   _initFilmsPresenter () {
     this._filmsPresenter = new FilmsPresenter(this._siteMainElement, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.MAIN, this._emptyPresenter, this._api);
     this._filmsPresenter.init(this._films);
-  }
-
-  /**
-   * Метод инициализации презентеров "вторичных" списков фильмов
-   */
-  _initSubFilmsPresenters () {
-    this._filmsExtraContainer = this._siteMainElement.querySelector('.films');
-
-    console.log(this._siteMainElement);
-    console.log(this._filmsExtraContainer);
-
-    this._ratedFilmsPresenter = new RatedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, FilmsPerSection.RATED, this._api);
-    this._commentedFilmsPresenter = new CommentedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, FilmsPerSection.COMMENTED, this._api);
-
-    this._ratedFilmsPresenter.init(this._films);
-    this._commentedFilmsPresenter.init(this._films);
   }
 
   /**

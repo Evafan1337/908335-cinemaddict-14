@@ -123,10 +123,8 @@ export default class FilterPresenter {
    * Обработчик клика по элементам компонента статистики
    * @param {Object} evt - объект события
    */
-  _handleStatsItemClick(evt) {
+  _handleStatsItemClick() {
     this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true);
-    // this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
-    // evt.target.classList.add('main-navigation__item--active');
     this._hideSort();
   }
 

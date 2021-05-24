@@ -17,12 +17,11 @@ import {
   RenderPosition}
   from '../utils/render';
 import {
-  compareValues,
-  filmsInfoSort,
-  getFilmsInfoSortLength}
+  compareValues}
   from '../utils/sort';
 import {
-  profileRating
+  profileRating,
+  FilmsPerSection
 } from '../utils/const';
 
 import FilmCardPresenter from './filmCard';
@@ -80,22 +79,15 @@ export default class FilmsList {
     this._statsComponent = null;
     this._menuComponent = null;
     this._sortPanelComponent = new SortPanelView();
-    // this._filmListComponent = new FilmListView();
     this._filmListComponent = null;
     this._loadMoreComponent = new LoadmoreView();
     this._loadingComponent = new LoadingView();
     this._profileComponent = null;
-    // this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterBy().isViewed));
 
     //  Ссылки на DOM узлы
     this._filmsContainer = filmsContainer;
-    //  Верное ли именование?
-    // this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
-    // this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
     this._mainFilmList = null;
     this._loadMoreContainer = null;
-    // this._topRatedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
-    // this._topCommentedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
 
     //  Слушатели
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
@@ -109,7 +101,6 @@ export default class FilmsList {
 
     //  Презентеры
     this._filmPresenter = {};
-
     this._topRatedFilmsPresenter = {};
     this._topCommentedPresenter = {};
 
@@ -117,7 +108,6 @@ export default class FilmsList {
     this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handleDeleteComment, this._handleAddComment, this._commentsModel);
     this._emptyPresenter = emptyPresenter;
   }
-
 
   /**
    * Публичный метод инициализации
@@ -164,10 +154,8 @@ export default class FilmsList {
     }
 
     if (this._filterModel.getShowStatsFlag() === true) {
-      console.log('this._filterModel.getShowStatsFlag() === true');
       this._hide();
     } else {
-      console.log('this._filterModel.getShowStatsFlag() === false');
       this._show();
     }
 
@@ -198,7 +186,6 @@ export default class FilmsList {
    */
   _hide() {
     if (this._statsComponent !== null) {
-      console.log(this._statsComponent);
       this._statsComponent.show();
       this._filmListComponent.hide();
     }
@@ -259,14 +246,11 @@ export default class FilmsList {
   }
 
   _renderStats() {
-    console.log('_renderStats');
     const prevStats = this._statsComponent;
     this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
-      console.log('prevStats');
       replace(this._statsComponent, prevStats);
     } else {
-      console.log('else prevStats');
       render(this._filmsContainer, this._statsComponent, RenderPosition.BEFOREEND);
     }
   }
@@ -306,23 +290,23 @@ export default class FilmsList {
   }
 
   _renderTopRatedFilmList(){
-    let films = this._filmsModel.getFilms()
+    this._filmsModel.getFilms()
       .sort(compareValues('rating', 'desc'))
-      .slice(0,2)
+      .slice(0,FilmsPerSection.RATED)
       .forEach((film) => this._renderTopRatedFilmCard(film, this._topRatedFilmList));
   }
 
   _renderTopCommentedFilmList(){
-    let films = this._filmsModel.getFilms()
+    this._filmsModel.getFilms()
       .sort(compareValues('comments', 'desc'))
-      .slice(0,2)
+      .slice(0,FilmsPerSection.COMMENTED)
       .forEach((film) => this._renderTopCommentedFilmCard(film, this._topCommentedFilmList));
   }
 
   _renderTopRatedFilmCard(film, container) {
     const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
     filmPresenter.init(film);
-    this._topRatedFilmsPresenter[film.id] = filmPresenter
+    this._topRatedFilmsPresenter[film.id] = filmPresenter;
   }
 
   _renderTopCommentedFilmCard(film, container) {
@@ -379,7 +363,6 @@ export default class FilmsList {
   }
 
   _handleStatsDisplay() {
-    console.log('_handleStatsDisplay');
     this._statsComponent.show();
     this._filmListComponent.hide();
   }

@@ -3,8 +3,6 @@ import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
 import {render} from '../utils/render';
 import he from 'he';
-import getRandomInteger from '../utils/data';
-
 
 export default class FilmPopupPresenter {
 
