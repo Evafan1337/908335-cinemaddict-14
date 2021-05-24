@@ -162,10 +162,11 @@ export default class FilmPopupPresenter {
    */
   _removeComment(evt) {
     this._posScroll = this.getPositionScroll();
-    const commentId = evt.target.closest('.film-details__comment').getAttribute('id');
-    const commentInd = this._film.comments.findIndex((item) => item.id === commentId);
-    this._film.comments.splice(commentInd, 1);
-    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._posScroll);
+    const commentId = evt.target.closest('.film-details__comment').dataset.id;
+    let commentInd = this._comments.findIndex((item) => item.id === commentId);
+    let filmsCommentInd = this._film.comments.findIndex((item) => item.id === commentId);
+    this._film.comments.splice(filmsCommentInd, 1);
+    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._comments[commentInd]);
   }
 
   /**

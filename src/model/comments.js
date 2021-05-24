@@ -1,39 +1,59 @@
 import Observer from './observer';
 
+/**
+ * Класс описывает модель комментариев
+ * Привязывается к модели фильма и вызывается в контексте другой модели
+ * @extends Observer
+ */
 export default class CommentsModel extends Observer {
+
+  /**
+   * Конструктор
+   * Выполняется конструктор родительского класса
+   * Объявляется массив данных комментариев
+   * @constructor
+   */
   constructor() {
     super();
     this._commentList = [];
   }
 
+  /**
+   * Установить комментарии для выбранного фильма (film)
+   * @param {Array} comments - непосредственно массив объектов комментариев
+   * @param {Object} film - фильм, для которого нужно установить комментарии
+   */
   setCommentsFilm(comments, film) {
     this._commentList = comments.slice();
     this._notify(this._commentList, film);
   }
 
+  /**
+   * Получить комментарии
+   */
   getCommentsFilm() {
     return this._commentList;
   }
 
   addComment(comments, film) {
+    console.log('addComment')
     this._commentList = comments.slice();
 
     this._notify(this._commentList, film);
   }
 
-  updateComment(update) {
-    const index = this._commentList.findIndex((comment) => comment.id === update.id);
+  removeComment(removed, film) {
+    console.log('removeComment');
+    console.log(removed);
+    console.log(film);
+    const index = this._commentList.findIndex((comment) => comment.id === removed.id);
 
     if (index === -1) {
       throw new Error('Can not update unexisting film');
     }
 
-    this._commentList = [
-      ...this._commentList.slice(0, index),
-      update,
-      ...this._commentList.slice(index + 1)
-    ];
-    this._notify(this._commentList, update);
+    this._commentList.splice(index, 1);
+    this._notify(this._commentList, film);
   }
 
   static adaptToClient(comment) {

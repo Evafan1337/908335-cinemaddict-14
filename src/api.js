@@ -128,9 +128,6 @@ export default class Api {
    * Иначе бросает ошибку
    */
   static checkStatus(response) {
-    console.log('checkStatus');
-    console.log(response);
-    console.log(typeof(response));
     if (
       response.status < SuccessHTTPStatusRange.MIN ||
       response.status > SuccessHTTPStatusRange.MAX

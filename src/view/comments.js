@@ -13,7 +13,7 @@ import {render} from '../utils/render';
  */
 const createCommentTemplate = (comment) => {
   const {info: {emotion, text, author}, date, id} = comment;
-  return `<li class="film-details__comment" id="${id}">
+  return `<li class="film-details__comment" data-id="${id}">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
             </span>
@@ -45,8 +45,6 @@ const createEmojiLabel = (emotion) => {
  * @return {string}
  */
 export const createCommentsTemplate = (comments) => {
-
-  console.log(comments);
 
   return `<section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
@@ -97,7 +95,6 @@ export default class Comments extends SmartView {
    * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
-    console.log(this._comments);
     return createCommentsTemplate(this._comments);
   }
 

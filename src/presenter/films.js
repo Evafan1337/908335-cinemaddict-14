@@ -376,6 +376,7 @@ export default class FilmsList {
 
   _handleDeleteComment(updatedFilm, comment) {
     console.log('_handleDeleteComment');
+    console.log(comment);
     this._api.deleteComment(comment).then(() => {
       this._commentsModel.removeComment(comment, updatedFilm);
     });
