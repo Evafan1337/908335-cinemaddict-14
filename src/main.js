@@ -20,6 +20,7 @@ console.log(api);
 
 api.getFilms().then((films) => {
 	console.log(films);
+	// films = [];
 	const pagePresenter = new PagePresenter(siteBody, siteMainElement, siteFooterStatistics, films, api);
 	pagePresenter.init();
 })

@@ -352,6 +352,7 @@ export default class FilmsList {
    * И добавление/удаление комментария
    */
   _handlePopupAction(updatedFilm) {
+    console.log('_handlePopupAction');
     this._filmsModel.updateFilm(updatedFilm);
     // this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
     this._api.updateFilm(updatedFilm).then((update) => {

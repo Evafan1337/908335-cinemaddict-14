@@ -100,8 +100,10 @@ export default class FilmPopupPresenter {
    * Приватный метод обработчика создания комментария
    */
   _handleFormSubmit() {
-    this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
+    // this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
+    document.addEventListener('keydown', (evt) => {
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
+        console.log('_handleFormSubmit');
         evt.preventDefault();
         this.submitFormComments();
       }
