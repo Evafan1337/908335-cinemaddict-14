@@ -247,6 +247,10 @@ export default class FilmsList {
    * Вызывается если у пользователя есть хотя бы один просмотренный фильм
    */
   _renderProfile() {
+
+    console.log('_renderProfile');
+    console.log(this._filterModel.getFilterFilmsCount().isViewed);
+
     const prevProfile = this._profileComponent;
     this._profileComponent = new ProfileView(this._filterModel.getFilterFilmsCount().isViewed);
     if (prevProfile) {

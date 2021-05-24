@@ -75,9 +75,9 @@ export default class PagePresenter {
    */
   _initFilmsPresenter () {
 
-    if(this._filmsModel.getFilms().length == 0) {
-      this._initEmptyPresenter();
-    }
+    // if(this._filmsModel.getFilms().length == 0) {
+    //   this._initEmptyPresenter();
+    // }
 
     this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);
     this._filmsPresenter = new FilmsPresenter(this._siteMainElement, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.MAIN, this._emptyPresenter, this._api);
@@ -89,9 +89,9 @@ export default class PagePresenter {
    * Метод инициализации презентеров "вторичных" списков фильмов
    */
   _initSubFilmsPresenters () {
-    if(this._filmsModel.getFilms().length == 0) {
-      return;
-    }
+    // if(this._filmsModel.getFilms().length == 0) {
+    //   return;
+    // }
 
     this._filmsExtraContainer = this._siteMainElement.querySelector('.films');
     this._ratedFilmsPresenter = new RatedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.RATED, this._api);
