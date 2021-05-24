@@ -114,17 +114,13 @@ export default class Comments extends SmartView {
   }
 
   setFormShaking() {
-    // console.log(this.getElement());
     this.getElement().classList.add('shake');
   }
 
   setCommentShaking(comment) {
-    console.log('setCommentShaking');
-    console.log(comment);
     for (const elem of this.getElement().querySelectorAll('.film-details__comment')){
-      console.log(elem);
       if(elem.dataset.id === comment.id) {
-        elem.classList.add(shake);
+        elem.classList.add('shake');
       }
     }
   }

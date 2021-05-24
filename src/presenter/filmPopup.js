@@ -100,7 +100,6 @@ export default class FilmPopupPresenter {
     // this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
     document.addEventListener('keydown', (evt) => {
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
-        console.log('filmPopup: _handleFormSubmit');
         evt.preventDefault();
         this.submitFormComments();
       }
@@ -113,7 +112,6 @@ export default class FilmPopupPresenter {
    * Обновление исходных данных
    */
   submitFormComments() {
-    console.log('filmPopup: _handleFormSubmit');
     this._posScroll = this.getPositionScroll();
     const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
     const emotions = document.querySelectorAll('.film-details__emoji-item');
@@ -167,7 +165,6 @@ export default class FilmPopupPresenter {
    * @param {Object} evt - объект событий
    */
   _removeComment(evt) {
-    console.log('_removeComment');
     this._popupComponent.changeDeleteButtonText();
 
     this._posScroll = this.getPositionScroll();
