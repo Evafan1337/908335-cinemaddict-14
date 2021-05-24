@@ -5,7 +5,7 @@ const Method = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
 };
 
 const SuccessHTTPStatusRange = {
@@ -23,7 +23,7 @@ export default class Api {
    * Конструктор
    * @param {string} endPoint - url для доступа
    * @param {string} authorization - токен для авторизации
-   * @constructor 
+   * @constructor
    */
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
@@ -77,10 +77,10 @@ export default class Api {
    */
   addComment(comment, film) {
     return this._load({
-      url: `comments/` + film.id,
+      url: 'comments/' + film.id,
       method: Method.POST,
       body: JSON.stringify(CommentsModel.adaptToServer(comment)),
-      headers: new Headers({"Content-Type": `application/json`})
+      headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
       .then(CommentsModel.adaptToClientAddCommented);
@@ -94,7 +94,7 @@ export default class Api {
   deleteComment(comment) {
     return this._load({
       url: `comments/${comment.id}`,
-      method: Method.DELETE
+      method: Method.DELETE,
     });
   }
 

@@ -36,16 +36,12 @@ export default class CommentsModel extends Observer {
   }
 
   addComment(comments, film) {
-    console.log('addComment')
     this._commentList = comments.slice();
 
     this._notify(this._commentList, film);
   }
 
   removeComment(removed, film) {
-    console.log('removeComment');
-    console.log(removed);
-    console.log(film);
     const index = this._commentList.findIndex((comment) => comment.id === removed.id);
 
     if (index === -1) {
@@ -58,15 +54,15 @@ export default class CommentsModel extends Observer {
 
   static adaptToClient(comment) {
     const adaptedComment = Object.assign(
-        {},
-        comment,
-        {
-          info: {
-            author: comment.author,
-            text: comment.comment,
-            emotion: comment.emotion,
-          },
-        }
+      {},
+      comment,
+      {
+        info: {
+          author: comment.author,
+          text: comment.comment,
+          emotion: comment.emotion,
+        },
+      },
     );
 
     delete adaptedComment.author;
@@ -77,17 +73,14 @@ export default class CommentsModel extends Observer {
   }
 
   static adaptToServer(comment) {
-    console.log('adaptToServer');
-    console.log(comment);
     const adaptedComment = Object.assign(
-        {},
-        comment,
-        {
-          "author": comment.info.author,
-          "comment": comment.info.text,
-          "emotion": comment.info.emotion,
-
-        }
+      {},
+      comment,
+      {
+        'author': comment.info.author,
+        'comment': comment.info.text,
+        'emotion': comment.info.emotion,
+      },
     );
 
     delete adaptedComment.info;
@@ -99,15 +92,15 @@ export default class CommentsModel extends Observer {
     const updatedComment = [];
     update.comments.map((comment) => {
       comment = Object.assign(
-          {},
-          comment,
-          {
-            info: {
-              author: comment.author,
-              text: comment.comment,
-              emotion: comment.emotion,
-            },
-          }
+        {},
+        comment,
+        {
+          info: {
+            author: comment.author,
+            text: comment.comment,
+            emotion: comment.emotion,
+          },
+        },
       );
 
       delete comment.author;
@@ -119,29 +112,29 @@ export default class CommentsModel extends Observer {
 
     const film = update.movie;
     const adaptedFilm = Object.assign(
-        {},
-        film,
-        {
-          actors: film.film_info.actors,
-          age: film.film_info.age_rating,
-          info: {
-            originTitle: film.film_info.alternative_title,
-            poster: film.film_info.poster,
-            title: film.film_info.title,
-          },
-          description: film.film_info.description,
-          regisseur: film.film_info.director,
-          genre: film.film_info.genre,
-          date: film.film_info.release.date,
-          country: film.film_info.release.release_country,
-          time: film.film_info.runtime,
-          rating: film.film_info.total_rating,
-          screenwriters: film.film_info.writers,
-          isWatchlist: film.user_details.watchlist,
-          isViewed: film.user_details.already_watched,
-          isFavorite: film.user_details.favorite,
-          watchedData: film.user_details.watching_date
-        }
+      {},
+      film,
+      {
+        actors: film.film_info.actors,
+        age: film.film_info.age_rating,
+        info: {
+          originTitle: film.film_info.alternative_title,
+          poster: film.film_info.poster,
+          title: film.film_info.title,
+        },
+        description: film.film_info.description,
+        regisseur: film.film_info.director,
+        genre: film.film_info.genre,
+        date: film.film_info.release.date,
+        country: film.film_info.release.release_country,
+        time: film.film_info.runtime,
+        rating: film.film_info.total_rating,
+        screenwriters: film.film_info.writers,
+        isWatchlist: film.user_details.watchlist,
+        isViewed: film.user_details.already_watched,
+        isFavorite: film.user_details.favorite,
+        watchedData: film.user_details.watching_date,
+      },
     );
 
     delete adaptedFilm.film_info;

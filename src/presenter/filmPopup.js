@@ -1,8 +1,7 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
-import {render, RenderPosition} from '../utils/render';
-import {nanoid} from 'nanoid';
+import {render} from '../utils/render';
 import he from 'he';
 import getRandomInteger from '../utils/data';
 
@@ -103,7 +102,6 @@ export default class FilmPopupPresenter {
     // this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
     document.addEventListener('keydown', (evt) => {
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
-        console.log('_handleFormSubmit');
         evt.preventDefault();
         this.submitFormComments();
       }
@@ -163,8 +161,8 @@ export default class FilmPopupPresenter {
   _removeComment(evt) {
     this._posScroll = this.getPositionScroll();
     const commentId = evt.target.closest('.film-details__comment').dataset.id;
-    let commentInd = this._comments.findIndex((item) => item.id === commentId);
-    let filmsCommentInd = this._film.comments.findIndex((item) => item.id === commentId);
+    const commentInd = this._comments.findIndex((item) => item.id === commentId);
+    const filmsCommentInd = this._film.comments.findIndex((item) => item.id === commentId);
     this._film.comments.splice(filmsCommentInd, 1);
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._comments[commentInd]);
   }

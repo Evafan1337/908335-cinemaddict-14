@@ -7,7 +7,6 @@ import Api from './api';
 const FILM_COUNT = 22;
 // const FILM_COUNT = 7;
 
-const films = generateFilms(FILM_COUNT);
 
 const siteBody = document.querySelector('body');
 const siteMainElement = siteBody.querySelector('.main');
@@ -18,8 +17,8 @@ const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 const api = new Api(END_POINT, AUTHORIZATION);
 
 api.getFilms().then((films) => {
-	//	Для проверки при 0 фильмов
-	// films = [];
-	const pagePresenter = new PagePresenter(siteBody, siteMainElement, siteFooterStatistics, films, api);
-	pagePresenter.init();
-})
+  //	Для проверки при 0 фильмов
+  // films = [];
+  const pagePresenter = new PagePresenter(siteBody, siteMainElement, siteFooterStatistics, films, api);
+  pagePresenter.init();
+});

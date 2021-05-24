@@ -5,7 +5,6 @@ import {
   from '../utils/dom';
 
 import {
-  RenderPosition,
   render}
   from '../utils/render';
 
@@ -60,7 +59,6 @@ export default class FilterPresenter {
    */
   observeFilter() {
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
-    console.log(filmsInfoSortLength);
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();
   }

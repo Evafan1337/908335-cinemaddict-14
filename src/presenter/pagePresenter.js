@@ -56,18 +56,6 @@ export default class PagePresenter {
 
     this._filmsModel = new FilmsModel();
 
-    // this._api.getFilms().then((films) => {
-    //   console.log('then');
-    //   console.log(films);
-    //   this._filmsModel.setFilms(films);
-    //   console.log(this._filmsModel.getFilms());
-    // })
-    //   .catch(() => {
-    //     console.log('catch');
-    //     this._filmsModel.setFilms([]);
-    //     console.log(this._filmsModel.getFilms());
-    // });
-
 
     this._filmsModel.setFilms(this._films);
 
@@ -93,8 +81,7 @@ export default class PagePresenter {
 
     this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);
     this._filmsPresenter = new FilmsPresenter(this._siteMainElement, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.MAIN, this._emptyPresenter, this._api);
-    
-    // console.log(this._films);
+
     this._filmsPresenter.init(this._films);
   }
 

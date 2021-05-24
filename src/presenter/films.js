@@ -211,7 +211,7 @@ export default class FilmsList {
    * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
-    let prevList = this._filmList;
+    const prevList = this._filmList;
     this._filmList = new FilmListView();
 
     if (prevList) {
@@ -219,21 +219,21 @@ export default class FilmsList {
     } else {
       render(this._filmsContainer, this._filmList, RenderPosition.BEFOREEND);
     }
-      this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-main');
-      this._loadMoreContainer = this._filmList.getElement().querySelector('.js-films-container');
+    this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-main');
+    this._loadMoreContainer = this._filmList.getElement().querySelector('.js-films-container');
 
 
-      if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
-        this._renderProfile();
-      }
-      this._renderFilms();
-      this._renderStats();
-      this._statsComponent.hide();
+    if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
+      this._renderProfile();
+    }
+    this._renderFilms();
+    this._renderStats();
+    this._statsComponent.hide();
   }
 
   _renderStats() {
-    let prevStats = this._stats;
-    this._statsComponent = new StatsView(this._sourcedFilms, `ALL_TIME`, profileRating(this._filterModel.getFilterBy().isViewed));
+    const prevStats = this._stats;
+    this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
       replace(this._statsComponent, prevStats);
     } else {
@@ -354,7 +354,6 @@ export default class FilmsList {
    * И добавление/удаление комментария
    */
   _handlePopupAction(updatedFilm) {
-    console.log('_handlePopupAction');
     this._filmsModel.updateFilm(updatedFilm);
     // this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
     this._api.updateFilm(updatedFilm).then((update) => {
@@ -364,9 +363,6 @@ export default class FilmsList {
   }
 
   _handleAddComment(updatedFilm, comment) {
-    console.log('_handleAddComment');
-    console.log(updatedFilm);
-    console.log(comment);
     this._api.addComment(comment, updatedFilm).then((update) => {
       this._commentsModel.addComment(update[1], update[0]);
       this._filmsModel.updateFilm(update[0]);
@@ -375,8 +371,6 @@ export default class FilmsList {
   }
 
   _handleDeleteComment(updatedFilm, comment) {
-    console.log('_handleDeleteComment');
-    console.log(comment);
     this._api.deleteComment(comment).then(() => {
       this._commentsModel.removeComment(comment, updatedFilm);
     });

@@ -71,7 +71,7 @@ export default class RatedFilmsPresenter {
     this._films = this._sourcedFilms.slice().sort(compareValues('comments', 'desc'));
     this._renderedFilmsCount = this._filmsPerPage;
     // this._renderFilmsContainer();
-    
+
     if (this._films.length > 0) {
       this._renderFilmsContainer();
     }
