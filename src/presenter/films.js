@@ -98,11 +98,13 @@ export default class FilmsList {
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
     // this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
+    this._handleAddComment = this._handleAddComment.bind(this);
+    this._handleDeleteComment = this._handleDeleteComment.bind(this);
 
     //  Презентеры
     this._filmPresenter = {};
     this._filterPresenter = filterPresenter;
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction, this._commentsModel);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handleDeleteComment, this._handleAddComment, this._commentsModel);
     this._emptyPresenter = emptyPresenter;
   }
 
@@ -359,6 +361,28 @@ export default class FilmsList {
       this._filmsModel.updateFilm(update);
       this._popupPresenter.init(update, this._commentsModel.getCommentsFilm());
     });
+  }
+
+  _handleAddComment(updatedFilm, comment) {
+    console.log('_handleAddComment');
+    console.log(updatedFilm);
+    console.log(comment);
+    this._api.addComment(comment, updatedFilm).then((update) => {
+      this._commentsModel.addComment(update[1], update[0]);
+      this._filmsModel.updateFilm(update[0]);
+      this._popupPresenter.init(update[0], this._commentsModel.getCommentsFilm());
+    });
+  }
+
+  _handleDeleteComment(updatedFilm, comment) {
+    console.log('_handleDeleteComment');
+    this._api.deleteComment(comment).then(() => {
+      this._commentsModel.removeComment(comment, updatedFilm);
+    });
+    this._api.updateFilm(updatedFilm).then((update) => {
+      this._filmsModel.updateFilm(update);
+    });
+    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
   }
 
   /**

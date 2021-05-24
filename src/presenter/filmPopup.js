@@ -116,10 +116,11 @@ export default class FilmPopupPresenter {
    * Обновление исходных данных
    */
   submitFormComments() {
-    const posScroll = this.getPositionScroll();
+    this._posScroll = this.getPositionScroll();
     const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
     const emotions = document.querySelectorAll('.film-details__emoji-item');
     let currentEmotion;
+
     for (const emotion of emotions) {
       if (emotion.checked) {
         currentEmotion = emotion.value;
@@ -127,7 +128,6 @@ export default class FilmPopupPresenter {
     }
     if (currentEmotion !== null && text) {
       const newComment = {
-        id: nanoid(),
         info: {
           text: he.encode(text.value),
           author: '',
@@ -135,8 +135,7 @@ export default class FilmPopupPresenter {
         },
         date: new Date(),
       };
-      this._film.comments.push(newComment);
-      this._addComment(Object.assign({}, this._film, {comments: this._film.comments}), posScroll);
+      this._addComment(this._film, newComment);
     }
   }
 
