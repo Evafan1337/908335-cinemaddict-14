@@ -24,7 +24,6 @@ export const FilmsPerSection = {
  * @param {number} count - количество просмотренных фильмов
  */
 export const profileRating = (count) => {
-  console.log('const.js profileRating:', count);
   if (count > 1 && count <= 10) {
     return UserRank.NOVICE;
   } else if (count > 10 && count <= 20) {

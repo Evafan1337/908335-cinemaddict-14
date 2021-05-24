@@ -52,21 +52,19 @@ export default class PagePresenter {
    */
   init () {
 
-    this._emptyPresenter = new EmptyPresenter(this._siteMainElement);
-
-    this._filmsModel = new FilmsModel();
-
-
-    this._filmsModel.setFilms(this._films);
-
     this._filterModel = new FilterModel();
     this._filterModel.setSortType(this._sortBy, this._filterBy, this._showStatsFlag);
-
     this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
     this._filterModel.setFilterFilmsCount(this._filterFilmsCount);
 
+    this._filmsModel = new FilmsModel();
+    this._filmsModel.setFilms(this._films);
+
+    this._emptyPresenter = new EmptyPresenter(this._siteMainElement);
+    this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);
+
     this._initFilmsPresenter();
-    this._initSubFilmsPresenters();
+    // this._initSubFilmsPresenters();
     this._renderFooterComponent();
   }
 
@@ -74,14 +72,7 @@ export default class PagePresenter {
    * Метод инициализации презентера главного списка фильмов
    */
   _initFilmsPresenter () {
-
-    // if(this._filmsModel.getFilms().length == 0) {
-    //   this._initEmptyPresenter();
-    // }
-
-    this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);
     this._filmsPresenter = new FilmsPresenter(this._siteMainElement, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.MAIN, this._emptyPresenter, this._api);
-
     this._filmsPresenter.init(this._films);
   }
 
@@ -89,13 +80,13 @@ export default class PagePresenter {
    * Метод инициализации презентеров "вторичных" списков фильмов
    */
   _initSubFilmsPresenters () {
-    // if(this._filmsModel.getFilms().length == 0) {
-    //   return;
-    // }
-
     this._filmsExtraContainer = this._siteMainElement.querySelector('.films');
-    this._ratedFilmsPresenter = new RatedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.RATED, this._api);
-    this._commentedFilmsPresenter = new CommentedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, this._filterPresenter, FilmsPerSection.COMMENTED, this._api);
+
+    console.log(this._siteMainElement);
+    console.log(this._filmsExtraContainer);
+
+    this._ratedFilmsPresenter = new RatedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, FilmsPerSection.RATED, this._api);
+    this._commentedFilmsPresenter = new CommentedFilmsPresenter(this._filmsExtraContainer, this._filmsModel, this._filterModel, FilmsPerSection.COMMENTED, this._api);
 
     this._ratedFilmsPresenter.init(this._films);
     this._commentedFilmsPresenter.init(this._films);

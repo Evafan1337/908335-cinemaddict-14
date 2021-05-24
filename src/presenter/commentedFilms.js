@@ -53,7 +53,7 @@ export default class CommentedFilmsPresenter {
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
     //  Презентеры
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupChange, this._handlePopupRemoveComment, this._handleAddComment, this._commentsModel);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handleDeleteComment, this._handleAddComment, this._commentsModel);
     // this._filterPresenter = filterPresenter;
     this._filmPresenter = {};
 
@@ -94,7 +94,10 @@ export default class CommentedFilmsPresenter {
     }
 
     this._films = updatedFilms.slice().sort(compareValues('comments', 'desc'));
-    this._renderFilms();
+    if (this. _films.length > 0){
+      console.log('_renderFilms');
+      this._renderFilms();
+    }
   }
 
   /**
@@ -103,10 +106,32 @@ export default class CommentedFilmsPresenter {
    * Вызывает методы рендера фильмов ()
    */
   _renderFilmsContainer() {
-    // this._filterPresenter.init();
     render(this._filmsContainer, this._filmListComponent);
     this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
     this._renderFilms();
+  }
+
+  /**
+   * Приватный метод отрисовки фильмов
+   * Вызывает метод _renderFilmList
+   */
+  _renderFilms() {
+    console.log('_renderFilms:', this._renderedFilmsCount);
+    this._renderFilmList(0, Math.min(this._films.length, this._renderedFilmsCount));
+  }
+
+  /**
+   * Приватный метод рендера определенного количества фильмов
+   * @param {number} from - индекс с какого необходимо начать отрисовку
+   * @param {number} to - индекс до какого элемента необходимо произвести отрисовку
+   */
+  _renderFilmList(from, to) {
+    console.log('_renderFilmList');
+    console.log(from);
+    console.log(to);
+    this._films
+      .slice(from, to)
+      .forEach((film) => this._renderCard(film, this._mainFilmList));
   }
 
   /**
@@ -116,28 +141,12 @@ export default class CommentedFilmsPresenter {
    * @param {Object} container - контейнер куда надо отрисовать компонент фильма
    */
   _renderCard(film, container) {
+    console.log('_renderCard');
+    console.log(film);
+    console.log(container);
     const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
-  }
-
-  /**
-   * Приватный метод рендера определенного количества фильмов
-   * @param {number} from - индекс с какого необходимо начать отрисовку
-   * @param {number} to - индекс до какого элемента необходимо произвести отрисовку
-   */
-  _renderFilmList(from, to) {
-    this._films
-      .slice(from, to)
-      .forEach((film) => this._renderCard(film, this._mainFilmList));
-  }
-
-  /**
-   * Приватный метод отрисовки фильмов
-   * Вызывает метод _renderFilmList
-   */
-  _renderFilms() {
-    this._renderFilmList(0, Math.min(this._films.length, this._renderedFilmsCount));
   }
 
   /**
@@ -172,12 +181,31 @@ export default class CommentedFilmsPresenter {
     this._popupPresenter.init(updatedFilm);
   }
 
+  _handleAddComment(updatedFilm, comment) {
+    this._api.addComment(comment, updatedFilm).then((update) => {
+      this._commentsModel.addComment(update[1], update[0]);
+      this._filmsModel.updateFilm(update[0]);
+      this._popupPresenter.init(update[0], this._commentsModel.getCommentsFilm());
+    });
+  }
+
+  _handleDeleteComment(updatedFilm, comment) {
+    this._api.deleteComment(comment).then(() => {
+      this._commentsModel.removeComment(comment, updatedFilm);
+    });
+    this._api.updateFilm(updatedFilm).then((update) => {
+      this._filmsModel.updateFilm(update);
+    });
+    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
+  }
+
   /**
    * Приватный метод очистки списка фильмов
    * Удаляются презентеры (компоненты)
    * Удаляется кнопка showMore
    */
   _clearList() {
+    console.log('_clearList');
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());

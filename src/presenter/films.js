@@ -76,7 +76,8 @@ export default class FilmsList {
     this._statsComponent = null;
     this._menuComponent = null;
     this._sortPanelComponent = new SortPanelView();
-    this._filmListComponent = new FilmListView();
+    // this._filmListComponent = new FilmListView();
+    this._filmListComponent = null;
     this._loadMoreComponent = new LoadmoreView();
     this._loadingComponent = new LoadingView();
     this._profileComponent = null;
@@ -89,8 +90,8 @@ export default class FilmsList {
     // this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
     this._mainFilmList = null;
     this._loadMoreContainer = null;
-    this._topRatedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
-    this._topCommentedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
+    // this._topRatedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
+    // this._topCommentedFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-commented');
 
     //  Слушатели
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
@@ -100,6 +101,7 @@ export default class FilmsList {
     // this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
     this._handleAddComment = this._handleAddComment.bind(this);
     this._handleDeleteComment = this._handleDeleteComment.bind(this);
+    this._handleStatsDisplay = this._handleStatsDisplay.bind(this);
 
     //  Презентеры
     this._filmPresenter = {};
@@ -211,16 +213,16 @@ export default class FilmsList {
    * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
-    const prevList = this._filmList;
-    this._filmList = new FilmListView();
+    const prevList = this._filmListComponent;
+    this._filmListComponent = new FilmListView();
 
     if (prevList) {
-      replace(this._filmList, prevList);
+      replace(this._filmListComponent, prevList);
     } else {
-      render(this._filmsContainer, this._filmList, RenderPosition.BEFOREEND);
+      render(this._filmsContainer, this._filmListComponent, RenderPosition.BEFOREEND);
     }
-    this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-main');
-    this._loadMoreContainer = this._filmList.getElement().querySelector('.js-films-container');
+    this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
+    this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
 
 
     if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
@@ -232,7 +234,7 @@ export default class FilmsList {
   }
 
   _renderStats() {
-    const prevStats = this._stats;
+    const prevStats = this._statsComponent;
     this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
       replace(this._statsComponent, prevStats);
@@ -247,10 +249,6 @@ export default class FilmsList {
    * Вызывается если у пользователя есть хотя бы один просмотренный фильм
    */
   _renderProfile() {
-
-    console.log('_renderProfile');
-    console.log(this._filterModel.getFilterFilmsCount().isViewed);
-
     const prevProfile = this._profileComponent;
     this._profileComponent = new ProfileView(this._filterModel.getFilterFilmsCount().isViewed);
     if (prevProfile) {
@@ -324,6 +322,11 @@ export default class FilmsList {
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
     remove(this._loadMoreComponent);
+  }
+
+  _handleStatsDisplay() {
+    this._statsComponent.show();
+    this._filmListComponent.hide();
   }
 
   /**

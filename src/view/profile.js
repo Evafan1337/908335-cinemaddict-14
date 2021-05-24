@@ -36,8 +36,6 @@ export default class Profile extends AbstractView {
    * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
-    console.log('getTemplate');
-    console.log(this._count);
     return createProfileTemplate(this._count);
   }
 }

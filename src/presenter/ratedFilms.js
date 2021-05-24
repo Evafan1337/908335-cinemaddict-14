@@ -50,15 +50,17 @@ export default class RatedFilmsPresenter {
     this._api = api;
 
     //  Компоненты
-    this._filmList = new FilmListRatedView();
+    this._filmListComponent = new FilmListRatedView();
 
     //  Слушатели
     this._handleFilmAction = this._handleFilmAction.bind(this);
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
+    this._handleAddComment = this._handleAddComment.bind(this);
+    this._handleDeleteComment = this._handleDeleteComment.bind(this);
 
     //  Презентеры
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handlePopupAction, this._handlePopupAction, this._commentsModel);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handleDeleteComment, this._handleAddComment, this._commentsModel);
     // this._filterPresenter = filterPresenter;
     this._filmPresenter = {};
   }
@@ -107,9 +109,8 @@ export default class RatedFilmsPresenter {
    * Вызывает методы рендера фильмов ()
    */
   _renderFilmsContainer() {
-    // this._filterPresenter.init();
-    render(this._filmsContainer, this._filmList.getElement(), RenderPosition.BEFOREEND);
-    this._mainFilmList = this._filmList.getElement().querySelector('.js-film-list-rated');
+    render(this._filmsContainer, this._filmListComponent, RenderPosition.BEFOREEND);
+    this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-rated');
     this._renderFilms();
   }
 
@@ -176,6 +177,24 @@ export default class RatedFilmsPresenter {
   _handlePopupAction(updatedFilm) {
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
+  }
+
+  _handleAddComment(updatedFilm, comment) {
+    this._api.addComment(comment, updatedFilm).then((update) => {
+      this._commentsModel.addComment(update[1], update[0]);
+      this._filmsModel.updateFilm(update[0]);
+      this._popupPresenter.init(update[0], this._commentsModel.getCommentsFilm());
+    });
+  }
+
+  _handleDeleteComment(updatedFilm, comment) {
+    this._api.deleteComment(comment).then(() => {
+      this._commentsModel.removeComment(comment, updatedFilm);
+    });
+    this._api.updateFilm(updatedFilm).then((update) => {
+      this._filmsModel.updateFilm(update);
+    });
+    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
   }
 
   /**
