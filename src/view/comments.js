@@ -113,6 +113,22 @@ export default class Comments extends SmartView {
     return this.getElement().querySelectorAll('.film-details__comment-delete');
   }
 
+  setFormShaking() {
+    // console.log(this.getElement());
+    this.getElement().classList.add('shake');
+  }
+
+  setCommentShaking(comment) {
+    console.log('setCommentShaking');
+    console.log(comment);
+    for (const elem of this.getElement().querySelectorAll('.film-details__comment')){
+      console.log(elem);
+      if(elem.dataset.id === comment.id) {
+        elem.classList.add(shake);
+      }
+    }
+  }
+
   /**
    * Метод восстановления обработчиков
    */

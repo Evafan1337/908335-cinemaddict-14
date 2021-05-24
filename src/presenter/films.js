@@ -412,13 +412,20 @@ export default class FilmsList {
       this._commentsModel.addComment(update[1], update[0]);
       this._filmsModel.updateFilm(update[0]);
       this._popupPresenter.init(update[0], this._commentsModel.getCommentsFilm());
+    }).catch(() => {
+      this._popupPresenter.getCommentsComponent().setFormShaking();
     });
   }
 
   _handleDeleteComment(updatedFilm, comment) {
+    console.log('_handleDeleteComment');
+    console.log(this._popupPresenter.getPopupComponent().getDeleteButton());
     this._api.deleteComment(comment).then(() => {
       this._commentsModel.removeComment(comment, updatedFilm);
-    });
+    }).catch(() => {
+        this._popupPresenter.getPopupComponent().setOriginalButtonText();
+        this._popupPresenter.getCommentsComponent().setCommentShaking(comment);
+      });
     this._api.updateFilm(updatedFilm).then((update) => {
       this._filmsModel.updateFilm(update);
     });

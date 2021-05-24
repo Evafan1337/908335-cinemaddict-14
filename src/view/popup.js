@@ -142,6 +142,30 @@ export default class Popup extends SmartView {
     return this.getElement().querySelector('.film-details__bottom-container');
   }
 
+  getDeleteButton(){
+    return this.getElement().querySelector('.film-details__comment-delete');
+  }
+
+  changeDeleteButtonText(){
+    const btn = this.getElement().querySelector('.film-details__comment-delete');
+    // console.log(btn.innerText);
+    btn.innerText = 'Deleting...';
+  }
+
+  setOriginalButtonText() {
+    const btn = this.getElement().querySelector('.film-details__comment-delete');
+    btn.innerText = 'Delete';
+  }
+
+  setShaking() {
+    console.log('shaking');
+    // console.log(this.getElement());
+    // this.getElement().querySelector('film-details__comments-wrap').classList.add('shake');
+    // const formElem = this.getElement().querySelector('film-details__comments-wrap');
+    const formElem = this.getElement();
+    // console.log(formElem.getElementByTagName('form'));
+  }
+
   /**
    * Метод отработки слушателя
    * @param {Object} evt - объект событий
