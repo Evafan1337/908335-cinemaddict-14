@@ -132,9 +132,10 @@ export default class FilmsList {
    * @param {Array} films - результирующий массив фильмов (данные)
    * Которые будут перерисованы
    */
-  observeFilms(films) {
+  observeFilms(films, updateType) {
     console.log('observeFilms()');
     console.log(films);
+    console.log('observeFilms updateType:', updateType);
 
     if (this._isLoading) {
       this._renderLoading();
@@ -375,8 +376,10 @@ export default class FilmsList {
    * Приватный метод обработки фильма (клик по интерфейсу карточки)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
-  _handleFilmAction(updatedFilm) {
-    this._filmsModel.updateFilm(updatedFilm);
+  _handleFilmAction(updatedFilm, updateType) {
+    console.log('_handleFilmAction');
+    console.log(updateType);
+    this._filmsModel.updateFilm(updatedFilm, updateType);
   }
 
   /**

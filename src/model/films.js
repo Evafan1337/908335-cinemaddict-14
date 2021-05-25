@@ -42,7 +42,7 @@ export default class Films extends Observer {
    * Для дальнейшей обработки
    * @param {Object} update - данные фильма, которые надо обновить
    */
-  updateFilm(updatedFilm) {
+  updateFilm(updatedFilm, updateType) {
     console.log('modelUpdateFilm');
     this._api.updateFilm(updatedFilm).then((update) => {
       const index = this._films.findIndex((film) => film.id === update.id);
@@ -57,7 +57,7 @@ export default class Films extends Observer {
         ...this._films.slice(index + 1),
       ];
 
-      this._notify(this._films, update);
+      this._notify(this._films, updateType);
       });
   }
 

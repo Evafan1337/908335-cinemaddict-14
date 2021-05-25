@@ -57,7 +57,11 @@ export default class FilterPresenter {
    * Пересчитывает количество фильмов по параметрам фильтра
    * И вызывает метод инициализации презентера
    */
-  observeFilter() {
+  observeFilter(updateType) {
+
+    console.log('observeFilter()');
+    console.log('observeFilter updateType:', updateType);
+
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();

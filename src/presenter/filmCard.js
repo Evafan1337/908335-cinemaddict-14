@@ -1,4 +1,5 @@
 import {replace, remove} from '../utils/dom';
+import {UpdateType} from '../utils/const';
 import {render} from '../utils/render';
 import FilmCardView from '../view/film-card';
 
@@ -62,7 +63,7 @@ export default class FilmCardPresenter {
    */
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
-    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), UpdateType.MINOR);
   }
 
   /**
