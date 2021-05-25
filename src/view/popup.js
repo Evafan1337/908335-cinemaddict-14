@@ -147,6 +147,7 @@ export default class Popup extends SmartView {
   }
 
   changeDeleteButtonText(){
+    console.log('changeDeleteButtonText');
     const btn = this.getElement().querySelector('.film-details__comment-delete');
     btn.innerText = 'Deleting...';
   }

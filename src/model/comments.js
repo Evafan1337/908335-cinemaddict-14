@@ -48,21 +48,26 @@ export default class CommentsModel extends Observer {
       this._notify(this._commentList, update[0]);
     })
   }
-  // addComment(comments, film) {
-  //   this._commentList = comments.slice();
 
-  //   this._notify(this._commentList, film);
-  // }
+  removeComment(commentToRemove, film) {
+    this._api.deleteComment(commentToRemove).then(() => {
+      const index = this._commentList.findIndex((comment) => comment.id === commentToRemove.id);
 
-  removeComment(removed, film) {
-    const index = this._commentList.findIndex((comment) => comment.id === removed.id);
+      if (index === -1) {
+        throw new Error('Can not update unexisting film');
+      }
 
-    if (index === -1) {
-      throw new Error('Can not update unexisting film');
-    }
+      this._commentList.splice(index, 1);
+      this._notify(this._commentList, film);
+    })
+    // const index = this._commentList.findIndex((comment) => comment.id === removed.id);
 
-    this._commentList.splice(index, 1);
-    this._notify(this._commentList, film);
+    // if (index === -1) {
+    //   throw new Error('Can not update unexisting film');
+    // }
+
+    // this._commentList.splice(index, 1);
+    // this._notify(this._commentList, film);
   }
 
   static adaptToClient(comment) {
