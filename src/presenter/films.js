@@ -135,7 +135,7 @@ export default class FilmsList {
   observeFilms(films) {
     console.log('observeFilms()');
     console.log(films);
-    
+
     if (this._isLoading) {
       this._renderLoading();
       this.init();
@@ -375,9 +375,7 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmAction(updatedFilm) {
-    this._api.updateFilm(updatedFilm).then((update) => {
-      this._filmsModel.updateFilm(update);
-    });
+    this._filmsModel.updateFilm(updatedFilm);
   }
 
   /**

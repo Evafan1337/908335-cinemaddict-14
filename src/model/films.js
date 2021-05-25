@@ -41,20 +41,23 @@ export default class Films extends Observer {
    * Для дальнейшей обработки
    * @param {Object} update - данные фильма, которые надо обновить
    */
-  updateFilm(update) {
-    const index = this._films.findIndex((film) => film.id === update.id);
+  updateFilm(updatedFilm) {
+    console.log('modelUpdateFilm');
+    this._api.updateFilm(updatedFilm).then((update) => {
+      const index = this._films.findIndex((film) => film.id === update.id);
 
-    if (index === -1) {
-      throw new Error('Can not update unexisting film');
-    }
+      if (index === -1) {
+        throw new Error('Can not update unexisting film');
+      }
 
-    this._films = [
-      ...this._films.slice(0, index),
-      update,
-      ...this._films.slice(index + 1),
-    ];
+      this._films = [
+        ...this._films.slice(0, index),
+        update,
+        ...this._films.slice(index + 1),
+      ];
 
-    this._notify(this._films, update);
+      this._notify(this._films, update);
+      });
   }
 
   static adaptToClient(film) {
