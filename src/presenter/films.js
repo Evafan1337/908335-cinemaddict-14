@@ -214,6 +214,7 @@ export default class FilmsList {
    * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
+    console.log('_renderFilmsContainer');
     const prevList = this._filmListComponent;
     this._filmListComponent = new FilmListView();
 
@@ -293,14 +294,14 @@ export default class FilmsList {
   }
 
   _renderTopRatedFilmList(){
-    this._filmsModel.getFilms()
+    this._films
       .sort(compareValues('rating', 'desc'))
       .slice(0,FilmsPerSection.RATED)
       .forEach((film) => this._renderTopRatedFilmCard(film, this._topRatedFilmList));
   }
 
   _renderTopCommentedFilmList(){
-    this._filmsModel.getFilms()
+    this._films
       .sort(compareValues('comments', 'desc'))
       .slice(0,FilmsPerSection.COMMENTED)
       .forEach((film) => this._renderTopCommentedFilmCard(film, this._topCommentedFilmList));
