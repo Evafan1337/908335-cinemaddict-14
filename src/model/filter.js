@@ -1,7 +1,8 @@
 import Observer from './observer';
 
 /**
- * Класс описывает модель фильмов
+ * Класс описывает модель фильтрации
+ * Описаны методы для работы с отображением фильмов (выборка и сортировка)
  * @extends Observer
  */
 export default class Filter extends Observer {

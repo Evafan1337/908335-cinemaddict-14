@@ -29,7 +29,7 @@ export const profileRating = (count) => {
   } else if (count > 10 && count <= 20) {
     return UserRank.FAN;
   } else {
-    return UserRank.MOVIE_BAFF;
+    return UserRank.MOVIE_BUFF;
   }
 };
 

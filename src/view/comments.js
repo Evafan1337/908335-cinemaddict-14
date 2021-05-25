@@ -13,7 +13,7 @@ import {render} from '../utils/render';
  */
 const createCommentTemplate = (comment) => {
   const {info: {emotion, text, author}, date, id} = comment;
-  return `<li class="film-details__comment" id="${id}">
+  return `<li class="film-details__comment" data-id="${id}">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
             </span>
@@ -45,6 +45,7 @@ const createEmojiLabel = (emotion) => {
  * @return {string}
  */
 export const createCommentsTemplate = (comments) => {
+
   return `<section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
         <ul class="film-details__comments-list">${comments.map((comment) => createCommentTemplate(comment)).join('')}</ul>
@@ -110,6 +111,18 @@ export default class Comments extends SmartView {
    */
   getLinksDelete() {
     return this.getElement().querySelectorAll('.film-details__comment-delete');
+  }
+
+  setFormShaking() {
+    this.getElement().classList.add('shake');
+  }
+
+  setCommentShaking(comment) {
+    for (const elem of this.getElement().querySelectorAll('.film-details__comment')){
+      if(elem.dataset.id === comment.id) {
+        elem.classList.add('shake');
+      }
+    }
   }
 
   /**

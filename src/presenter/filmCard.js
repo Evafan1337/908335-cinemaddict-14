@@ -35,8 +35,8 @@ export default class FilmCardPresenter {
   init(film) {
     this._film = film;
     const prevCard = this._cardComponent;
+
     this._cardComponent = new FilmCardView(this._film);
-    //  Устанавливаем слушатели на открытие попапа и редактирование данных
     this._cardComponent.setClickHandler(() => this._showPopup(this._film));
     this._cardComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
 
@@ -44,6 +44,7 @@ export default class FilmCardPresenter {
       replace(this._cardComponent, prevCard);
     } else {
       this._renderCard();
+      return;
     }
   }
 
