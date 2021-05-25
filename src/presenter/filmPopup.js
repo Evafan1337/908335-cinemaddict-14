@@ -1,6 +1,7 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
+import {UpdateType} from '../utils/const';
 import {render} from '../utils/render';
 import he from 'he';
 

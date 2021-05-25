@@ -13,12 +13,13 @@ export default class Filter extends Observer {
    * Параметры фильтрации и сортировки
    * @constructor
    */
-  constructor() {
+  constructor(api) {
     super();
     this._filterFilmsCount = null;
     this._sortBy = null;
     this._filterBy = null;
     this._showStatsFlag = null;
+    this._api = api
   }
 
   /**

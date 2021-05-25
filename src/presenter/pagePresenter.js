@@ -50,12 +50,12 @@ export default class PagePresenter {
    */
   init () {
 
-    this._filterModel = new FilterModel();
+    this._filterModel = new FilterModel(this._api);
     this._filterModel.setSortType(this._sortBy, this._filterBy, this._showStatsFlag);
     this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
     this._filterModel.setFilterFilmsCount(this._filterFilmsCount);
 
-    this._filmsModel = new FilmsModel();
+    this._filmsModel = new FilmsModel(this._api);
     this._filmsModel.setFilms(this._films);
 
     this._emptyPresenter = new EmptyPresenter(this._siteMainElement);

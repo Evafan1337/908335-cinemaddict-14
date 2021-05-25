@@ -18,6 +18,12 @@ export const FilmsPerSection = {
   RATED: 2,
 };
 
+export const UpdateType = {
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
 /**
  * Метод выборки звания пользователя
  * В зависимости от количества просмотренных фильмов

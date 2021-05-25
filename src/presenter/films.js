@@ -52,7 +52,7 @@ export default class FilmsList {
     this._commentsModel = new CommentsModel();
 
     //  Добавление наблюдателей - обработчиков
-    this._filmsModel.addObserver(this.observeFilms.bind(this));
+    // this._filmsModel.addObserver(this.observeFilms.bind(this));
     this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
 
@@ -113,6 +113,7 @@ export default class FilmsList {
    * Публичный метод инициализации
    */
   init() {
+    console.log('init()');
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
@@ -132,7 +133,9 @@ export default class FilmsList {
    * Которые будут перерисованы
    */
   observeFilms(films) {
-
+    console.log('observeFilms()');
+    console.log(films);
+    
     if (this._isLoading) {
       this._renderLoading();
       this.init();

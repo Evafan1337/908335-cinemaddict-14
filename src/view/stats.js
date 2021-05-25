@@ -212,9 +212,6 @@ export default class Stats extends SmartView {
    */
   constructor(films, currentPeriod, userRank) {
     super();
-
-    console.log(currentPeriod);
-
     this._films = films;
     this._currentPeriod = currentPeriod;
     this._userRank = userRank;

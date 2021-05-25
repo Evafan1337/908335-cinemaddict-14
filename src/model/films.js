@@ -12,9 +12,10 @@ export default class Films extends Observer {
    * Объявляется массив данных о фильмах
    * @constructor
    */
-  constructor() {
+  constructor(api) {
     super();
     this._films = [];
+    this._api = api
   }
 
   /**
@@ -123,7 +124,7 @@ export default class Films extends Observer {
       },
     );
 
-    fieldsToDelete = ['actors', 'age', 'info', 'description', 'regisseur', 'genre', 'date', 'country', 'time', 'rating', 'screenwriters', 'isWatchlist', 'isViewed', 'isFavorite', 'watchedData'];
+    const fieldsToDelete = ['actors', 'age', 'info', 'description', 'regisseur', 'genre', 'date', 'country', 'time', 'rating', 'screenwriters', 'isWatchlist', 'isViewed', 'isFavorite', 'watchedData'];
 
     for (const field of fieldsToDelete) {
       delete adaptedFilm[field];
