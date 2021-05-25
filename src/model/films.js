@@ -83,8 +83,11 @@ export default class Films extends Observer {
       },
     );
 
-    delete adaptedFilm.film_info;
-    delete adaptedFilm.user_details;
+    const filmFieldsToDelete = ['film_info', 'user_details'];
+
+    for (const field of filmFieldsToDelete) {
+      delete adaptedFilm[field];
+    }
 
     return adaptedFilm;
   }
@@ -120,21 +123,11 @@ export default class Films extends Observer {
       },
     );
 
-    delete adaptedFilm.actors;
-    delete adaptedFilm.age;
-    delete adaptedFilm.info;
-    delete adaptedFilm.description;
-    delete adaptedFilm.regisseur;
-    delete adaptedFilm.genre;
-    delete adaptedFilm.date;
-    delete adaptedFilm.country;
-    delete adaptedFilm.time;
-    delete adaptedFilm.rating;
-    delete adaptedFilm.screenwriters;
-    delete adaptedFilm.isWatchlist;
-    delete adaptedFilm.isViewed;
-    delete adaptedFilm.isFavorite;
-    delete adaptedFilm.watchedData;
+    fieldsToDelete = ['actors', 'age', 'info', 'description', 'regisseur', 'genre', 'date', 'country', 'time', 'rating', 'screenwriters', 'isWatchlist', 'isViewed', 'isFavorite', 'watchedData'];
+
+    for (const field of fieldsToDelete) {
+      delete adaptedFilm[field];
+    }
 
     return adaptedFilm;
   }

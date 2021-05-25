@@ -65,10 +65,10 @@ export default class CommentsModel extends Observer {
       },
     );
 
-    delete adaptedComment.author;
-    delete adaptedComment.comment;
-    delete adaptedComment.emotion;
-
+    const fieldsToDelete = ['author', 'comment', 'emotion'];
+    for (const field of fieldsToDelete) {
+      delete adaptedComment[field];
+    }
     return adaptedComment;
   }
 
@@ -103,9 +103,10 @@ export default class CommentsModel extends Observer {
         },
       );
 
-      delete comment.author;
-      delete comment.comment;
-      delete comment.emotion;
+      const commentsFieldsToDelete = ['author', 'comment', 'emotion'];
+      for (const field of commentsFieldsToDelete) {
+        delete comment[field];
+      }
 
       updatedComment.push(comment);
     });
@@ -137,9 +138,11 @@ export default class CommentsModel extends Observer {
       },
     );
 
-    delete adaptedFilm.film_info;
-    delete adaptedFilm.user_details;
+    const filmFieldsToDelete = ['film_info', 'user_details'];
 
+    for (const field of filmFieldsToDelete) {
+      delete adaptedFilm[field];
+    }
     return [adaptedFilm, updatedComment];
   }
 }
