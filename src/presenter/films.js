@@ -247,7 +247,7 @@ export default class FilmsList {
 
   _renderStats() {
     const prevStats = this._statsComponent;
-    this._statsComponent = new StatsView(this._sourcedFilms, 'ALL_TIME', profileRating(this._filterModel.getFilterBy().isViewed));
+    this._statsComponent = new StatsView(this._sourcedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
       replace(this._statsComponent, prevStats);
     } else {
@@ -401,7 +401,6 @@ export default class FilmsList {
   _handlePopupAction(updatedFilm) {
     console.log('_handlePopupAction');
     this._filmsModel.updateFilm(updatedFilm);
-    // this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
     this._api.updateFilm(updatedFilm).then((update) => {
       this._filmsModel.updateFilm(update);
       this._popupPresenter.init(update, this._commentsModel.getCommentsFilm());

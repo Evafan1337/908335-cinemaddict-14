@@ -91,8 +91,6 @@ export default class FilterPresenter {
 
     this._showSort();
     this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false);
-    // this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
-    // evt.target.classList.add('main-navigation__item--active');
   }
 
   /**
@@ -115,8 +113,6 @@ export default class FilterPresenter {
    */
   _handleSortItemClick(evt) {
     this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterBy(), false);
-    // this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
-    // evt.target.classList.add('sort__button--active');
   }
 
   /**

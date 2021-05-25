@@ -62,7 +62,6 @@ export default class FilmCardPresenter {
    */
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
-    //  Инвертируем значение в сыром виде данных о фильме согласно клика
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
   }
 

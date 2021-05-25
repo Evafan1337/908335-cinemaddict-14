@@ -46,13 +46,10 @@ export default class FilmPopupPresenter {
    */
   init(film) {
     this._film = film;
-
     this._comments = this._commentsModel.getCommentsFilm();
     this._commentsListComponent = new CommentsView(this._comments);
-
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
-    // this._commentsListComponent = new CommentsView(this._film.comments);
     if (prevPopup && this._container.classList.contains('hide-overflow')) {
       replace(this._popupComponent, prevPopup);
       this._container.classList.add('hide-overflow');
@@ -166,14 +163,13 @@ export default class FilmPopupPresenter {
    */
   _removeComment(evt) {
     this._popupComponent.changeDeleteButtonText();
-
     this._posScroll = this.getPositionScroll();
+
     const commentId = evt.target.closest('.film-details__comment').dataset.id;
     const commentInd = this._comments.findIndex((item) => item.id === commentId);
     const filmsCommentInd = this._film.comments.findIndex((item) => item.id === commentId);
+    
     this._film.comments.splice(filmsCommentInd, 1);
-
-    // console.log(this._film.comments);
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._comments[commentInd]);
   }
 
