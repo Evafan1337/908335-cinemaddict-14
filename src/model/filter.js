@@ -11,6 +11,7 @@ export default class Filter extends Observer {
    * Конструктор
    * Объявляются служебные поля
    * Параметры фильтрации и сортировки
+   * @param {Object} api - интерфейс для общения с сервером
    * @constructor
    */
   constructor(api) {

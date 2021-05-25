@@ -10,6 +10,7 @@ export default class Films extends Observer {
    * Конструктор
    * Выполняется конструктор родительского класса
    * Объявляется массив данных о фильмах
+   * @param {Object} api - интерфейс для общения с сервером
    * @constructor
    */
   constructor(api) {

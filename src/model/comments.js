@@ -11,21 +11,27 @@ export default class CommentsModel extends Observer {
    * Конструктор
    * Выполняется конструктор родительского класса
    * Объявляется массив данных комментариев
+   * @param {Object} api - интерфейс для общения с сервером
    * @constructor
    */
-  constructor() {
+  constructor(api) {
     super();
     this._commentList = [];
+    this._api = api;
   }
 
   /**
    * Установить комментарии для выбранного фильма (film)
-   * @param {Array} comments - непосредственно массив объектов комментариев
    * @param {Object} film - фильм, для которого нужно установить комментарии
    */
-  setCommentsFilm(comments, film) {
-    this._commentList = comments.slice();
-    this._notify(this._commentList, film);
+  setCommentsFilm(film) {
+    this._api.getComments(film).then((comments) => {
+      this._commentList = comments.slice();
+      this._notify(this._commentList, film);
+    }).catch(() => {
+      this._commentList = [];
+      this._notify(this._commentList, film);
+    });
   }
 
   /**

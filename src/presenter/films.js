@@ -49,7 +49,7 @@ export default class FilmsList {
     //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
-    this._commentsModel = new CommentsModel();
+    this._commentsModel = new CommentsModel(api);
 
     //  Добавление наблюдателей - обработчиков
     // this._filmsModel.addObserver(this.observeFilms.bind(this));
@@ -383,14 +383,7 @@ export default class FilmsList {
    * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
    */
   _handlePopupOpen(film) {
-
-    this._api.getComments(film).then((comments) => {
-      this._commentsModel.setCommentsFilm(comments, film);
-    })
-      .catch(() => {
-        this._commentsModel.setCommentsFilm([], {});
-      });
-
+    this._commentsModel.setCommentsFilm(film);
     this._popupPresenter.init(film);
   }
 
@@ -402,10 +395,7 @@ export default class FilmsList {
   _handlePopupAction(updatedFilm) {
     console.log('_handlePopupAction');
     this._filmsModel.updateFilm(updatedFilm);
-    this._api.updateFilm(updatedFilm).then((update) => {
-      this._filmsModel.updateFilm(update);
-      this._popupPresenter.init(update, this._commentsModel.getCommentsFilm());
-    });
+    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
   }
 
   _handleAddComment(updatedFilm, comment) {
@@ -425,9 +415,9 @@ export default class FilmsList {
       this._popupPresenter.getPopupComponent().setOriginalButtonText();
       this._popupPresenter.getCommentsComponent().setCommentShaking(comment);
     });
-    this._api.updateFilm(updatedFilm).then((update) => {
-      this._filmsModel.updateFilm(update);
-    });
+
+    this._filmsModel.updateFilm(updatedFilm);
+
     this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
   }
 

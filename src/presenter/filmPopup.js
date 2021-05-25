@@ -46,6 +46,7 @@ export default class FilmPopupPresenter {
    * @param {Object} film - данные о фильме
    */
   init(film) {
+    console.log('filmPopup.js init()');
     this._film = film;
     this._comments = this._commentsModel.getCommentsFilm();
     this._commentsListComponent = new CommentsView(this._comments);
@@ -153,6 +154,7 @@ export default class FilmPopupPresenter {
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
+    console.log('_clickFilmInfo');
     const type = evt.target.dataset.type;
     this._posScroll = this.getPositionScroll();
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
