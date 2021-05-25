@@ -41,11 +41,18 @@ export default class CommentsModel extends Observer {
     return this._commentList;
   }
 
-  addComment(comments, film) {
-    this._commentList = comments.slice();
-
-    this._notify(this._commentList, film);
+  addComment(comment, film) {
+    this._api.addComment(comment, film).then((update) => {
+      console.log('addComment');
+      this._commentList = update[1];
+      this._notify(this._commentList, update[0]);
+    })
   }
+  // addComment(comments, film) {
+  //   this._commentList = comments.slice();
+
+  //   this._notify(this._commentList, film);
+  // }
 
   removeComment(removed, film) {
     const index = this._commentList.findIndex((comment) => comment.id === removed.id);

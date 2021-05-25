@@ -399,13 +399,17 @@ export default class FilmsList {
   }
 
   _handleAddComment(updatedFilm, comment) {
-    this._api.addComment(comment, updatedFilm).then((update) => {
-      this._commentsModel.addComment(update[1], update[0]);
-      this._filmsModel.updateFilm(update[0]);
-      this._popupPresenter.init(update[0], this._commentsModel.getCommentsFilm());
-    }).catch(() => {
-      this._popupPresenter.getCommentsComponent().setFormShaking();
-    });
+    this._commentsModel.addComment(comment, updatedFilm);
+    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
+    // this._api.addComment(comment, updatedFilm).then((update) => {
+    //   console.log('Данные с сервера');
+    //   console.log(update);
+    //   this._commentsModel.addComment(update[1], update[0]);
+    //   this._filmsModel.updateFilm(update[0]);
+    //   this._popupPresenter.init(update[0], this._commentsModel.getCommentsFilm());
+    // }).catch(() => {
+    //   this._popupPresenter.getCommentsComponent().setFormShaking();
+    // });
   }
 
   _handleDeleteComment(updatedFilm, comment) {
