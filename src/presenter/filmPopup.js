@@ -1,7 +1,7 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
-// import {UpdateType} from '../utils/const';
+import {UpdateType} from '../utils/const';
 import {render} from '../utils/render';
 import he from 'he';
 
@@ -12,7 +12,7 @@ export default class FilmPopupPresenter {
    * @param {Function} changeData - функция изменения данных
    * @constructor
    */
-  constructor(container, changeData, deleteComment, addComment, commentsModel) {
+  constructor(container, changeData, deleteComment, addComment, commentsModel, filterModel) {
     //  Ссылки на DOM узлы
     this._container = container;
 
@@ -23,6 +23,7 @@ export default class FilmPopupPresenter {
     //  Модели
     this._commentsModel = commentsModel;
     this._commentsModel.addObserver(this.observeComments.bind(this));
+    this._filterModel = filterModel
 
     //  Компоненты
     this._popupComponent = null;
@@ -46,6 +47,7 @@ export default class FilmPopupPresenter {
    * @param {Object} film - данные о фильме
    */
   init(film) {
+    console.log('FilmPopupPresenter init');
     this._film = film;
     this._comments = this._commentsModel.getCommentsFilm();
     this._commentsListComponent = new CommentsView(this._comments);
@@ -153,9 +155,19 @@ export default class FilmPopupPresenter {
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
+    console.log('_clickFilmInfo popup');
     const type = evt.target.dataset.type;
     this._posScroll = this.getPositionScroll();
-    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
+
+    let updateType = UpdateType.PATCH;
+    if(this._filterModel.getFilterBy() === type) {
+      updateType = UpdateType.MAJOR
+    }
+
+    console.log(updateType);
+
+    // this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), updateType);
   }
 
   /**

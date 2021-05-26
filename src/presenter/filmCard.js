@@ -14,9 +14,12 @@ export default class FilmCardPresenter {
    * @param {Function} showPopup - функция открытия попапа
    * @constructor
    */
-  constructor(filmContainer, changeData, showPopup) {
+  constructor(filmContainer, changeData, showPopup, filterModel) {
     //  Ссылки на DOM узлы
     this._filmContainer = filmContainer;
+
+    //  Модели
+    this._filterModel = filterModel;
 
     //  Данные
     this._film = null;
@@ -62,9 +65,15 @@ export default class FilmCardPresenter {
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
-    console.log('_clickFilmInfo');
+    console.log('film-card _clickFilmInfo');
     const type = evt.target.dataset.type;
-    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), UpdateType.PATCH);
+    
+    let updateType = UpdateType.PATCH;
+    if(this._filterModel.getFilterBy() === type) {
+      updateType = UpdateType.MAJOR
+    }
+
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), updateType);
   }
 
   /**

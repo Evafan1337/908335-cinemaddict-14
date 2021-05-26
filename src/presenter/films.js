@@ -53,10 +53,6 @@ export default class FilmsList {
     this._commentsModel = new CommentsModel(api);
 
     //  Добавление наблюдателей - обработчиков
-    this._filmsModel.addObserver(this.observeFilms.bind(this));
-
-    this._filterModel.addObserver(this.observeFilms.bind(this));
-    // this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
 
     this._filmsModel.addObserver(this._handleModelEvent.bind(this));
@@ -113,7 +109,7 @@ export default class FilmsList {
     this._topCommentedPresenter = {};
 
     this._filterPresenter = filterPresenter;
-    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handleDeleteComment, this._handleAddComment, this._commentsModel);
+    this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handleDeleteComment, this._handleAddComment, this._commentsModel, this._filterModel);
     this._emptyPresenter = emptyPresenter;
   }
 
@@ -132,53 +128,6 @@ export default class FilmsList {
     } else {
       this._emptyPresenter.init();
     }
-  }
-
-  /**
-   * Обработчик который будет исполнятся при _notify
-   * @param {Array} films - результирующий массив фильмов (данные)
-   * Которые будут перерисованы
-   */
-  // observeFilms(update, updateType) {
-  observeFilms() {
-    console.log('observeFilms');
-    // const films = this._filmsModel.getFilms();
-
-    // if (this._isLoading) {
-    //   this._renderLoading();
-    //   this.init();
-    // }
-
-    // //  Полная перерисовка
-    // this._clearList();
-    // this._sourcedFilms = films.slice();
-    // let updatedFilms = this._sourcedFilms;
-
-    // const filterBy = this._filterModel.getFilterBy();
-    // const sortBy = this._filterModel.getSortBy();
-
-    // if (filterBy !== 'all') {
-    //   updatedFilms = films.filter((film) => film[filterBy]);
-    // }
-
-    // if (sortBy !== 'default') {
-    //   updatedFilms.sort(compareValues(sortBy, 'desc'));
-    // }
-
-    // if (this._filterModel.getShowStatsFlag() === true) {
-    //   this._hide();
-    // } else {
-    //   this._show();
-    // }
-
-    // this._films = updatedFilms;
-
-    // if (this._films.length > 0) {
-    //   this._emptyPresenter.destroy();
-    //   this._renderFilms();
-    // } else {
-    //   this._emptyPresenter.init();
-    // }
   }
 
   _handleModelEvent(updateType, data) {
@@ -205,7 +154,6 @@ export default class FilmsList {
   }
 
   _updateFilmsListMajor(){
-    console.log('_updateFilmsListMajor');
     //  Полная перерисовка
     this._clearList();
 
@@ -378,13 +326,13 @@ export default class FilmsList {
   }
 
   _renderTopRatedFilmCard(film, container) {
-    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
+    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen, this._filterModel);
     filmPresenter.init(film);
     this._topRatedFilmsPresenter[film.id] = filmPresenter;
   }
 
   _renderTopCommentedFilmCard(film, container) {
-    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
+    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen, this._filterModel);
     filmPresenter.init(film);
     this._topCommentedPresenter[film.id] = filmPresenter;
   }
@@ -396,7 +344,7 @@ export default class FilmsList {
    * @param {Object} container - контейнер куда надо отрисовать компонент фильма
    */
   _renderCard(film, container) {
-    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen);
+    const filmPresenter = new FilmCardPresenter(container, this._handleFilmAction, this._handlePopupOpen, this._filterModel);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -458,25 +406,31 @@ export default class FilmsList {
     this._popupPresenter.init(film);
   }
 
+  //  В этих методах можно придумать легкую перерисовку попапа
+  //  Избежать init'а
   /**
    * Приватный метод обработки фильма (клик по интерфейсу попапа)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    * И добавление/удаление комментария
    */
-  _handlePopupAction(updatedFilm) {
-    this._filmsModel.updateFilm(updatedFilm, UpdateType.MINOR);
-    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
+  _handlePopupAction(updatedFilm, updateType) {
+    console.log('_handlePopupAction');
+    console.log(updateType);
+    this._filmsModel.updateFilm(updatedFilm, updateType);
+    this._popupPresenter.init(updatedFilm);
   }
 
   _handleAddComment(updatedFilm, comment) {
+    console.log('_handleAddComment');
     this._commentsModel.addComment(comment, updatedFilm);
-    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
+    this._popupPresenter.init(updatedFilm);
   }
 
   _handleDeleteComment(updatedFilm, comment) {
+    console.log('_handleDeleteComment');
     this._commentsModel.removeComment(comment, updatedFilm);
     this._filmsModel.updateFilm(updatedFilm);
-    this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
+    this._popupPresenter.init(updatedFilm);
   }
 
   /**

@@ -68,7 +68,7 @@ export default class Filter extends Observer {
    */
   setFilterFilmsCount(filterFilmsCount, UpdateType) {
     this._filterFilmsCount = filterFilmsCount;
-    this._notifyChanges(UpdateType);
+    // this._notifyChanges(UpdateType);
   }
 
   /**
