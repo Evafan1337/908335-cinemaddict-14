@@ -5,7 +5,7 @@ import { render } from '../utils/render';
 import FooterStatisticsView from '../view/count-films';
 import FilmsModel from '../model/films';
 import FilterModel from '../model/filter';
-
+import {UpdateType} from '../utils/const';
 import {
   filmsInfoSort,
   getFilmsInfoSortLength}
@@ -51,7 +51,7 @@ export default class PagePresenter {
   init () {
 
     this._filterModel = new FilterModel(this._api);
-    this._filterModel.setSortType(this._sortBy, this._filterBy, this._showStatsFlag);
+    this._filterModel.setSortType(this._sortBy, this._filterBy, this._showStatsFlag, UpdateType.MAJOR);
     this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
     this._filterModel.setFilterFilmsCount(this._filterFilmsCount);
 

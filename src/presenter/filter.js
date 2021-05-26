@@ -12,6 +12,7 @@ import {
   getFilmsInfoSortLength,
   filmsInfoSort}
   from '../utils/sort';
+import {UpdateType} from '../utils/const';
 
 /**
  * Класс описывает презентер списка фильмов
@@ -94,7 +95,8 @@ export default class FilterPresenter {
     }
 
     this._showSort();
-    this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false);
+    console.log('_handleFilterItemClick:', UpdateType.MAJOR);
+    this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false, UpdateType.MAJOR);
   }
 
   /**
@@ -116,7 +118,8 @@ export default class FilterPresenter {
    * @param {Object} evt - объект события
    */
   _handleSortItemClick(evt) {
-    this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterBy(), false);
+    console.log('_handleSortItemClick:', UpdateType.MAJOR);
+    this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterBy(), false, UpdateType.MAJOR);
   }
 
   /**
@@ -124,7 +127,8 @@ export default class FilterPresenter {
    * @param {Object} evt - объект события
    */
   _handleStatsItemClick() {
-    this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true);
+    console.log('_handleStatsItemClick:', UpdateType.MAJOR);
+    this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true, UpdateType.MAJOR);
     this._hideSort();
   }
 
