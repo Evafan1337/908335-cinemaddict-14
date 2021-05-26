@@ -25,15 +25,15 @@ export default class CommentsModel extends Observer {
    * @param {Object} film - фильм, для которого нужно установить комментарии
    */
   // setCommentsFilm(film, updateType) {
-  setCommentsFilm(film) {
+  setCommentsFilm(film, updateType) {
     this._api.getComments(film).then((comments) => {
       this._commentList = comments.slice();
-      this._notify(this._commentList, film);
+      this._notify(updateType, this._commentList, film);
       // this._notify(updateType);
     }).catch(() => {
       this._commentList = [];
-      // this._notify(this._commentList, film);
-      this._notify('setCommentsFilm');
+      this._notify(updateType, this._commentList, film);
+      // this._notify('setCommentsFilm');
     });
   }
 
@@ -44,16 +44,24 @@ export default class CommentsModel extends Observer {
     return this._commentList;
   }
 
-  addComment(comment, film) {
+  addComment(comment, film, updateType) {
+    console.log('comments.js addComment');
+    console.log(comment);
+    console.log(film);
+    console.log(updateType);
+
     this._api.addComment(comment, film).then((update) => {
       this._commentList = update[1];
-      // this._notify(this._commentList, update[0]);
-      this._notify('addComment');
+
+      console.log(update[0]);
+
+      this._notify(updateType, update[0]);
+      // this._notify('addComment');
     });
   }
 
   // removeComment(commentToRemove, film) {
-  removeComment(commentToRemove) {
+  removeComment(commentToRemove, updateType) {
     this._api.deleteComment(commentToRemove).then(() => {
       const index = this._commentList.findIndex((comment) => comment.id === commentToRemove.id);
 
@@ -62,7 +70,7 @@ export default class CommentsModel extends Observer {
       }
 
       this._commentList.splice(index, 1);
-      // this._notify(this._commentList, film);
+      this._notify(updateType, this._commentList, film);
       this._notify('removeComment');
     });
     // const index = this._commentList.findIndex((comment) => comment.id === removed.id);

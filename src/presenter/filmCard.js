@@ -45,6 +45,7 @@ export default class FilmCardPresenter {
     this._cardComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
 
     if (prevCard) {
+      console.log('film-card prevCard');
       replace(this._cardComponent, prevCard);
     } else {
       this._renderCard();
@@ -67,7 +68,7 @@ export default class FilmCardPresenter {
   _clickFilmInfo(evt) {
     console.log('film-card _clickFilmInfo');
     const type = evt.target.dataset.type;
-    
+
     let updateType = UpdateType.PATCH;
     if(this._filterModel.getFilterBy() === type) {
       updateType = UpdateType.MAJOR

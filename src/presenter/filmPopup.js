@@ -47,7 +47,6 @@ export default class FilmPopupPresenter {
    * @param {Object} film - данные о фильме
    */
   init(film) {
-    console.log('FilmPopupPresenter init');
     this._film = film;
     this._comments = this._commentsModel.getCommentsFilm();
     this._commentsListComponent = new CommentsView(this._comments);
@@ -67,7 +66,7 @@ export default class FilmPopupPresenter {
     remove(prevPopup);
   }
 
-  observeComments(comments, film) {
+  observeComments(updateType, comments, film) {
     this.init(film, comments);
   }
 
@@ -112,6 +111,7 @@ export default class FilmPopupPresenter {
    * Обновление исходных данных
    */
   submitFormComments() {
+    console.log('submitFormComments');
     this._posScroll = this.getPositionScroll();
     const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
     const emotions = document.querySelectorAll('.film-details__emoji-item');
@@ -131,7 +131,7 @@ export default class FilmPopupPresenter {
         },
         date: new Date(),
       };
-      this._addComment(this._film, newComment);
+      this._addComment(this._film, newComment, UpdateType.PATCH);
     }
   }
 
@@ -155,7 +155,6 @@ export default class FilmPopupPresenter {
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
-    console.log('_clickFilmInfo popup');
     const type = evt.target.dataset.type;
     this._posScroll = this.getPositionScroll();
 

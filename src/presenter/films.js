@@ -55,6 +55,7 @@ export default class FilmsList {
     //  Добавление наблюдателей - обработчиков
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
 
+    this._commentsModel.addObserver(this._handleModelEvent.bind(this));
     this._filmsModel.addObserver(this._handleModelEvent.bind(this));
     this._filterModel.addObserver(this._handleModelEvent.bind(this));
 
@@ -190,6 +191,7 @@ export default class FilmsList {
   }
 
   _updateBoard(data) {
+    console.log('_updateBoard');
     const updatedCards = Object.keys(this._filmPresenter).filter((key) => this._filmPresenter[key]._film.id === data.id);
     updatedCards.forEach((card) => this._filmPresenter[card].init(data));
   }
@@ -402,7 +404,7 @@ export default class FilmsList {
    * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
    */
   _handlePopupOpen(film) {
-    this._commentsModel.setCommentsFilm(film, UpdateType.INIT);
+    this._commentsModel.setCommentsFilm(film, UpdateType.PATCH);
     this._popupPresenter.init(film);
   }
 
@@ -420,15 +422,20 @@ export default class FilmsList {
     this._popupPresenter.init(updatedFilm);
   }
 
-  _handleAddComment(updatedFilm, comment) {
+  _handleAddComment(updatedFilm, comment, updateType) {
     console.log('_handleAddComment');
-    this._commentsModel.addComment(comment, updatedFilm);
+    console.log(updatedFilm);
+    console.log(comment);
+    console.log(updateType);
+
+    this._commentsModel.addComment(comment, updatedFilm, updateType);
+    this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
 
   _handleDeleteComment(updatedFilm, comment) {
     console.log('_handleDeleteComment');
-    this._commentsModel.removeComment(comment, updatedFilm);
+    this._commentsModel.removeComment(comment, updatedFilm, UpdateType.PATCH);
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
