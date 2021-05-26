@@ -24,13 +24,19 @@ export default class CommentsModel extends Observer {
    * Установить комментарии для выбранного фильма (film)
    * @param {Object} film - фильм, для которого нужно установить комментарии
    */
-  setCommentsFilm(film) {
+  setCommentsFilm(film, updateType) {
+
+    console.log(film);
+
     this._api.getComments(film).then((comments) => {
       this._commentList = comments.slice();
+      console.log(this._commentList);
       this._notify(this._commentList, film);
+      // this._notify(updateType);
     }).catch(() => {
       this._commentList = [];
-      this._notify(this._commentList, film);
+      // this._notify(this._commentList, film);
+      this._notify('setCommentsFilm');
     });
   }
 
@@ -43,9 +49,9 @@ export default class CommentsModel extends Observer {
 
   addComment(comment, film) {
     this._api.addComment(comment, film).then((update) => {
-      console.log('addComment');
       this._commentList = update[1];
-      this._notify(this._commentList, update[0]);
+      // this._notify(this._commentList, update[0]);
+      this._notify('addComment');
     })
   }
 
@@ -58,7 +64,8 @@ export default class CommentsModel extends Observer {
       }
 
       this._commentList.splice(index, 1);
-      this._notify(this._commentList, film);
+      // this._notify(this._commentList, film);
+      this._notify('removeComment');
     })
     // const index = this._commentList.findIndex((comment) => comment.id === removed.id);
 

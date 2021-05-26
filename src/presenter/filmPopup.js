@@ -49,6 +49,9 @@ export default class FilmPopupPresenter {
     console.log('filmPopup.js init()');
     this._film = film;
     this._comments = this._commentsModel.getCommentsFilm();
+
+    console.log(this._comments);
+
     this._commentsListComponent = new CommentsView(this._comments);
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);

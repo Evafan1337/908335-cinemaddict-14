@@ -21,7 +21,8 @@ import {
   from '../utils/sort';
 import {
   profileRating,
-  FilmsPerSection
+  FilmsPerSection,
+  UpdateType
 } from '../utils/const';
 
 import FilmCardPresenter from './filmCard';
@@ -52,8 +53,11 @@ export default class FilmsList {
     this._commentsModel = new CommentsModel(api);
 
     //  Добавление наблюдателей - обработчиков
-    // this._filmsModel.addObserver(this.observeFilms.bind(this));
-    this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
+    this._filmsModel.addObserver(this.observeFilms.bind(this));
+    
+    this._filterModel.addObserver(this.observeFilms.bind(this));
+    // this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
+
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
 
     //  Параметры сортировки и фильтрации
@@ -132,10 +136,14 @@ export default class FilmsList {
    * @param {Array} films - результирующий массив фильмов (данные)
    * Которые будут перерисованы
    */
-  observeFilms(films, updateType) {
+  observeFilms(update, updateType) {
     console.log('observeFilms()');
-    console.log(films);
+    // console.log(films);
     console.log('observeFilms updateType:', updateType);
+    console.log(update);
+    console.log(this._filmPresenter[update.id]);
+
+    const films = this._filmsModel.getFilms();
 
     if (this._isLoading) {
       this._renderLoading();
@@ -180,9 +188,7 @@ export default class FilmsList {
    * Если есть то рисует плашку профиля
    */
   observeProfileHistory({filterFilmsCount}) {
-    if (filterFilmsCount.isViewed > 0) {
-      this._renderProfile();
-    }
+    console.log('observeProfileHistory');
   }
 
   /**
@@ -387,7 +393,7 @@ export default class FilmsList {
    * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
    */
   _handlePopupOpen(film) {
-    this._commentsModel.setCommentsFilm(film);
+    this._commentsModel.setCommentsFilm(film, UpdateType.INIT);
     this._popupPresenter.init(film);
   }
 
@@ -398,7 +404,7 @@ export default class FilmsList {
    */
   _handlePopupAction(updatedFilm) {
     console.log('_handlePopupAction');
-    this._filmsModel.updateFilm(updatedFilm);
+    this._filmsModel.updateFilm(updatedFilm, UpdateType.MINOR);
     this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
   }
 

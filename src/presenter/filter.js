@@ -60,8 +60,7 @@ export default class FilterPresenter {
    */
   observeFilter(updateType) {
 
-    console.log('observeFilter()');
-    console.log('observeFilter updateType:', updateType);
+    console.log('observeFilter():',updateType);
 
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
@@ -118,7 +117,6 @@ export default class FilterPresenter {
    * @param {Object} evt - объект события
    */
   _handleSortItemClick(evt) {
-    console.log('_handleSortItemClick:', UpdateType.MAJOR);
     this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterBy(), false, UpdateType.MAJOR);
   }
 
@@ -127,7 +125,6 @@ export default class FilterPresenter {
    * @param {Object} evt - объект события
    */
   _handleStatsItemClick() {
-    console.log('_handleStatsItemClick:', UpdateType.MAJOR);
     this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true, UpdateType.MAJOR);
     this._hideSort();
   }

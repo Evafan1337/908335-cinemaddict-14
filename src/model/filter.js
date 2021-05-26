@@ -30,7 +30,6 @@ export default class Filter extends Observer {
    * @param {Object} - showStatsFlag - объект статистики
    */
   setSortType(sortBy, filterBy, showStatsFlag, UpdateType) {
-    console.log('setSortType:', UpdateType);
     this._sortBy = sortBy;
     this._filterBy = filterBy;
     this._showStatsFlag = showStatsFlag;
@@ -68,7 +67,6 @@ export default class Filter extends Observer {
    * @param {Object} - filterFilmsCount - объект значений сортировки
    */
   setFilterFilmsCount(filterFilmsCount, UpdateType) {
-    console.log('setFilterFilmsCount:', UpdateType);
     this._filterFilmsCount = filterFilmsCount;
     this._notifyChanges(UpdateType);
   }
@@ -84,8 +82,7 @@ export default class Filter extends Observer {
    * Обертка над методом уведомления подписчиков класса родителя (Observer)
    */
   _notifyChanges(UpdateType) {
-    console.log('_notifyChanges');
-    console.log(UpdateType);
     this._notify({filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount}, UpdateType);
+    // this._notify('_notifyChanges');
   }
 }
