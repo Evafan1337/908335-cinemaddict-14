@@ -5,7 +5,8 @@ import {
   from '../utils/dom';
 
 import {
-  render}
+  render,
+  remove}
   from '../utils/render';
 
 import {
@@ -32,7 +33,9 @@ export default class FilterPresenter {
     //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
-    this._filmsModel.addObserver(this.observeFilter.bind(this));
+    // this._filmsModel.addObserver(this.observeFilter.bind(this));
+    this._filterModel.addObserver(this._handleModelEvent.bind(this));
+    this._filmsModel.addObserver(this._handleModelEvent.bind(this));
 
     //  Компоненты
     this._menuComponent = null;
@@ -42,6 +45,8 @@ export default class FilterPresenter {
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleStatsItemClick = this._handleStatsItemClick.bind(this);
+
+    this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
   /**
@@ -58,10 +63,8 @@ export default class FilterPresenter {
    * Пересчитывает количество фильмов по параметрам фильтра
    * И вызывает метод инициализации презентера
    */
-  observeFilter(updateType) {
-
-    console.log('observeFilter():',updateType);
-
+  // observeFilter(updateType) {
+  observeFilter() {
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();
@@ -83,6 +86,10 @@ export default class FilterPresenter {
     this._menuComponent.setClickStatsHandler(this._handleStatsItemClick);
   }
 
+  _handleModelEvent() {
+    this.init();
+  }
+
   /**
    * Обработчик клика по кнопкам фильтрации
    * @param {Object} evt - объект события
@@ -94,8 +101,8 @@ export default class FilterPresenter {
     }
 
     this._showSort();
-    console.log('_handleFilterItemClick:', UpdateType.MAJOR);
-    this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false, UpdateType.MAJOR);
+    // this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false, UpdateType.MAJOR);
+    this._filterModel.setSortType('default', evt.target.dataset.filter, false, UpdateType.MAJOR);
   }
 
   /**

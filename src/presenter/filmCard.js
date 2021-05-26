@@ -62,8 +62,9 @@ export default class FilmCardPresenter {
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
+    console.log('_clickFilmInfo');
     const type = evt.target.dataset.type;
-    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), UpdateType.MINOR);
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), UpdateType.PATCH);
   }
 
   /**

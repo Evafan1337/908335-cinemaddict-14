@@ -56,7 +56,7 @@ export default class PagePresenter {
     this._filterModel.setFilterFilmsCount(this._filterFilmsCount, UpdateType.INIT);
 
     this._filmsModel = new FilmsModel(this._api);
-    this._filmsModel.setFilms(this._films, UpdateType.INIT);
+    this._filmsModel.setFilms(UpdateType.INIT, this._films);
 
     this._emptyPresenter = new EmptyPresenter(this._siteMainElement);
     this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);

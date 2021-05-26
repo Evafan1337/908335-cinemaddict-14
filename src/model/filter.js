@@ -20,7 +20,7 @@ export default class Filter extends Observer {
     this._sortBy = null;
     this._filterBy = null;
     this._showStatsFlag = null;
-    this._api = api
+    this._api = api;
   }
 
   /**
@@ -82,7 +82,7 @@ export default class Filter extends Observer {
    * Обертка над методом уведомления подписчиков класса родителя (Observer)
    */
   _notifyChanges(UpdateType) {
-    this._notify({filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount}, UpdateType);
+    this._notify(UpdateType, {filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
     // this._notify('_notifyChanges');
   }
 }

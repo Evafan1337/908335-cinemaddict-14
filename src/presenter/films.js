@@ -54,11 +54,13 @@ export default class FilmsList {
 
     //  Добавление наблюдателей - обработчиков
     this._filmsModel.addObserver(this.observeFilms.bind(this));
-    
+
     this._filterModel.addObserver(this.observeFilms.bind(this));
     // this._filterModel.addObserver(() => this.observeFilms(this._filmsModel.getFilms(), null));
-
     this._filterModel.addObserver(this.observeProfileHistory.bind(this));
+
+    this._filmsModel.addObserver(this._handleModelEvent.bind(this));
+    this._filterModel.addObserver(this._handleModelEvent.bind(this));
 
     //  Параметры сортировки и фильтрации
     this._filterBy = this._filterModel.getFilterBy();
@@ -103,6 +105,8 @@ export default class FilmsList {
     this._handleDeleteComment = this._handleDeleteComment.bind(this);
     this._handleStatsDisplay = this._handleStatsDisplay.bind(this);
 
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     //  Презентеры
     this._filmPresenter = {};
     this._topRatedFilmsPresenter = {};
@@ -117,7 +121,6 @@ export default class FilmsList {
    * Публичный метод инициализации
    */
   init() {
-    console.log('init()');
     this._sourcedFilms = this._filmsModel.getFilms().slice();
     this._films = this._sourcedFilms.slice();
     this._renderedFilmsCount = this._filmsPerPage;
@@ -136,21 +139,78 @@ export default class FilmsList {
    * @param {Array} films - результирующий массив фильмов (данные)
    * Которые будут перерисованы
    */
-  observeFilms(update, updateType) {
-    console.log('observeFilms()');
-    // console.log(films);
-    console.log('observeFilms updateType:', updateType);
-    console.log(update);
-    console.log(this._filmPresenter[update.id]);
+  // observeFilms(update, updateType) {
+  observeFilms() {
+    console.log('observeFilms');
+    // const films = this._filmsModel.getFilms();
+
+    // if (this._isLoading) {
+    //   this._renderLoading();
+    //   this.init();
+    // }
+
+    // //  Полная перерисовка
+    // this._clearList();
+    // this._sourcedFilms = films.slice();
+    // let updatedFilms = this._sourcedFilms;
+
+    // const filterBy = this._filterModel.getFilterBy();
+    // const sortBy = this._filterModel.getSortBy();
+
+    // if (filterBy !== 'all') {
+    //   updatedFilms = films.filter((film) => film[filterBy]);
+    // }
+
+    // if (sortBy !== 'default') {
+    //   updatedFilms.sort(compareValues(sortBy, 'desc'));
+    // }
+
+    // if (this._filterModel.getShowStatsFlag() === true) {
+    //   this._hide();
+    // } else {
+    //   this._show();
+    // }
+
+    // this._films = updatedFilms;
+
+    // if (this._films.length > 0) {
+    //   this._emptyPresenter.destroy();
+    //   this._renderFilms();
+    // } else {
+    //   this._emptyPresenter.init();
+    // }
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log('_handleModelEvent:', updateType);
+    console.log('_handleModelEvent:', data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        console.log('UpdateType.PATCH here');
+        this._updateBoard(data);
+        break;
+      case UpdateType.MINOR:
+        this._clearList();
+        console.log('UpdateType.MINOR here');
+        break;
+      case UpdateType.MAJOR:
+        this._clearList();
+        // console.log('UpdateType.MAJOR here');
+        this._updateFilmsListMajor();
+        break;
+      case UpdateType.INIT:
+        console.log('UpdateType.INIT here');
+        break;
+    }
+  }
+
+  _updateFilmsListMajor(){
+    console.log('_updateFilmsListMajor');
+    //  Полная перерисовка
+    this._clearList();
 
     const films = this._filmsModel.getFilms();
 
-    if (this._isLoading) {
-      this._renderLoading();
-      this.init();
-    }
-
-    this._clearList();
     this._sourcedFilms = films.slice();
     let updatedFilms = this._sourcedFilms;
 
@@ -181,14 +241,18 @@ export default class FilmsList {
     }
   }
 
+  _updateBoard(data) {
+    const updatedCards = Object.keys(this._filmPresenter).filter((key) => this._filmPresenter[key]._film.id === data.id);
+    updatedCards.forEach((card) => this._filmPresenter[card].init(data));
+  }
+
   /**
    * Обработчик который будет исполнятся при _notify
    * @param {Object} filterFilmsCount - количество фильмов
    * Проверяет на наличие просмотренных фильмов
    * Если есть то рисует плашку профиля
    */
-  observeProfileHistory({filterFilmsCount}) {
-    console.log('observeProfileHistory');
+  observeProfileHistory() {
   }
 
   /**
@@ -221,7 +285,6 @@ export default class FilmsList {
    * Вызывает методы рендера фильмов
    */
   _renderFilmsContainer() {
-    console.log('_renderFilmsContainer');
     const prevList = this._filmListComponent;
     this._filmListComponent = new FilmListView();
 
@@ -383,8 +446,6 @@ export default class FilmsList {
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
    */
   _handleFilmAction(updatedFilm, updateType) {
-    console.log('_handleFilmAction');
-    console.log(updateType);
     this._filmsModel.updateFilm(updatedFilm, updateType);
   }
 
@@ -403,7 +464,6 @@ export default class FilmsList {
    * И добавление/удаление комментария
    */
   _handlePopupAction(updatedFilm) {
-    console.log('_handlePopupAction');
     this._filmsModel.updateFilm(updatedFilm, UpdateType.MINOR);
     this._popupPresenter.init(updatedFilm, this._commentsModel.getCommentsFilm());
   }

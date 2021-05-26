@@ -24,13 +24,10 @@ export default class CommentsModel extends Observer {
    * Установить комментарии для выбранного фильма (film)
    * @param {Object} film - фильм, для которого нужно установить комментарии
    */
-  setCommentsFilm(film, updateType) {
-
-    console.log(film);
-
+  // setCommentsFilm(film, updateType) {
+  setCommentsFilm(film) {
     this._api.getComments(film).then((comments) => {
       this._commentList = comments.slice();
-      console.log(this._commentList);
       this._notify(this._commentList, film);
       // this._notify(updateType);
     }).catch(() => {
@@ -52,10 +49,11 @@ export default class CommentsModel extends Observer {
       this._commentList = update[1];
       // this._notify(this._commentList, update[0]);
       this._notify('addComment');
-    })
+    });
   }
 
-  removeComment(commentToRemove, film) {
+  // removeComment(commentToRemove, film) {
+  removeComment(commentToRemove) {
     this._api.deleteComment(commentToRemove).then(() => {
       const index = this._commentList.findIndex((comment) => comment.id === commentToRemove.id);
 
@@ -66,7 +64,7 @@ export default class CommentsModel extends Observer {
       this._commentList.splice(index, 1);
       // this._notify(this._commentList, film);
       this._notify('removeComment');
-    })
+    });
     // const index = this._commentList.findIndex((comment) => comment.id === removed.id);
 
     // if (index === -1) {

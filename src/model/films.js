@@ -17,7 +17,7 @@ export default class Films extends Observer {
   constructor(api) {
     super();
     this._films = [];
-    this._api = api
+    this._api = api;
   }
 
   /**
@@ -25,10 +25,10 @@ export default class Films extends Observer {
    * Запускает метод "уведомления"
    * @param {Array} - films данные о фильмах
    */
-  setFilms(films) {
+  setFilms(updateType, films) {
     this._films = films.slice();
     // this._notify(this._films, null);
-    this._notify(this._films, UpdateType.MAJOR);
+    this._notify(this._films, updateType);
   }
 
   /**
@@ -45,7 +45,6 @@ export default class Films extends Observer {
    * @param {Object} update - данные фильма, которые надо обновить
    */
   updateFilm(updatedFilm, updateType) {
-    console.log('modelUpdateFilm');
     this._api.updateFilm(updatedFilm).then((update) => {
       const index = this._films.findIndex((film) => film.id === update.id);
 
@@ -60,8 +59,8 @@ export default class Films extends Observer {
       ];
 
       // this._notify(this._films, updateType);
-      this._notify(update, updateType);
-      });
+      this._notify(updateType, update);
+    });
   }
 
   static adaptToClient(film) {

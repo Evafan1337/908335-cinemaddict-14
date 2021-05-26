@@ -1,7 +1,7 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
-import {UpdateType} from '../utils/const';
+// import {UpdateType} from '../utils/const';
 import {render} from '../utils/render';
 import he from 'he';
 
@@ -46,12 +46,8 @@ export default class FilmPopupPresenter {
    * @param {Object} film - данные о фильме
    */
   init(film) {
-    console.log('filmPopup.js init()');
     this._film = film;
     this._comments = this._commentsModel.getCommentsFilm();
-
-    console.log(this._comments);
-
     this._commentsListComponent = new CommentsView(this._comments);
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
@@ -157,7 +153,6 @@ export default class FilmPopupPresenter {
    * @param {Object} evt - объект событий
    */
   _clickFilmInfo(evt) {
-    console.log('_clickFilmInfo');
     const type = evt.target.dataset.type;
     this._posScroll = this.getPositionScroll();
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
@@ -174,7 +169,7 @@ export default class FilmPopupPresenter {
     const commentId = evt.target.closest('.film-details__comment').dataset.id;
     const commentInd = this._comments.findIndex((item) => item.id === commentId);
     const filmsCommentInd = this._film.comments.findIndex((item) => item.id === commentId);
-    
+
     this._film.comments.splice(filmsCommentInd, 1);
     this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._comments[commentInd]);
   }
