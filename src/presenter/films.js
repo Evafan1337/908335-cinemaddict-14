@@ -131,11 +131,14 @@ export default class FilmsList {
     }
   }
 
-  _handleModelEvent(updateType, data) {
+  _handleModelEvent(updateType, comments, film) {
+
+    // console.log(data);
+
     switch (updateType) {
       case UpdateType.PATCH:
         console.log('UpdateType.PATCH here');
-        this._updateBoard(data);
+        this._updateBoard(film);
         break;
       case UpdateType.MINOR:
         this._clearList();

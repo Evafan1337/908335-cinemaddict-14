@@ -75,13 +75,9 @@ export default class FilmPopupPresenter {
 
     switch (updateType) {
       case UpdateType.PATCH:
-        console.log('PATCH comments');
-
-        //  temp
-        let newCommentsComponent = new CommentsView(comments);
-        replace(newCommentsComponent, this._commentsListComponent);
-        // this._comments = comments;
-        // this._renderComments();
+        console.log('Обновление комментариев');
+        // let newCommentsComponent = new CommentsView(comments);
+        // replace(newCommentsComponent, this._commentsListComponent);
         break;
       case UpdateType.INIT:
         this.init(film);
