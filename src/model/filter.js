@@ -1,7 +1,8 @@
 import Observer from './observer';
 
 /**
- * Класс описывает модель фильмов
+ * Класс описывает модель фильтрации
+ * Описаны методы для работы с отображением фильмов (выборка и сортировка)
  * @extends Observer
  */
 export default class Filter extends Observer {
@@ -10,14 +11,16 @@ export default class Filter extends Observer {
    * Конструктор
    * Объявляются служебные поля
    * Параметры фильтрации и сортировки
+   * @param {Object} api - интерфейс для общения с сервером
    * @constructor
    */
-  constructor() {
+  constructor(api) {
     super();
     this._filterFilmsCount = null;
     this._sortBy = null;
     this._filterBy = null;
     this._showStatsFlag = null;
+    this._api = api;
   }
 
   /**
@@ -26,12 +29,12 @@ export default class Filter extends Observer {
    * @param {String} - filterBy - значение фильтрации
    * @param {Object} - showStatsFlag - объект статистики
    */
-  setSortType(sortBy, filterBy, showStatsFlag) {
+  setSortType(sortBy, filterBy, showStatsFlag, UpdateType) {
     this._sortBy = sortBy;
     this._filterBy = filterBy;
     this._showStatsFlag = showStatsFlag;
 
-    this._notifyChanges();
+    this._notifyChanges(UpdateType);
   }
 
   /**
@@ -65,7 +68,6 @@ export default class Filter extends Observer {
    */
   setFilterFilmsCount(filterFilmsCount) {
     this._filterFilmsCount = filterFilmsCount;
-    this._notifyChanges();
   }
 
   /**
@@ -78,7 +80,7 @@ export default class Filter extends Observer {
   /**
    * Обертка над методом уведомления подписчиков класса родителя (Observer)
    */
-  _notifyChanges() {
-    this._notify({filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
+  _notifyChanges(UpdateType) {
+    this._notify(UpdateType, {filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
   }
 }

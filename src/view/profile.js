@@ -1,4 +1,5 @@
-import AbstractView from './abstract';
+// import AbstractView from './abstract';
+import SmartView from './smart';
 import {profileRating} from '../utils/const';
 
 /**
@@ -18,7 +19,7 @@ const createProfileTemplate = (count) => {
  * Класс описывает компонент "звания пользователя"
  * @extends AbstractView
  */
-export default class Profile extends AbstractView {
+export default class Profile extends SmartView {
 
   /**
    * @constructor

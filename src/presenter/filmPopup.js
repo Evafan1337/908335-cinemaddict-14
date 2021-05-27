@@ -1,8 +1,8 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
+import {UpdateType, UserAction} from '../utils/const';
 import {render} from '../utils/render';
-import {nanoid} from 'nanoid';
 import he from 'he';
 
 export default class FilmPopupPresenter {
@@ -12,27 +12,28 @@ export default class FilmPopupPresenter {
    * @param {Function} changeData - функция изменения данных
    * @constructor
    */
-  constructor(container, changeData, deleteComment, addComment) {
+  constructor(container, changeData, deleteComment, addComment, commentsModel, filterModel) {
     //  Ссылки на DOM узлы
     this._container = container;
 
-    //  Данные
     this._film = null;
+    this._comments = [];
 
-    //  Компоненты
+    this._commentsModel = commentsModel;
+    this._commentsModel.addObserver(this.observeComments.bind(this));
+    this._filterModel = filterModel;
+
     this._popupComponent = null;
     this._commentsListComponent = null;
 
-    //  Функции
     this._deleteComment = deleteComment;
     this._addComment = addComment;
     this._changeData = changeData;
 
-    //  Прочее
     this._posScroll = null;
 
-    //  Слушатели
     this._closePopupHandler = this._closePopupHandler.bind(this);
+
   }
 
   /**
@@ -41,9 +42,10 @@ export default class FilmPopupPresenter {
    */
   init(film) {
     this._film = film;
+    this._comments = this._commentsModel.getCommentsFilm();
+    this._commentsListComponent = new CommentsView(this._comments);
     const prevPopup = this._popupComponent;
     this._popupComponent = new PopupView(this._film);
-    this._commentsListComponent = new CommentsView(this._film.comments);
     if (prevPopup && this._container.classList.contains('hide-overflow')) {
       replace(this._popupComponent, prevPopup);
       this._container.classList.add('hide-overflow');
@@ -56,6 +58,39 @@ export default class FilmPopupPresenter {
     }
 
     remove(prevPopup);
+  }
+
+  observeComments(updateType, commentsData, film, userAction, transferResult) {
+
+    if(updateType === 'INIT') {
+      this.init(film, commentsData);
+      return;
+    }
+
+    if (!transferResult) {
+      switch (userAction) {
+        case UserAction.ADD_COMMENT:
+          this._setCommentsFormShake();
+          break;
+        case UserAction.DELETE_COMMENT:
+          this._setCommentHtmlNodeShake(commentsData);
+          break;
+      }
+      return;
+    }
+
+    this.init(film, commentsData);
+  }
+
+  _setCommentsFormShake() {
+    this._commentsListComponent.setFormShaking();
+    setTimeout(this._commentsListComponent.removeFormShaking, 1000);
+  }
+
+  _setCommentHtmlNodeShake(commentToShake) {
+    setTimeout(this._commentsListComponent.setOriginalButtonText, 1000, commentToShake.id);
+    setTimeout(this._commentsListComponent.setCommentShaking, 1000, commentToShake);
+    setTimeout(this._commentsListComponent.removeCommentShaking, 3000, commentToShake);
   }
 
   /**
@@ -84,7 +119,7 @@ export default class FilmPopupPresenter {
    * Приватный метод обработчика создания комментария
    */
   _handleFormSubmit() {
-    this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
+    document.addEventListener('keydown', (evt) => {
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
         evt.preventDefault();
         this.submitFormComments();
@@ -98,10 +133,11 @@ export default class FilmPopupPresenter {
    * Обновление исходных данных
    */
   submitFormComments() {
-    const posScroll = this.getPositionScroll();
+    this._posScroll = this.getPositionScroll();
     const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
     const emotions = document.querySelectorAll('.film-details__emoji-item');
     let currentEmotion;
+
     for (const emotion of emotions) {
       if (emotion.checked) {
         currentEmotion = emotion.value;
@@ -109,7 +145,6 @@ export default class FilmPopupPresenter {
     }
     if (currentEmotion !== null && text) {
       const newComment = {
-        id: nanoid(),
         info: {
           text: he.encode(text.value),
           author: '',
@@ -117,9 +152,16 @@ export default class FilmPopupPresenter {
         },
         date: new Date(),
       };
-      this._film.comments.push(newComment);
-      this._addComment(Object.assign({}, this._film, {comments: this._film.comments}), posScroll);
+      this._addComment(this._film, newComment, UpdateType.PATCH, UserAction.ADD_COMMENT);
     }
+  }
+
+  getPopupComponent(){
+    return this._popupComponent;
+  }
+
+  getCommentsComponent() {
+    return this._commentsListComponent;
   }
 
   /**
@@ -136,7 +178,12 @@ export default class FilmPopupPresenter {
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
     this._posScroll = this.getPositionScroll();
-    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
+
+    let updateType = UpdateType.PATCH;
+    if(this._filterModel.getFilterBy() === type) {
+      updateType = UpdateType.MAJOR;
+    }
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), updateType);
   }
 
   /**
@@ -145,10 +192,15 @@ export default class FilmPopupPresenter {
    */
   _removeComment(evt) {
     this._posScroll = this.getPositionScroll();
-    const commentId = evt.target.closest('.film-details__comment').getAttribute('id');
-    const commentInd = this._film.comments.findIndex((item) => item.id === commentId);
-    this._film.comments.splice(commentInd, 1);
-    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._posScroll);
+
+    const commentId = evt.target.closest('.film-details__comment').dataset.id;
+    const commentInd = this._comments.findIndex((item) => item.id === commentId);
+    const filmsCommentInd = this._film.comments.findIndex((item) => item.id === commentId);
+
+    this._commentsListComponent.changeDeleteButtonText(commentId);
+
+    this._film.comments.splice(filmsCommentInd, 1);
+    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._comments[commentInd], UpdateType.PATCH, UserAction.DELETE_COMMENT);
   }
 
   /**
@@ -187,4 +239,5 @@ export default class FilmPopupPresenter {
     this._container.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._closePopupHandler);
   }
+
 }

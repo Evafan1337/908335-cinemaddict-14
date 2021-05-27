@@ -41,7 +41,7 @@ const createTemplatePopupFilm = (film) => {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/${info.poster}" alt="">
+          <img class="film-details__poster-img" src="./${info.poster}" alt="">
           <p class="film-details__age">18+</p>
         </div>
         <div class="film-details__info">
@@ -140,6 +140,10 @@ export default class Popup extends SmartView {
    */
   getCommentsContainer() {
     return this.getElement().querySelector('.film-details__bottom-container');
+  }
+
+  getDeleteButton(){
+    return this.getElement().querySelector('.film-details__comment-delete');
   }
 
   /**

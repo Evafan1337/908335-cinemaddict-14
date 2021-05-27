@@ -1,6 +1,7 @@
 import EmptyFilmsView from '../view/empty-films';
-import SiteMenuView from '../view/menu.js';
-import {render} from '../utils/render';
+import {render, RenderPosition} from '../utils/render';
+import {remove} from '../utils/dom';
+
 
 /**
  * Класс описывает презентер пустого списка фильмов
@@ -27,7 +28,6 @@ export default class EmptyPresenter {
    * Метод инициализации
    */
   init() {
-    this._menuComponent = new SiteMenuView(this._filterFilmsCount);
     this._renderEmpty();
   }
 
@@ -35,7 +35,14 @@ export default class EmptyPresenter {
    * Метод рендера
    */
   _renderEmpty() {
-    render(this._emptyContainer, this._menuComponent);
-    render(this._emptyContainer, this._emptyFilmsComponent);
+    if(this._emptyContainer.querySelector('.films-list films-list--extra')) {
+      render(this._emptyContainer, this._emptyFilmsComponent, RenderPosition.AFTERBEGIN);
+    } else {
+      render(this._emptyContainer, this._emptyFilmsComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
+  destroy() {
+    remove(this._emptyFilmsComponent);
   }
 }

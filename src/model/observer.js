@@ -35,9 +35,9 @@ export default class Observer {
    * Выполнить все колбэки (this._observers)
    * @param {Object} values - данные, которые необходимо "прокинуть" колбэкам
    */
-  _notify(...values) {
+  _notify(event, ...payload) {
     this._observers.forEach((observer) => {
-      observer(...values);
+      observer(event, ...payload);
     });
   }
 }

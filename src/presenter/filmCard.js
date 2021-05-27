@@ -1,4 +1,5 @@
 import {replace, remove} from '../utils/dom';
+import {UpdateType} from '../utils/const';
 import {render} from '../utils/render';
 import FilmCardView from '../view/film-card';
 
@@ -13,17 +14,15 @@ export default class FilmCardPresenter {
    * @param {Function} showPopup - функция открытия попапа
    * @constructor
    */
-  constructor(filmContainer, changeData, showPopup) {
-    //  Ссылки на DOM узлы
+  constructor(filmContainer, changeData, showPopup, filterModel) {
     this._filmContainer = filmContainer;
 
-    //  Данные
+    this._filterModel = filterModel;
+
     this._film = null;
 
-    //  Компоненты
     this._cardComponent = null;
 
-    //  Функции
     this._changeData = changeData;
     this._showPopup = showPopup;
   }
@@ -35,8 +34,8 @@ export default class FilmCardPresenter {
   init(film) {
     this._film = film;
     const prevCard = this._cardComponent;
+
     this._cardComponent = new FilmCardView(this._film);
-    //  Устанавливаем слушатели на открытие попапа и редактирование данных
     this._cardComponent.setClickHandler(() => this._showPopup(this._film));
     this._cardComponent.setEditClickHandler((evt) => this._clickFilmInfo(evt));
 
@@ -44,6 +43,7 @@ export default class FilmCardPresenter {
       replace(this._cardComponent, prevCard);
     } else {
       this._renderCard();
+      return;
     }
   }
 
@@ -61,8 +61,13 @@ export default class FilmCardPresenter {
    */
   _clickFilmInfo(evt) {
     const type = evt.target.dataset.type;
-    //  Инвертируем значение в сыром виде данных о фильме согласно клика
-    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}));
+
+    let updateType = UpdateType.PATCH;
+    if(this._filterModel.getFilterBy() === type) {
+      updateType = UpdateType.MAJOR;
+    }
+
+    this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), updateType);
   }
 
   /**

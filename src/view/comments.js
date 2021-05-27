@@ -13,7 +13,7 @@ import {render} from '../utils/render';
  */
 const createCommentTemplate = (comment) => {
   const {info: {emotion, text, author}, date, id} = comment;
-  return `<li class="film-details__comment" id="${id}">
+  return `<li class="film-details__comment" data-id="${id}">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
             </span>
@@ -27,8 +27,6 @@ const createCommentTemplate = (comment) => {
             </div>
           </li>`;
 };
-//  Подумать над вынесением dayjs обработки в отдельный оператор
-
 
 /**
  * Функция создания элемента картинки
@@ -45,6 +43,7 @@ const createEmojiLabel = (emotion) => {
  * @return {string}
  */
 export const createCommentsTemplate = (comments) => {
+
   return `<section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
         <ul class="film-details__comments-list">${comments.map((comment) => createCommentTemplate(comment)).join('')}</ul>
@@ -85,6 +84,10 @@ export default class Comments extends SmartView {
     this._comments = comments;
     this._deleteClickComment = this._deleteClickComment.bind(this);
     this._addCommentEmotion = this._addCommentEmotion.bind(this);
+
+    this.setCommentShaking = this.setCommentShaking.bind(this);
+    this.setOriginalButtonText = this.setOriginalButtonText.bind(this);
+    this.removeCommentShaking = this.removeCommentShaking.bind(this);
   }
 
   /**
@@ -104,13 +107,67 @@ export default class Comments extends SmartView {
     return this.getElement().querySelectorAll('.film-details__emoji-item');
   }
 
-
   /**
    * Метод получения HTML элемента (ссылка на удаление комментария)
    */
   getLinksDelete() {
     return this.getElement().querySelectorAll('.film-details__comment-delete');
   }
+
+  setFormShaking() {
+    this.getElement().classList.add('shake');
+  }
+
+  removeFormShaking() {
+    this.getElement().classList.remove('shake');
+  }
+
+  changeDeleteButtonText(commentId){
+    const commentsList = this.getElement().querySelectorAll('[data-id]');
+
+    let commentHtmlNode = null;
+    for (const comment of commentsList) {
+      if(comment.dataset.id === commentId) {
+        commentHtmlNode = comment;
+        break;
+      }
+    }
+
+    const btn = commentHtmlNode.querySelector('.film-details__comment-delete');
+    btn.textContent = 'Deleting...';
+  }
+
+  setOriginalButtonText(commentId) {
+    const commentsList = this.getElement().querySelectorAll('[data-id]');
+
+    let commentHtmlNode = null;
+    for (const comment of commentsList) {
+      if(comment.dataset.id === commentId) {
+        commentHtmlNode = comment;
+        break;
+      }
+    }
+
+    const btn = commentHtmlNode.querySelector('.film-details__comment-delete');
+    btn.textContent = 'Delete';
+  }
+
+  setCommentShaking(comment) {
+    for (const elem of this.getElement().querySelectorAll('.film-details__comment')){
+      if(elem.dataset.id === comment.id) {
+        elem.classList.add('shake');
+      }
+    }
+  }
+
+  removeCommentShaking(comment) {
+    for (const elem of this.getElement().querySelectorAll('.film-details__comment')){
+      if(elem.dataset.id === comment.id) {
+        elem.classList.remove('shake');
+      }
+    }
+  }
+
 
   /**
    * Метод восстановления обработчиков

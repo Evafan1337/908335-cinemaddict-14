@@ -12,6 +12,7 @@ import {
   getFilmsInfoSortLength,
   filmsInfoSort}
   from '../utils/sort';
+import {UpdateType} from '../utils/const';
 
 /**
  * Класс описывает презентер списка фильмов
@@ -25,22 +26,20 @@ export default class FilterPresenter {
    * @constructor
    */
   constructor(filterContainer, filterModel, filmsModel) {
-    //  Ссылки на DOM узлы
     this._filterContainer = filterContainer;
 
-    //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
-    this._filmsModel.addObserver(this.observeFilter.bind(this));
+    this._filterModel.addObserver(this._handleModelEvent.bind(this));
+    this._filmsModel.addObserver(this._handleModelEvent.bind(this));
 
-    //  Компоненты
     this._menuComponent = null;
     this._sortPanelComponent = null;
 
-    //  Слушатели
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleStatsItemClick = this._handleStatsItemClick.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
   /**
@@ -52,12 +51,7 @@ export default class FilterPresenter {
     this._renderSort();
   }
 
-  /**
-   * Обработчик который будет исполнятся при _notify
-   * Пересчитывает количество фильмов по параметрам фильтра
-   * И вызывает метод инициализации презентера
-   */
-  observeFilter() {
+  _handleModelEvent() {
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();
@@ -75,8 +69,39 @@ export default class FilterPresenter {
     } else {
       render(this._filterContainer, this._menuComponent);
     }
+
     this._menuComponent.setClickHandler(this._handleFilterItemClick);
     this._menuComponent.setClickStatsHandler(this._handleStatsItemClick);
+  }
+
+
+  /**
+   * Приватный метод рендера компонента сортировки
+   */
+  _renderSort() {
+    if(this._filmsModel.getFilms().length === 0) {
+      return;
+    }
+
+    const filmStats = this._filterModel.getFilterFilmsCount();
+    const curFilter = this._filterModel.getFilterBy();
+
+    if(filmStats[curFilter] === 0 && this._sortPanelComponent) {
+      this._sortPanelComponent.hide();
+      return;
+    } else if (filmStats[curFilter] !== 0 && this._sortPanelComponent) {
+      this._sortPanelComponent.show();
+    }
+
+
+    const sortPanelComponent = this._sortPanelComponent;
+    this._sortPanelComponent = new SortPanelView(this._filterModel.getSortBy());
+    if (sortPanelComponent) {
+      replace(this._sortPanelComponent, sortPanelComponent);
+    } else {
+      render(this._filterContainer, this._sortPanelComponent);
+    }
+    this._sortPanelComponent.setClickHandler(this._handleSortItemClick);
   }
 
   /**
@@ -90,23 +115,7 @@ export default class FilterPresenter {
     }
 
     this._showSort();
-    this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false);
-    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
-    evt.target.classList.add('main-navigation__item--active');
-  }
-
-  /**
-   * Приватный метод рендера компонента сортировки
-   */
-  _renderSort() {
-    const sortPanelComponent = this._sortPanelComponent;
-    this._sortPanelComponent = new SortPanelView(this._filterModel.getSortBy());
-    if (sortPanelComponent) {
-      replace(this._sortPanelComponent, sortPanelComponent);
-    } else {
-      render(this._filterContainer, this._sortPanelComponent);
-    }
-    this._sortPanelComponent.setClickHandler(this._handleSortItemClick);
+    this._filterModel.setSortType('default', evt.target.dataset.filter, false, UpdateType.MAJOR);
   }
 
   /**
@@ -114,19 +123,15 @@ export default class FilterPresenter {
    * @param {Object} evt - объект события
    */
   _handleSortItemClick(evt) {
-    this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterBy(), false);
-    this._sortPanelComponent.getActiveMenuLink().classList.remove('sort__button--active');
-    evt.target.classList.add('sort__button--active');
+    this._filterModel.setSortType(evt.target.dataset.sort, this._filterModel.getFilterBy(), false, UpdateType.MAJOR);
   }
 
   /**
    * Обработчик клика по элементам компонента статистики
    * @param {Object} evt - объект события
    */
-  _handleStatsItemClick(evt) {
-    this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true);
-    this._menuComponent.getActiveMenuLink().classList.remove('main-navigation__item--active');
-    evt.target.classList.add('main-navigation__item--active');
+  _handleStatsItemClick() {
+    this._filterModel.setSortType(this._filterModel.getSortBy(), this._filterModel.getFilterBy(), true, UpdateType.MAJOR);
     this._hideSort();
   }
 
@@ -134,6 +139,10 @@ export default class FilterPresenter {
    * Приватный метод скрытия сортировки
    */
   _hideSort() {
+    if(!this._sortPanelComponent) {
+      return;
+    }
+
     this._sortPanelComponent.hide();
   }
 
@@ -141,6 +150,10 @@ export default class FilterPresenter {
    * Приватный метод показа сортировки
    */
   _showSort() {
+    if(!this._sortPanelComponent) {
+      return;
+    }
+
     this._sortPanelComponent.show();
   }
 }

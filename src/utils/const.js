@@ -18,18 +18,30 @@ export const FilmsPerSection = {
   RATED: 2,
 };
 
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
+export const UserAction = {
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
 /**
  * Метод выборки звания пользователя
  * В зависимости от количества просмотренных фильмов
  * @param {number} count - количество просмотренных фильмов
  */
 export const profileRating = (count) => {
-  if (count > 1 && count <= 10) {
+  if (count >= 1 && count <= 10) {
     return UserRank.NOVICE;
   } else if (count > 10 && count <= 20) {
     return UserRank.FAN;
   } else {
-    return UserRank.MOVIE_BAFF;
+    return UserRank.MOVIE_BUFF;
   }
 };
 
