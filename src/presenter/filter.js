@@ -26,25 +26,19 @@ export default class FilterPresenter {
    * @constructor
    */
   constructor(filterContainer, filterModel, filmsModel) {
-    //  Ссылки на DOM узлы
     this._filterContainer = filterContainer;
 
-    //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
-    // this._filmsModel.addObserver(this.observeFilter.bind(this));
     this._filterModel.addObserver(this._handleModelEvent.bind(this));
     this._filmsModel.addObserver(this._handleModelEvent.bind(this));
 
-    //  Компоненты
     this._menuComponent = null;
     this._sortPanelComponent = null;
 
-    //  Слушатели
     this._handleSortItemClick = this._handleSortItemClick.bind(this);
     this._handleFilterItemClick = this._handleFilterItemClick.bind(this);
     this._handleStatsItemClick = this._handleStatsItemClick.bind(this);
-
     this._handleModelEvent = this._handleModelEvent.bind(this);
   }
 
@@ -57,7 +51,6 @@ export default class FilterPresenter {
     this._renderSort();
   }
 
-  // _handleModelEvent(updateType) {
   _handleModelEvent() {
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
@@ -122,7 +115,6 @@ export default class FilterPresenter {
     }
 
     this._showSort();
-    // this._filterModel.setSortType(this._filterModel.getSortBy(), evt.target.dataset.filter, false, UpdateType.MAJOR);
     this._filterModel.setSortType('default', evt.target.dataset.filter, false, UpdateType.MAJOR);
   }
 

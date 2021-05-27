@@ -25,6 +25,11 @@ export const UpdateType = {
   INIT: 'INIT',
 };
 
+export const UserAction = {
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
 /**
  * Метод выборки звания пользователя
  * В зависимости от количества просмотренных фильмов

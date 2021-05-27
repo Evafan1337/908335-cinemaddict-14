@@ -1,7 +1,7 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
 import {replace, remove} from '../utils/dom';
-import {UpdateType} from '../utils/const';
+import {UpdateType, UserAction} from '../utils/const';
 import {render} from '../utils/render';
 import he from 'he';
 
@@ -16,28 +16,22 @@ export default class FilmPopupPresenter {
     //  Ссылки на DOM узлы
     this._container = container;
 
-    //  Данные
     this._film = null;
     this._comments = [];
 
-    //  Модели
     this._commentsModel = commentsModel;
     this._commentsModel.addObserver(this.observeComments.bind(this));
     this._filterModel = filterModel;
 
-    //  Компоненты
     this._popupComponent = null;
     this._commentsListComponent = null;
 
-    //  Функции
     this._deleteComment = deleteComment;
     this._addComment = addComment;
     this._changeData = changeData;
 
-    //  Прочее
     this._posScroll = null;
 
-    //  Слушатели
     this._closePopupHandler = this._closePopupHandler.bind(this);
 
   }
@@ -66,9 +60,37 @@ export default class FilmPopupPresenter {
     remove(prevPopup);
   }
 
-  observeComments(updateType, comments, film) {
-    //  To-do: перерисовывать комментарии точечно
-    this.init(film, comments);
+  observeComments(updateType, commentsData, film, userAction, transferResult) {
+
+    if(updateType === 'INIT') {
+      this.init(film, commentsData);
+      return;
+    }
+
+    if (!transferResult) {
+      switch (userAction) {
+        case UserAction.ADD_COMMENT:
+          this._setCommentsFormShake();
+          break;
+        case UserAction.DELETE_COMMENT:
+          this._setCommentHtmlNodeShake(commentsData);
+          break;
+      }
+      return;
+    }
+
+    this.init(film, commentsData);
+  }
+
+  _setCommentsFormShake() {
+    this._commentsListComponent.setFormShaking();
+    setTimeout(this._commentsListComponent.removeFormShaking, 1000);
+  }
+
+  _setCommentHtmlNodeShake(commentToShake) {
+    setTimeout(this._commentsListComponent.setOriginalButtonText, 1000, commentToShake.id);
+    setTimeout(this._commentsListComponent.setCommentShaking, 1000, commentToShake);
+    setTimeout(this._commentsListComponent.removeCommentShaking, 3000, commentToShake);
   }
 
   /**
@@ -97,7 +119,6 @@ export default class FilmPopupPresenter {
    * Приватный метод обработчика создания комментария
    */
   _handleFormSubmit() {
-    //  To-do: снятие обработчика
     document.addEventListener('keydown', (evt) => {
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
         evt.preventDefault();
@@ -131,7 +152,7 @@ export default class FilmPopupPresenter {
         },
         date: new Date(),
       };
-      this._addComment(this._film, newComment, UpdateType.PATCH);
+      this._addComment(this._film, newComment, UpdateType.PATCH, UserAction.ADD_COMMENT);
     }
   }
 
@@ -170,15 +191,16 @@ export default class FilmPopupPresenter {
    * @param {Object} evt - объект событий
    */
   _removeComment(evt) {
-    this._popupComponent.changeDeleteButtonText();
     this._posScroll = this.getPositionScroll();
 
     const commentId = evt.target.closest('.film-details__comment').dataset.id;
     const commentInd = this._comments.findIndex((item) => item.id === commentId);
     const filmsCommentInd = this._film.comments.findIndex((item) => item.id === commentId);
 
+    this._commentsListComponent.changeDeleteButtonText(commentId);
+
     this._film.comments.splice(filmsCommentInd, 1);
-    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._comments[commentInd]);
+    this._deleteComment(Object.assign({}, this._film, {comments: this._film.comments}), this._comments[commentInd], UpdateType.PATCH, UserAction.DELETE_COMMENT);
   }
 
   /**

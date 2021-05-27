@@ -41,15 +41,16 @@ export default class CommentsModel extends Observer {
     return this._commentList;
   }
 
-  addComment(comment, film, updateType) {
+  addComment(comment, film, updateType, userAction) {
     this._api.addComment(comment, film).then((update) => {
       this._commentList = update[1];
-      this._notify(updateType, update[1], update[0]);
+      this._notify(updateType, update[1], update[0], userAction, true);
+    }).catch(() => {
+      this._notify(updateType, undefined, undefined, userAction, false);
     });
   }
 
-  // removeComment(commentToRemove, film) {
-  removeComment(commentToRemove, film, updateType) {
+  removeComment(commentToRemove, film, updateType, userAction) {
     this._api.deleteComment(commentToRemove).then(() => {
       const index = this._commentList.findIndex((comment) => comment.id === commentToRemove.id);
 
@@ -58,7 +59,9 @@ export default class CommentsModel extends Observer {
       }
 
       this._commentList.splice(index, 1);
-      this._notify(updateType, this._commentList, film);
+      this._notify(updateType, this._commentList, film, userAction, true);
+    }).catch(() => {
+      this._notify(updateType, commentToRemove, undefined, userAction, false, commentToRemove);
     });
   }
 

@@ -15,19 +15,14 @@ export default class FilmCardPresenter {
    * @constructor
    */
   constructor(filmContainer, changeData, showPopup, filterModel) {
-    //  Ссылки на DOM узлы
     this._filmContainer = filmContainer;
 
-    //  Модели
     this._filterModel = filterModel;
 
-    //  Данные
     this._film = null;
 
-    //  Компоненты
     this._cardComponent = null;
 
-    //  Функции
     this._changeData = changeData;
     this._showPopup = showPopup;
   }

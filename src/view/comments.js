@@ -27,8 +27,6 @@ const createCommentTemplate = (comment) => {
             </div>
           </li>`;
 };
-//  Подумать над вынесением dayjs обработки в отдельный оператор
-
 
 /**
  * Функция создания элемента картинки
@@ -86,6 +84,10 @@ export default class Comments extends SmartView {
     this._comments = comments;
     this._deleteClickComment = this._deleteClickComment.bind(this);
     this._addCommentEmotion = this._addCommentEmotion.bind(this);
+
+    this.setCommentShaking = this.setCommentShaking.bind(this);
+    this.setOriginalButtonText = this.setOriginalButtonText.bind(this);
+    this.removeCommentShaking = this.removeCommentShaking.bind(this);
   }
 
   /**
@@ -105,7 +107,6 @@ export default class Comments extends SmartView {
     return this.getElement().querySelectorAll('.film-details__emoji-item');
   }
 
-
   /**
    * Метод получения HTML элемента (ссылка на удаление комментария)
    */
@@ -117,6 +118,40 @@ export default class Comments extends SmartView {
     this.getElement().classList.add('shake');
   }
 
+  removeFormShaking() {
+    this.getElement().classList.remove('shake');
+  }
+
+  changeDeleteButtonText(commentId){
+    const commentsList = this.getElement().querySelectorAll('[data-id]');
+
+    let commentHtmlNode = null;
+    for (const comment of commentsList) {
+      if(comment.dataset.id === commentId) {
+        commentHtmlNode = comment;
+        break;
+      }
+    }
+
+    const btn = commentHtmlNode.querySelector('.film-details__comment-delete');
+    btn.textContent = 'Deleting...';
+  }
+
+  setOriginalButtonText(commentId) {
+    const commentsList = this.getElement().querySelectorAll('[data-id]');
+
+    let commentHtmlNode = null;
+    for (const comment of commentsList) {
+      if(comment.dataset.id === commentId) {
+        commentHtmlNode = comment;
+        break;
+      }
+    }
+
+    const btn = commentHtmlNode.querySelector('.film-details__comment-delete');
+    btn.textContent = 'Delete';
+  }
+
   setCommentShaking(comment) {
     for (const elem of this.getElement().querySelectorAll('.film-details__comment')){
       if(elem.dataset.id === comment.id) {
@@ -124,6 +159,15 @@ export default class Comments extends SmartView {
       }
     }
   }
+
+  removeCommentShaking(comment) {
+    for (const elem of this.getElement().querySelectorAll('.film-details__comment')){
+      if(elem.dataset.id === comment.id) {
+        elem.classList.remove('shake');
+      }
+    }
+  }
+
 
   /**
    * Метод восстановления обработчиков

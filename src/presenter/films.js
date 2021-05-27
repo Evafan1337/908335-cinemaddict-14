@@ -49,39 +49,29 @@ export default class FilmsList {
    */
   constructor(filmsContainer, filmsModel, filterModel, filterPresenter, filmsPerPage, emptyPresenter, api) {
 
-    //  Модели
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._commentsModel = new CommentsModel(api);
 
-    //  Добавление наблюдателей - обработчиков
-    // this._filterModel.addObserver(this.observeProfileHistory.bind(this));
     this._filmsModel.addObserver(this.observeProfileHistory.bind(this));
-
     this._commentsModel.addObserver(this._handleModelEvent.bind(this));
     this._filmsModel.addObserver(this._handleModelEvent.bind(this));
     this._filterModel.addObserver(this._handleModelEvent.bind(this));
 
-    //  Параметры сортировки и фильтрации
     this._filterBy = this._filterModel.getFilterBy();
     this._sortBy = this._filterModel.getSortBy();
 
-    //  Данные
     this._sourcedFilms = [];
     this._films = [];
 
-    //  Счетчики
     this._filterFilmsCount = {};
     this._renderedFilmsCount = filmsPerPage;
     this._filmsPerPage = filmsPerPage;
 
-    //  Флаги
     this._isLoading = true;
 
-    //  Общение с сервером
     this._api = api;
 
-    //  Компоненты
     this._statsComponent = null;
     this._menuComponent = null;
     this._sortPanelComponent = new SortPanelView();
@@ -90,28 +80,22 @@ export default class FilmsList {
     this._loadingComponent = new LoadingView();
     this._profileComponent = null;
 
-    //  Ссылки на DOM узлы
     this._filmsContainer = filmsContainer;
     this._mainFilmList = null;
     this._loadMoreContainer = null;
 
-    //  Слушатели
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleFilmAction = this._handleFilmAction.bind(this);
     this._handlePopupOpen = this._handlePopupOpen.bind(this);
     this._handlePopupAction = this._handlePopupAction.bind(this);
-    // this._handlePopupCommentActions = this._handlePopupCommentActions.bind(this);
     this._handleAddComment = this._handleAddComment.bind(this);
     this._handleDeleteComment = this._handleDeleteComment.bind(this);
     this._handleStatsDisplay = this._handleStatsDisplay.bind(this);
-
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    //  Презентеры
     this._filmPresenter = {};
     this._topRatedFilmsPresenter = {};
     this._topCommentedPresenter = {};
-
     this._filterPresenter = filterPresenter;
     this._popupPresenter = new FilmPopupPresenter(siteBody, this._handlePopupAction, this._handleDeleteComment, this._handleAddComment, this._commentsModel, this._filterModel);
     this._emptyPresenter = emptyPresenter;
@@ -134,47 +118,27 @@ export default class FilmsList {
     }
   }
 
-  _handleModelEvent(updateType, comments, film) {
+  _handleModelEvent(updateType, comments, film, userAction, transferResult) {
+    comments = [];
 
-    //  Реализовать заглушку и почитать про параметры
-    comments = 'temp';
+    if(transferResult === false) {
+      return;
+    }
 
-    // 
     this._renderStats();
 
     switch (updateType) {
       case UpdateType.PATCH:
-        // console.log('UpdateType.PATCH here');
         this._updateBoard(film);
         break;
       case UpdateType.MAJOR:
         this._clearList();
-        // console.log('UpdateType.MAJOR here');
         this._updateFilmsListMajor();
         break;
-
-    // switch (updateType) {
-    //   case UpdateType.PATCH:
-    //     console.log('UpdateType.PATCH here');
-    //     this._updateBoard(film);
-    //     break;
-    //   case UpdateType.MINOR:
-    //     this._clearList();
-    //     console.log('UpdateType.MINOR here');
-    //     break;
-    //   case UpdateType.MAJOR:
-    //     this._clearList();
-    //     // console.log('UpdateType.MAJOR here');
-    //     this._updateFilmsListMajor();
-    //     break;
-    //   case UpdateType.INIT:
-    //     console.log('UpdateType.INIT here');
-    //     break;
     }
   }
 
   _updateFilmsListMajor(){
-    //  Полная перерисовка
     this._clearList();
 
     const films = this._filmsModel.getFilms();
@@ -221,12 +185,9 @@ export default class FilmsList {
    * Если есть то рисует плашку профиля
    */
   observeProfileHistory() {
-    console.log('observeProfileHistory');
-    // console.log(this._filmsModel.getFilms());
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     const currentViewFilmsCount = filmsInfoSortLength.isViewed;
     if(currentViewFilmsCount > 0) {
-      // console.log(this._profileComponent);
       this._profileComponent.show();
       this._renderProfile(currentViewFilmsCount);
     } else {
@@ -285,7 +246,7 @@ export default class FilmsList {
     this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
     this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
 
-    const currentViewFilmsCount = this._filterModel.getFilterFilmsCount().isViewed
+    const currentViewFilmsCount = this._filterModel.getFilterFilmsCount().isViewed;
     if (currentViewFilmsCount > 0) {
       this._renderProfile(currentViewFilmsCount);
     }
@@ -300,12 +261,8 @@ export default class FilmsList {
 
   _renderStats() {
     const prevStats = this._statsComponent;
-
-    // console.log(this._filmsModel.getFilms());
     const viewedFilms = filmsInfoSort(this._filmsModel.getFilms()).isViewed;
-    console.log(viewedFilms);
 
-    // this._statsComponent = new StatsView(this._sourcedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
     this._statsComponent = new StatsView(viewedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
       replace(this._statsComponent, prevStats);
@@ -443,8 +400,6 @@ export default class FilmsList {
     this._popupPresenter.init(film);
   }
 
-  //  В этих методах можно придумать легкую перерисовку попапа
-  //  Избежать init'а
   /**
    * Приватный метод обработки фильма (клик по интерфейсу попапа)
    * @param {object} updatedFilm - данные о фильме, которые нужно изменить
@@ -455,16 +410,14 @@ export default class FilmsList {
     this._popupPresenter.init(updatedFilm);
   }
 
-  _handleAddComment(updatedFilm, comment, updateType) {
-    this._commentsModel.addComment(comment, updatedFilm, updateType);
+  _handleAddComment(updatedFilm, comment, updateType, userAction) {
+    this._commentsModel.addComment(comment, updatedFilm, updateType, userAction);
     this._filmsModel.updateFilm(updatedFilm);
-    this._popupPresenter.init(updatedFilm);
   }
 
-  _handleDeleteComment(updatedFilm, comment) {
-    this._commentsModel.removeComment(comment, updatedFilm, UpdateType.PATCH);
+  _handleDeleteComment(updatedFilm, comment, updateType, userAction) {
+    this._commentsModel.removeComment(comment, updatedFilm, UpdateType.PATCH, userAction);
     this._filmsModel.updateFilm(updatedFilm);
-    this._popupPresenter.init(updatedFilm);
   }
 
   /**

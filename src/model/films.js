@@ -55,7 +55,6 @@ export default class Films extends Observer {
         update,
         ...this._films.slice(index + 1),
       ];
-      //  Передача параметров. Узнать
       this._notify(updateType, undefined, update);
     });
   }

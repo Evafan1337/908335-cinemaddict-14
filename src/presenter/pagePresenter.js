@@ -62,7 +62,6 @@ export default class PagePresenter {
     this._filterPresenter = new FilterPresenter(this._siteMainElement, this._filterModel, this._filmsModel);
 
     this._initFilmsPresenter();
-    // this._initSubFilmsPresenters();
     this._renderFooterComponent();
   }
 

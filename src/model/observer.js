@@ -36,9 +36,6 @@ export default class Observer {
    * @param {Object} values - данные, которые необходимо "прокинуть" колбэкам
    */
   _notify(event, ...payload) {
-    // console.log('_notify');
-    // console.log(values);
-    // console.log(updateType);
     this._observers.forEach((observer) => {
       observer(event, ...payload);
     });
