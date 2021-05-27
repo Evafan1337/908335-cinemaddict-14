@@ -1,5 +1,5 @@
 import EmptyFilmsView from '../view/empty-films';
-import {render} from '../utils/render';
+import {render, RenderPosition} from '../utils/render';
 import {remove} from '../utils/dom';
 
 
@@ -35,7 +35,11 @@ export default class EmptyPresenter {
    * Метод рендера
    */
   _renderEmpty() {
-    render(this._emptyContainer, this._emptyFilmsComponent);
+    if(this._emptyContainer.querySelector('.films-list films-list--extra')) {
+      render(this._emptyContainer, this._emptyFilmsComponent, RenderPosition.AFTERBEGIN);
+    } else {
+      render(this._emptyContainer, this._emptyFilmsComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   destroy() {

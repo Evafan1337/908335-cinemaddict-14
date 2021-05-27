@@ -133,6 +133,9 @@ export default class FilmsList {
 
   _handleModelEvent(updateType, comments, film) {
 
+    //  Реализовать заглушку и почитать про параметры
+    comments = 'temp';
+
     switch (updateType) {
       case UpdateType.PATCH:
         // console.log('UpdateType.PATCH here');

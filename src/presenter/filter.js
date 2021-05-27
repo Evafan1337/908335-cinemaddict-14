@@ -86,6 +86,21 @@ export default class FilterPresenter {
    * Приватный метод рендера компонента сортировки
    */
   _renderSort() {
+    if(this._filmsModel.getFilms().length === 0) {
+      return;
+    }
+
+    const filmStats = this._filterModel.getFilterFilmsCount();
+    const curFilter = this._filterModel.getFilterBy();
+
+    if(filmStats[curFilter] === 0 && this._sortPanelComponent) {
+      this._sortPanelComponent.hide();
+      return;
+    } else if (filmStats[curFilter] !== 0 && this._sortPanelComponent) {
+      this._sortPanelComponent.show();
+    }
+
+
     const sortPanelComponent = this._sortPanelComponent;
     this._sortPanelComponent = new SortPanelView(this._filterModel.getSortBy());
     if (sortPanelComponent) {
@@ -132,6 +147,10 @@ export default class FilterPresenter {
    * Приватный метод скрытия сортировки
    */
   _hideSort() {
+    if(!this._sortPanelComponent) {
+      return;
+    }
+
     this._sortPanelComponent.hide();
   }
 
@@ -139,6 +158,10 @@ export default class FilterPresenter {
    * Приватный метод показа сортировки
    */
   _showSort() {
+    if(!this._sortPanelComponent) {
+      return;
+    }
+
     this._sortPanelComponent.show();
   }
 }
