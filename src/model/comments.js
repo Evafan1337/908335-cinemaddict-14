@@ -24,16 +24,13 @@ export default class CommentsModel extends Observer {
    * Установить комментарии для выбранного фильма (film)
    * @param {Object} film - фильм, для которого нужно установить комментарии
    */
-  // setCommentsFilm(film, updateType) {
   setCommentsFilm(film, updateType) {
     this._api.getComments(film).then((comments) => {
       this._commentList = comments.slice();
       this._notify(updateType, this._commentList, film);
-      // this._notify(updateType);
     }).catch(() => {
       this._commentList = [];
       this._notify(updateType, this._commentList, film);
-      // this._notify('setCommentsFilm');
     });
   }
 
@@ -45,19 +42,9 @@ export default class CommentsModel extends Observer {
   }
 
   addComment(comment, film, updateType) {
-    console.log('comments.js addComment');
-    console.log(comment);
-    console.log(film);
-    console.log(updateType);
-
     this._api.addComment(comment, film).then((update) => {
       this._commentList = update[1];
-
-      console.log(update[0]);
-      console.log(update[1]);
-
       this._notify(updateType, update[1], update[0]);
-      // this._notify('addComment');
     });
   }
 
@@ -72,16 +59,7 @@ export default class CommentsModel extends Observer {
 
       this._commentList.splice(index, 1);
       this._notify(updateType, this._commentList, film);
-      this._notify('removeComment');
     });
-    // const index = this._commentList.findIndex((comment) => comment.id === removed.id);
-
-    // if (index === -1) {
-    //   throw new Error('Can not update unexisting film');
-    // }
-
-    // this._commentList.splice(index, 1);
-    // this._notify(this._commentList, film);
   }
 
   static adaptToClient(comment) {

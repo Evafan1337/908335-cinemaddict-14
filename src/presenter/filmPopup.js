@@ -73,16 +73,18 @@ export default class FilmPopupPresenter {
     console.log(comments);
     console.log(film);
 
-    switch (updateType) {
-      case UpdateType.PATCH:
-        console.log('Обновление комментариев');
-        // let newCommentsComponent = new CommentsView(comments);
-        // replace(newCommentsComponent, this._commentsListComponent);
-        break;
-      case UpdateType.INIT:
-        this.init(film);
-        break;
-    }
+    this.init(film, comments);
+
+    // switch (updateType) {
+    //   case UpdateType.PATCH:
+    //     console.log('Обновление комментариев');
+    //     // let newCommentsComponent = new CommentsView(comments);
+    //     // replace(newCommentsComponent, this._commentsListComponent);
+    //     break;
+    //   case UpdateType.INIT:
+    //     this.init(film, comments);
+    //     break;
+    // }
   }
 
   /**
