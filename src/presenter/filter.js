@@ -68,17 +68,14 @@ export default class FilterPresenter {
    * Приватный метод рендера меню (фильтации)
    */
   _renderMenu() {
-    console.log('_renderMenu');
     const prevMenu = this._menuComponent;
     this._menuComponent = new MenuView(this._filterModel.getFilterFilmsCount(), this._filterModel.getFilterBy());
 
     console.log(this._filterModel.getFilterFilmsCount());
 
     if (prevMenu) {
-      console.log('prevMenu');
       replace(this._menuComponent, prevMenu);
     } else {
-      console.log('!prevMenu');
       render(this._filterContainer, this._menuComponent);
     }
     this._menuComponent.setClickHandler(this._handleFilterItemClick);
@@ -90,7 +87,6 @@ export default class FilterPresenter {
    * Приватный метод рендера компонента сортировки
    */
   _renderSort() {
-    console.log('_renderSort');
     const sortPanelComponent = this._sortPanelComponent;
     this._sortPanelComponent = new SortPanelView(this._filterModel.getSortBy());
     if (sortPanelComponent) {

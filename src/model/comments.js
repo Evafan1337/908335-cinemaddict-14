@@ -54,14 +54,15 @@ export default class CommentsModel extends Observer {
       this._commentList = update[1];
 
       console.log(update[0]);
+      console.log(update[1]);
 
-      this._notify(updateType, update[0]);
+      this._notify(updateType, update[1], update[0]);
       // this._notify('addComment');
     });
   }
 
   // removeComment(commentToRemove, film) {
-  removeComment(commentToRemove, updateType) {
+  removeComment(commentToRemove, film, updateType) {
     this._api.deleteComment(commentToRemove).then(() => {
       const index = this._commentList.findIndex((comment) => comment.id === commentToRemove.id);
 

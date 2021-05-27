@@ -1,6 +1,6 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
-import {replace, remove} from '../utils/dom';
+import {replace, remove, updateHtmlNode} from '../utils/dom';
 import {UpdateType} from '../utils/const';
 import {render} from '../utils/render';
 import he from 'he';
@@ -67,7 +67,26 @@ export default class FilmPopupPresenter {
   }
 
   observeComments(updateType, comments, film) {
-    this.init(film, comments);
+    // this.init(this._film, comments);
+
+    console.log(updateType);
+    console.log(comments);
+    console.log(film);
+
+    switch (updateType) {
+      case UpdateType.PATCH:
+        console.log('PATCH comments');
+
+        //  temp
+        let newCommentsComponent = new CommentsView(comments);
+        replace(newCommentsComponent, this._commentsListComponent);
+        // this._comments = comments;
+        // this._renderComments();
+        break;
+      case UpdateType.INIT:
+        this.init(film);
+        break;
+    }
   }
 
   /**
@@ -148,6 +167,14 @@ export default class FilmPopupPresenter {
    */
   _renderComments() {
     render(this._popupComponent.getCommentsContainer(), this._commentsListComponent);
+
+    // if(this._commentsListComponent) {
+    //   const newCommentsListComponent = this._commentsListComponent;
+    //   replace(this._commentsListComponent, newCommentsListComponent);
+    //   this._commentsListComponent = newCommentsListComponent;
+    // } else {
+    //   render(this._popupComponent.getCommentsContainer(), this._commentsListComponent);
+    // }
   }
 
   /**

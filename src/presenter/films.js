@@ -132,8 +132,6 @@ export default class FilmsList {
   }
 
   _handleModelEvent(updateType, data) {
-    console.log('_handleModelEvent:', updateType);
-    console.log('_handleModelEvent:', data);
     switch (updateType) {
       case UpdateType.PATCH:
         console.log('UpdateType.PATCH here');
@@ -191,7 +189,6 @@ export default class FilmsList {
   }
 
   _updateBoard(data) {
-    console.log('_updateBoard');
     const updatedCards = Object.keys(this._filmPresenter).filter((key) => this._filmPresenter[key]._film.id === data.id);
     updatedCards.forEach((card) => this._filmPresenter[card].init(data));
   }
@@ -404,7 +401,7 @@ export default class FilmsList {
    * @param {object} film - данные о фильме, которые необходимо отрисовать в попапе
    */
   _handlePopupOpen(film) {
-    this._commentsModel.setCommentsFilm(film, UpdateType.PATCH);
+    this._commentsModel.setCommentsFilm(film, UpdateType.INIT);
     this._popupPresenter.init(film);
   }
 
