@@ -17,7 +17,9 @@ import {
   RenderPosition}
   from '../utils/render';
 import {
-  compareValues}
+  compareValues,
+  getFilmsInfoSortLength,
+  filmsInfoSort}
   from '../utils/sort';
 import {
   profileRating,
@@ -53,7 +55,8 @@ export default class FilmsList {
     this._commentsModel = new CommentsModel(api);
 
     //  Добавление наблюдателей - обработчиков
-    this._filterModel.addObserver(this.observeProfileHistory.bind(this));
+    // this._filterModel.addObserver(this.observeProfileHistory.bind(this));
+    this._filmsModel.addObserver(this.observeProfileHistory.bind(this));
 
     this._commentsModel.addObserver(this._handleModelEvent.bind(this));
     this._filmsModel.addObserver(this._handleModelEvent.bind(this));
@@ -136,6 +139,9 @@ export default class FilmsList {
     //  Реализовать заглушку и почитать про параметры
     comments = 'temp';
 
+    // 
+    this._renderStats();
+
     switch (updateType) {
       case UpdateType.PATCH:
         // console.log('UpdateType.PATCH here');
@@ -215,6 +221,17 @@ export default class FilmsList {
    * Если есть то рисует плашку профиля
    */
   observeProfileHistory() {
+    console.log('observeProfileHistory');
+    // console.log(this._filmsModel.getFilms());
+    const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
+    const currentViewFilmsCount = filmsInfoSortLength.isViewed;
+    if(currentViewFilmsCount > 0) {
+      // console.log(this._profileComponent);
+      this._profileComponent.show();
+      this._renderProfile(currentViewFilmsCount);
+    } else {
+      this._profileComponent.hide();
+    }
   }
 
   /**
@@ -268,9 +285,9 @@ export default class FilmsList {
     this._mainFilmList = this._filmListComponent.getElement().querySelector('.js-film-list-main');
     this._loadMoreContainer = this._filmListComponent.getElement().querySelector('.js-films-container');
 
-
-    if (this._filterModel.getFilterFilmsCount().isViewed > 0) {
-      this._renderProfile();
+    const currentViewFilmsCount = this._filterModel.getFilterFilmsCount().isViewed
+    if (currentViewFilmsCount > 0) {
+      this._renderProfile(currentViewFilmsCount);
     }
     this._renderFilms();
 
@@ -283,7 +300,13 @@ export default class FilmsList {
 
   _renderStats() {
     const prevStats = this._statsComponent;
-    this._statsComponent = new StatsView(this._sourcedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
+
+    // console.log(this._filmsModel.getFilms());
+    const viewedFilms = filmsInfoSort(this._filmsModel.getFilms()).isViewed;
+    console.log(viewedFilms);
+
+    // this._statsComponent = new StatsView(this._sourcedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
+    this._statsComponent = new StatsView(viewedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
       replace(this._statsComponent, prevStats);
     } else {
@@ -296,9 +319,9 @@ export default class FilmsList {
    * Приватный метод рендера звания пользователя
    * Вызывается если у пользователя есть хотя бы один просмотренный фильм
    */
-  _renderProfile() {
+  _renderProfile(currentViewFilmsCount) {
     const prevProfile = this._profileComponent;
-    this._profileComponent = new ProfileView(this._filterModel.getFilterFilmsCount().isViewed);
+    this._profileComponent = new ProfileView(currentViewFilmsCount);
     if (prevProfile) {
       replace(this._profileComponent, prevProfile);
     } else {

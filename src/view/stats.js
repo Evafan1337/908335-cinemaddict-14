@@ -39,8 +39,9 @@ const getGenresStats = (films) => {
  * @return {string}
  */
 const getTopGenre = (films) => {
+  console.log('getTopGenre');
   if (films.length === 0) {
-    return false;
+    return '';
   }
   const genresStats = getGenresStats(films);
   return Object.entries(genresStats).sort((a, b) => b[1] - a[1])[0][0];
@@ -153,6 +154,10 @@ const renderChart = (statisticCtx, films) => {
  * @return {string}
  */
 const createStatsTemplate = (userData) => {
+
+  console.log('createStatsTemplate');
+  console.log(userData);
+
   const {films, currentPeriod, userRank} = userData;
   const filmsWatchedAmount = films.length;
   const {hours, minutes} = getTotalDuration(films);
