@@ -1,5 +1,4 @@
 import Observer from './observer';
-import {UpdateType} from '../utils/const';
 
 /**
  * Класс описывает модель фильмов
@@ -27,7 +26,6 @@ export default class Films extends Observer {
    */
   setFilms(updateType, films) {
     this._films = films.slice();
-    // this._notify(this._films, null);
     this._notify(this._films, updateType);
   }
 
@@ -58,7 +56,6 @@ export default class Films extends Observer {
         ...this._films.slice(index + 1),
       ];
 
-      // this._notify(this._films, updateType);
       this._notify(updateType, update);
     });
   }

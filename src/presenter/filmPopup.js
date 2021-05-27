@@ -1,6 +1,6 @@
 import PopupView from '../view/popup';
 import CommentsView from '../view/comments';
-import {replace, remove, updateHtmlNode} from '../utils/dom';
+import {replace, remove} from '../utils/dom';
 import {UpdateType} from '../utils/const';
 import {render} from '../utils/render';
 import he from 'he';
@@ -23,7 +23,7 @@ export default class FilmPopupPresenter {
     //  Модели
     this._commentsModel = commentsModel;
     this._commentsModel.addObserver(this.observeComments.bind(this));
-    this._filterModel = filterModel
+    this._filterModel = filterModel;
 
     //  Компоненты
     this._popupComponent = null;
@@ -67,24 +67,8 @@ export default class FilmPopupPresenter {
   }
 
   observeComments(updateType, comments, film) {
-    // this.init(this._film, comments);
-
-    console.log(updateType);
-    console.log(comments);
-    console.log(film);
-
+    //  To-do: перерисовывать комментарии точечно
     this.init(film, comments);
-
-    // switch (updateType) {
-    //   case UpdateType.PATCH:
-    //     console.log('Обновление комментариев');
-    //     // let newCommentsComponent = new CommentsView(comments);
-    //     // replace(newCommentsComponent, this._commentsListComponent);
-    //     break;
-    //   case UpdateType.INIT:
-    //     this.init(film, comments);
-    //     break;
-    // }
   }
 
   /**
@@ -113,7 +97,7 @@ export default class FilmPopupPresenter {
    * Приватный метод обработчика создания комментария
    */
   _handleFormSubmit() {
-    // this._popupComponent.getCommentsContainer().addEventListener('keydown', (evt) => {
+    //  To-do: снятие обработчика
     document.addEventListener('keydown', (evt) => {
       if ((evt.ctrlKey) && (evt.code === 'Enter')) {
         evt.preventDefault();
@@ -128,7 +112,6 @@ export default class FilmPopupPresenter {
    * Обновление исходных данных
    */
   submitFormComments() {
-    console.log('submitFormComments');
     this._posScroll = this.getPositionScroll();
     const text = this._popupComponent.getElement().querySelector('.film-details__comment-input');
     const emotions = document.querySelectorAll('.film-details__emoji-item');
@@ -165,14 +148,6 @@ export default class FilmPopupPresenter {
    */
   _renderComments() {
     render(this._popupComponent.getCommentsContainer(), this._commentsListComponent);
-
-    // if(this._commentsListComponent) {
-    //   const newCommentsListComponent = this._commentsListComponent;
-    //   replace(this._commentsListComponent, newCommentsListComponent);
-    //   this._commentsListComponent = newCommentsListComponent;
-    // } else {
-    //   render(this._popupComponent.getCommentsContainer(), this._commentsListComponent);
-    // }
   }
 
   /**
@@ -185,12 +160,8 @@ export default class FilmPopupPresenter {
 
     let updateType = UpdateType.PATCH;
     if(this._filterModel.getFilterBy() === type) {
-      updateType = UpdateType.MAJOR
+      updateType = UpdateType.MAJOR;
     }
-
-    console.log(updateType);
-
-    // this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), this._posScroll);
     this._changeData(Object.assign({}, this._film, {[type]: !this._film[type]}), updateType);
   }
 

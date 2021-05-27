@@ -133,25 +133,34 @@ export default class FilmsList {
 
   _handleModelEvent(updateType, comments, film) {
 
-    // console.log(data);
-
     switch (updateType) {
       case UpdateType.PATCH:
-        console.log('UpdateType.PATCH here');
+        // console.log('UpdateType.PATCH here');
         this._updateBoard(film);
-        break;
-      case UpdateType.MINOR:
-        this._clearList();
-        console.log('UpdateType.MINOR here');
         break;
       case UpdateType.MAJOR:
         this._clearList();
         // console.log('UpdateType.MAJOR here');
         this._updateFilmsListMajor();
         break;
-      case UpdateType.INIT:
-        console.log('UpdateType.INIT here');
-        break;
+
+    // switch (updateType) {
+    //   case UpdateType.PATCH:
+    //     console.log('UpdateType.PATCH here');
+    //     this._updateBoard(film);
+    //     break;
+    //   case UpdateType.MINOR:
+    //     this._clearList();
+    //     console.log('UpdateType.MINOR here');
+    //     break;
+    //   case UpdateType.MAJOR:
+    //     this._clearList();
+    //     // console.log('UpdateType.MAJOR here');
+    //     this._updateFilmsListMajor();
+    //     break;
+    //   case UpdateType.INIT:
+    //     console.log('UpdateType.INIT here');
+    //     break;
     }
   }
 
@@ -416,25 +425,17 @@ export default class FilmsList {
    * И добавление/удаление комментария
    */
   _handlePopupAction(updatedFilm, updateType) {
-    console.log('_handlePopupAction');
-    console.log(updateType);
     this._filmsModel.updateFilm(updatedFilm, updateType);
     this._popupPresenter.init(updatedFilm);
   }
 
   _handleAddComment(updatedFilm, comment, updateType) {
-    console.log('_handleAddComment');
-    console.log(updatedFilm);
-    console.log(comment);
-    console.log(updateType);
-
     this._commentsModel.addComment(comment, updatedFilm, updateType);
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);
   }
 
   _handleDeleteComment(updatedFilm, comment) {
-    console.log('_handleDeleteComment');
     this._commentsModel.removeComment(comment, updatedFilm, UpdateType.PATCH);
     this._filmsModel.updateFilm(updatedFilm);
     this._popupPresenter.init(updatedFilm);

@@ -5,8 +5,7 @@ import {
   from '../utils/dom';
 
 import {
-  render,
-  remove}
+  render}
   from '../utils/render';
 
 import {
@@ -58,7 +57,8 @@ export default class FilterPresenter {
     this._renderSort();
   }
 
-  _handleModelEvent(updateType) {
+  // _handleModelEvent(updateType) {
+  _handleModelEvent() {
     const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();
@@ -71,13 +71,12 @@ export default class FilterPresenter {
     const prevMenu = this._menuComponent;
     this._menuComponent = new MenuView(this._filterModel.getFilterFilmsCount(), this._filterModel.getFilterBy());
 
-    console.log(this._filterModel.getFilterFilmsCount());
-
     if (prevMenu) {
       replace(this._menuComponent, prevMenu);
     } else {
       render(this._filterContainer, this._menuComponent);
     }
+
     this._menuComponent.setClickHandler(this._handleFilterItemClick);
     this._menuComponent.setClickStatsHandler(this._handleStatsItemClick);
   }

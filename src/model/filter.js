@@ -66,7 +66,8 @@ export default class Filter extends Observer {
    * Уведомить подписчиков
    * @param {Object} - filterFilmsCount - объект значений сортировки
    */
-  setFilterFilmsCount(filterFilmsCount, UpdateType) {
+  // setFilterFilmsCount(filterFilmsCount, UpdateType) {
+  setFilterFilmsCount(filterFilmsCount) {
     this._filterFilmsCount = filterFilmsCount;
     // this._notifyChanges(UpdateType);
   }
@@ -83,6 +84,5 @@ export default class Filter extends Observer {
    */
   _notifyChanges(UpdateType) {
     this._notify(UpdateType, {filterBy: this._filterBy, sortBy: this._sortBy, filterFilmsCount: this._filterFilmsCount});
-    // this._notify('_notifyChanges');
   }
 }
