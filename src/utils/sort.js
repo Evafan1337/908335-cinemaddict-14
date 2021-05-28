@@ -42,7 +42,7 @@ export const filmsInfoSort = (filmsData) => {
   const filmsInfo = filmsData.reduce((filmsDataResult, film) => {
     //  Непосредственно перебор карточки фильма
     for (const filmDataField in film) {
-      if (fieldList.indexOf(filmDataField) != -1) {
+      if (fieldList.indexOf(filmDataField) !== -1) {
 
         if(!filmsDataResult[filmDataField]) {
           filmsDataResult[filmDataField] = [];
