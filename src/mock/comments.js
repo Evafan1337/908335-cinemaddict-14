@@ -57,6 +57,6 @@ export const generateComments = () => {
  * Функция генерация времени + рандом
  * @return {string}
  */
-export const generateRandomComments = (comment_count) => {
-  return new Array(comment_count).fill(null).map((index) => generateComments(index));
+export const generateRandomComments = (commentCount) => {
+  return new Array(commentCount).fill(null).map((index) => generateComments(index));
 };
