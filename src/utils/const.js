@@ -35,10 +35,15 @@ export const SortOrder = {
   DESC: 'desc',
 };
 
+export const SortByParam = {
+  DEFAULT: 'default',
+}
+
 export const FilterByParam = {
   FAVORITE: 'isFavorite',
   VIEWED: 'isViewed',
   WATCHLIST: 'isWatchlist',
+  ALL: 'all',
 }
 
 /**

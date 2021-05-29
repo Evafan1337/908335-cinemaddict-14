@@ -23,7 +23,11 @@ import {
 import {
   profileRating,
   FilmsPerSection,
-  UpdateType
+  UpdateType,
+  FilterByParam,
+  SortByParam,
+  SortOrder,
+  StatPeriodMap
 } from '../utils/const';
 
 import FilmCardPresenter from './film-card';
@@ -148,12 +152,12 @@ export default class FilmsList {
     const filterBy = this._filterModel.getFilterBy();
     const sortBy = this._filterModel.getSortBy();
 
-    if (filterBy !== 'all') {
+    if (filterBy !== FilterByParam.ALL) {
       updatedFilms = films.filter((film) => film[filterBy]);
     }
 
-    if (sortBy !== 'default') {
-      updatedFilms.sort(compareValues(sortBy, 'desc'));
+    if (sortBy !== SortByParam.DEFAULT) {
+      updatedFilms.sort(compareValues(sortBy, SortOrder.DESC));
     }
 
     if (this._filterModel.getShowStatsFlag() === true) {
@@ -262,7 +266,7 @@ export default class FilmsList {
     const prevStats = this._statsComponent;
     const viewedFilms = groupFilms(this._filmsModel.getFilms()).isViewed;
 
-    this._statsComponent = new StatsView(viewedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
+    this._statsComponent = new StatsView(viewedFilms, StatPeriodMap.ALL_TIME, profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
       replace(this._statsComponent, prevStats);
     } else {
