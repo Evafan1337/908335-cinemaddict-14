@@ -30,6 +30,24 @@ export const UserAction = {
   DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
+export const SortOrder = {
+  ASC: 'asc',
+  DESC: 'desc',
+};
+
+export const SortByParam = {
+  DEFAULT: 'default',
+  RATING: 'rating',
+  COMMENTS: 'comments',
+}
+
+export const FilterByParam = {
+  FAVORITE: 'isFavorite',
+  VIEWED: 'isViewed',
+  WATCHLIST: 'isWatchlist',
+  ALL: 'all',
+}
+
 /**
  * Метод выборки звания пользователя
  * В зависимости от количества просмотренных фильмов
@@ -44,5 +62,3 @@ export const profileRating = (count) => {
     return UserRank.MOVIE_BUFF;
   }
 };
-
-export const FILM_RATED_COUNT = 2;

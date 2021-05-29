@@ -7,7 +7,7 @@ import FilmsModel from '../model/films';
 import FilterModel from '../model/filter';
 import {UpdateType} from '../utils/const';
 import {
-  filmsInfoSort,
+  groupFilms,
   getFilmsInfoSortLength}
   from '../utils/sort';
 
@@ -52,7 +52,7 @@ export default class PagePresenter {
 
     this._filterModel = new FilterModel(this._api);
     this._filterModel.setSortType(this._sortBy, this._filterBy, this._showStatsFlag, UpdateType.INIT);
-    this._filterFilmsCount = getFilmsInfoSortLength(filmsInfoSort(this._films));
+    this._filterFilmsCount = getFilmsInfoSortLength(groupFilms(this._films));
     this._filterModel.setFilterFilmsCount(this._filterFilmsCount, UpdateType.INIT);
 
     this._filmsModel = new FilmsModel(this._api);

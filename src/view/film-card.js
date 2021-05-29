@@ -12,7 +12,6 @@ const createFilmCardTemplate = (film) => {
 
   const year = dayjs(date).format('YYYY');
 
-  // Тернарные операторы и вывод класса "активности" при необходимости
   const watchlistClassName = isWatchlist
     ? 'film-card__controls-item--active'
     : '';

@@ -1,10 +1,9 @@
-import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
-import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
 import LoadingView from '../view/loading';
 import StatsView from '../view/stats';
-
+import FilmListView from '../view/films-list';
+import SortPanelView from '../view/sort-panel';
 import FilmListRatedView from '../view/films-list-rated';
 import FilmListCommentedView from '../view/films-list-commented';
 
@@ -19,16 +18,20 @@ import {
 import {
   compareValues,
   getFilmsInfoSortLength,
-  filmsInfoSort}
+  groupFilms}
   from '../utils/sort';
 import {
   profileRating,
   FilmsPerSection,
-  UpdateType
+  UpdateType,
+  FilterByParam,
+  SortByParam,
+  SortOrder,
+  StatPeriodMap
 } from '../utils/const';
 
-import FilmCardPresenter from './filmCard';
-import FilmPopupPresenter from './filmPopup';
+import FilmCardPresenter from './film-card';
+import FilmPopupPresenter from './film-popup';
 
 import CommentsModel from '../model/comments';
 
@@ -149,12 +152,12 @@ export default class FilmsList {
     const filterBy = this._filterModel.getFilterBy();
     const sortBy = this._filterModel.getSortBy();
 
-    if (filterBy !== 'all') {
+    if (filterBy !== FilterByParam.ALL) {
       updatedFilms = films.filter((film) => film[filterBy]);
     }
 
-    if (sortBy !== 'default') {
-      updatedFilms.sort(compareValues(sortBy, 'desc'));
+    if (sortBy !== SortByParam.DEFAULT) {
+      updatedFilms.sort(compareValues(sortBy, SortOrder.DESC));
     }
 
     if (this._filterModel.getShowStatsFlag() === true) {
@@ -185,7 +188,7 @@ export default class FilmsList {
    * Если есть то рисует плашку профиля
    */
   observeProfileHistory() {
-    const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
+    const filmsInfoSortLength = getFilmsInfoSortLength(groupFilms(this._filmsModel.getFilms()));
     const currentViewFilmsCount = filmsInfoSortLength.isViewed;
     if(currentViewFilmsCount > 0) {
       this._profileComponent.show();
@@ -261,9 +264,9 @@ export default class FilmsList {
 
   _renderStats() {
     const prevStats = this._statsComponent;
-    const viewedFilms = filmsInfoSort(this._filmsModel.getFilms()).isViewed;
+    const viewedFilms = groupFilms(this._filmsModel.getFilms()).isViewed;
 
-    this._statsComponent = new StatsView(viewedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
+    this._statsComponent = new StatsView(viewedFilms, StatPeriodMap.ALL_TIME, profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
       replace(this._statsComponent, prevStats);
     } else {
@@ -307,14 +310,14 @@ export default class FilmsList {
 
   _renderTopRatedFilmList(){
     this._films
-      .sort(compareValues('rating', 'desc'))
+      .sort(compareValues(SortByParam.RATING, SortOrder.DESC))
       .slice(0,FilmsPerSection.RATED)
       .forEach((film) => this._renderTopRatedFilmCard(film, this._topRatedFilmList));
   }
 
   _renderTopCommentedFilmList(){
     this._films
-      .sort(compareValues('comments', 'desc'))
+      .sort(compareValues(SortByParam.COMMENTS, SortOrder.DESC))
       .slice(0,FilmsPerSection.COMMENTED)
       .forEach((film) => this._renderTopCommentedFilmCard(film, this._topCommentedFilmList));
   }

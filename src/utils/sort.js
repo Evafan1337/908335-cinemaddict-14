@@ -1,4 +1,4 @@
-import FILM_RATED_COUNT from './const';
+import {SortOrder, FilterByParam} from './const';
 
 /**
  * Функция сравнения значений ( используется в sort())
@@ -6,15 +6,13 @@ import FILM_RATED_COUNT from './const';
  * @param {string} order - порядок
  * @return {number} - аргумент для дальнейшей сортировки
  */
-export const compareValues = (key, order = 'asc') => {
+export const compareValues = (key, order = SortOrder.ASC) => {
 
-  // 0 если хотя бы в одном из сравниваемых элементов нет нужного св-ва(key)
   return (a, b) => {
     if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)){
       return 0;
     }
 
-    //  Если мы работаем со строками то переводим все в верхний регистр для удобства сортировки
     const varA = (typeof a[key] === 'string')
       ? a[key].toUpperCase() : a[key];
     const varB = (typeof b[key] === 'string')
@@ -27,7 +25,7 @@ export const compareValues = (key, order = 'asc') => {
       comparison = -1;
     }
     return (
-      (order === 'desc') ? (comparison * -1) : comparison
+      (order === SortOrder.DESC) ? (comparison * -1) : comparison
     );
   };
 };
@@ -37,10 +35,11 @@ export const compareValues = (key, order = 'asc') => {
  * @param {Array} filmsData - массив фильмов
  * @return {Object} filmsInfo
  */
-export const filmsInfoSort = (filmsData) => {
-  const fieldList = ['isFavorite', 'isViewed', 'isWatchlist'];
+export const groupFilms = (filmsData) => {
+
+  const fieldList = [FilterByParam.FAVORITE, FilterByParam.VIEWED, FilterByParam.WATCHLIST];
+
   const filmsInfo = filmsData.reduce((filmsDataResult, film) => {
-    //  Непосредственно перебор карточки фильма
     for (const filmDataField in film) {
       if (fieldList.indexOf(filmDataField) !== -1) {
 
@@ -74,22 +73,4 @@ export const getFilmsInfoSortLength = (filmsData) => {
     isViewed: filmsData.isViewed.length,
     isWatchlist: filmsData.isWatchlist.length,
   };
-};
-
-/**
- * Функция сортировки фильмов по рейтингу
- * @param {Array} filmsData - массив фильмов
- * @return {Array} filmsData - массив фильмов
- */
-export const sortFilmsRated = (filmsData) => {
-  return filmsData.sort(compareValues('rating', 'desc')).slice(0, FILM_RATED_COUNT);
-};
-
-/**
- * Функция сортировки фильмов по количеству комментариев
- * @param {Array} filmsData - массив фильмов
- * @return {Array} filmsData - отсортированный массив
- */
-export const sortFilmsCommented = (filmsData) => {
-  return filmsData.sort(compareValues('comments', 'desc')).slice(0, FILM_RATED_COUNT);
 };

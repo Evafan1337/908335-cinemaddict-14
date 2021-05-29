@@ -1,4 +1,3 @@
-// import AbstractView from './abstract';
 import SmartView from './smart';
 import {profileRating} from '../utils/const';
 

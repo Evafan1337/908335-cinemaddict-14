@@ -76,7 +76,6 @@ const renderChart = (statisticCtx, films) => {
   const labels = [];
   const counts = [];
 
-  //  Заполняются именования и счетчики для диаграммы
   Object
     .entries(getGenresStats(films))
     .sort((a, b) => b[1] - a[1])
