@@ -25,13 +25,3 @@ export const render = (container, element, place = 'beforeend') => {
       break;
   }
 };
-
-/**
- * Функция рендера шаблона
- * @param {object} container - HTML элемент в который будет "вложен" элемент template
- * @param {string} template - HTML элемент в формате строки, который будет вложен в container
- * @param {string} place - аргумент для insertAdjacentHTML (параметр вставки)
- */
-export const renderTemplate = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};

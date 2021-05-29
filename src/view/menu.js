@@ -65,13 +65,6 @@ export default class Menu extends AbstractView {
   }
 
   /**
-   * Метод получения активного элемента фильтрации
-   */
-  getActiveMenuLink() {
-    return this.getElement().querySelector('.main-navigation__item--active');
-  }
-
-  /**
    * Метод установки слушателя
    * @param {function} callback - функция, которая будет исполняться при слушателе
    */

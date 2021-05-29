@@ -44,5 +44,3 @@ export const profileRating = (count) => {
     return UserRank.MOVIE_BUFF;
   }
 };
-
-export const FILM_RATED_COUNT = 2;

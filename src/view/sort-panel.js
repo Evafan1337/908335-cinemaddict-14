@@ -47,14 +47,7 @@ export default class SortPanel extends SmartView {
    * @return {string} - HTML код созданного элемента
    */
   getTemplate() {
-    return createSortPanelTemplate(this._sortBy);  }
-
-  /**
-   * Метод получения HTML тега выбранной сортировки
-   * @return {object} - HTML элемент
-   */
-  getActiveMenuLink() {
-    return this.getElement().querySelector('.sort__button--active');
+    return createSortPanelTemplate(this._sortBy);
   }
 
   /**

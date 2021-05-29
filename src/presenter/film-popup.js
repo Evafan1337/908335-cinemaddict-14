@@ -32,6 +32,7 @@ export default class FilmPopupPresenter {
     this._posScroll = null;
 
     this._closePopupHandler = this._closePopupHandler.bind(this);
+    this._handleFormSubmit =this._handleFormSubmit.bind(this);
 
   }
 
@@ -99,7 +100,6 @@ export default class FilmPopupPresenter {
     render(this._container, this._popupComponent);
     this._container.classList.add('hide-overflow');
     this.setHandlers();
-    this._handleFormSubmit();
     this._renderComments();
   }
 
@@ -112,18 +112,7 @@ export default class FilmPopupPresenter {
     this._commentsListComponent.setDeleteCommentHandler((evt) => this._removeComment(evt));
     this._commentsListComponent.setAddCommentEmotionHandler((evt) => this._addCommentEmotion(evt));
     document.addEventListener('keydown', this._closePopupHandler);
-  }
-
-  /**
-   * Приватный метод обработчика создания комментария
-   */
-  _handleFormSubmit() {
-    document.addEventListener('keydown', (evt) => {
-      if ((evt.ctrlKey) && (evt.code === 'Enter')) {
-        evt.preventDefault();
-        this.submitFormComments();
-      }
-    });
+    document.addEventListener('keydown', this._handleFormSubmit);
   }
 
   /**
@@ -213,6 +202,16 @@ export default class FilmPopupPresenter {
   }
 
   /**
+   * Приватный метод обработчика создания комментария
+   */
+  _handleFormSubmit(evt) {
+    if ((evt.metaKey || evt.ctrlKey) && (evt.code === 'Enter')) {
+      evt.preventDefault();
+      this.submitFormComments();
+    }
+  }
+
+  /**
    * Приватный метод, описывающий выбор эмоции при создании комментария
    * @param {Object} evt - объект событий
    */
@@ -237,6 +236,7 @@ export default class FilmPopupPresenter {
     remove(this._popupComponent);
     this._container.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._closePopupHandler);
+    document.removeEventListener('keydown', this._handleFormSubmit);
   }
 
 }
