@@ -19,7 +19,7 @@ import {
 import {
   compareValues,
   getFilmsInfoSortLength,
-  filmsInfoSort}
+  makeFilmsSort}
   from '../utils/sort';
 import {
   profileRating,
@@ -185,7 +185,7 @@ export default class FilmsList {
    * Если есть то рисует плашку профиля
    */
   observeProfileHistory() {
-    const filmsInfoSortLength = getFilmsInfoSortLength(filmsInfoSort(this._filmsModel.getFilms()));
+    const filmsInfoSortLength = getFilmsInfoSortLength(makeFilmsSort(this._filmsModel.getFilms()));
     const currentViewFilmsCount = filmsInfoSortLength.isViewed;
     if(currentViewFilmsCount > 0) {
       this._profileComponent.show();
@@ -261,7 +261,7 @@ export default class FilmsList {
 
   _renderStats() {
     const prevStats = this._statsComponent;
-    const viewedFilms = filmsInfoSort(this._filmsModel.getFilms()).isViewed;
+    const viewedFilms = makeFilmsSort(this._filmsModel.getFilms()).isViewed;
 
     this._statsComponent = new StatsView(viewedFilms, 'all-time', profileRating(this._filterModel.getFilterBy().isViewed));
     if (prevStats) {
