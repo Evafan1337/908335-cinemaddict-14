@@ -37,6 +37,8 @@ export const SortOrder = {
 
 export const SortByParam = {
   DEFAULT: 'default',
+  RATING: 'rating',
+  COMMENTS: 'comments',
 }
 
 export const FilterByParam = {

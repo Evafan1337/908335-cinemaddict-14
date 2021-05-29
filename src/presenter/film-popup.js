@@ -62,7 +62,7 @@ export default class FilmPopupPresenter {
 
   observeComments(updateType, commentsData, film, userAction, transferResult) {
 
-    if(updateType === 'INIT') {
+    if(updateType === UpdateType.INIT) {
       this.init(film, commentsData);
       return;
     }

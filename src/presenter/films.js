@@ -310,14 +310,14 @@ export default class FilmsList {
 
   _renderTopRatedFilmList(){
     this._films
-      .sort(compareValues('rating', 'desc'))
+      .sort(compareValues(SortByParam.RATING, SortOrder.DESC))
       .slice(0,FilmsPerSection.RATED)
       .forEach((film) => this._renderTopRatedFilmCard(film, this._topRatedFilmList));
   }
 
   _renderTopCommentedFilmList(){
     this._films
-      .sort(compareValues('comments', 'desc'))
+      .sort(compareValues(SortByParam.COMMENTS, SortOrder.DESC))
       .slice(0,FilmsPerSection.COMMENTED)
       .forEach((film) => this._renderTopCommentedFilmCard(film, this._topCommentedFilmList));
   }
