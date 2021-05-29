@@ -1,10 +1,9 @@
-import FilmListView from '../view/films-list';
 import LoadmoreView from '../view/loadmore';
-import SortPanelView from '../view/sort-panel';
 import ProfileView from '../view/profile';
 import LoadingView from '../view/loading';
 import StatsView from '../view/stats';
-
+import FilmListView from '../view/films-list';
+import SortPanelView from '../view/sort-panel';
 import FilmListRatedView from '../view/films-list-rated';
 import FilmListCommentedView from '../view/films-list-commented';
 
@@ -27,8 +26,8 @@ import {
   UpdateType
 } from '../utils/const';
 
-import FilmCardPresenter from './filmCard';
-import FilmPopupPresenter from './filmPopup';
+import FilmCardPresenter from './film-card';
+import FilmPopupPresenter from './film-popup';
 
 import CommentsModel from '../model/comments';
 

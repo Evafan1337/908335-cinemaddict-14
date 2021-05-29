@@ -8,7 +8,7 @@ import AbstractView from '../view/abstract';
 export const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
-  
+
   return newElement.firstChild;
 };
 
@@ -26,7 +26,6 @@ export const replace = (newChild, oldChild) => {
   if (newChild instanceof AbstractView) {
     newChild = newChild.getElement();
   }
-
 
   if (oldChild === null || newChild === null) {
     return;

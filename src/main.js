@@ -1,4 +1,4 @@
-import PagePresenter from './presenter/pagePresenter';
+import PagePresenter from './presenter/page-presenter';
 
 import Api from './api';
 
