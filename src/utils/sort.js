@@ -1,10 +1,12 @@
+import {SortOrder} from './const';
+
 /**
  * Функция сравнения значений ( используется в sort())
  * @param {string} key - ключ для сортировки
  * @param {string} order - порядок
  * @return {number} - аргумент для дальнейшей сортировки
  */
-export const compareValues = (key, order = 'asc') => {
+export const compareValues = (key, order = SortOrder.ASC) => {
 
   return (a, b) => {
     if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)){
@@ -23,7 +25,7 @@ export const compareValues = (key, order = 'asc') => {
       comparison = -1;
     }
     return (
-      (order === 'desc') ? (comparison * -1) : comparison
+      (order === SortOrder.DESC) ? (comparison * -1) : comparison
     );
   };
 };

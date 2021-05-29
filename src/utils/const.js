@@ -30,6 +30,17 @@ export const UserAction = {
   DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
+export const SortOrder = {
+  ASC: 'asc',
+  DESC: 'desc',
+};
+
+export const FilterByParam = {
+  FAVORITE: 'isFavorite',
+  VIEWED: 'isViewed',
+  WATCHLIST: 'isWatchlist',
+}
+
 /**
  * Метод выборки звания пользователя
  * В зависимости от количества просмотренных фильмов
