@@ -6,9 +6,9 @@ import AbstractView from '../view/abstract';
  * @param {Object} newElement.firstChild - созданный HTML элемент
  */
 export const createElement = (template) => {
-  const newElement = document.createElement('div'); // 1
+  const newElement = document.createElement('div');
   newElement.innerHTML = template;
-
+  
   return newElement.firstChild;
 };
 

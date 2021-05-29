@@ -11,8 +11,6 @@ const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 const api = new Api(END_POINT, AUTHORIZATION);
 
 api.getFilms().then((films) => {
-  //	Для проверки при 0 фильмов
-  // films = [];
   const pagePresenter = new PagePresenter(siteBody, siteMainElement, siteFooterStatistics, films, api);
   pagePresenter.init();
 });

@@ -11,7 +11,6 @@ export const compareValues = (key, order = 'asc') => {
       return 0;
     }
 
-    //  Если мы работаем со строками то переводим все в верхний регистр для удобства сортировки
     const varA = (typeof a[key] === 'string')
       ? a[key].toUpperCase() : a[key];
     const varB = (typeof b[key] === 'string')

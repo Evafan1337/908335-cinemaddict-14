@@ -13,7 +13,6 @@ export default class FilmPopupPresenter {
    * @constructor
    */
   constructor(container, changeData, deleteComment, addComment, commentsModel, filterModel) {
-    //  Ссылки на DOM узлы
     this._container = container;
 
     this._film = null;

@@ -191,7 +191,6 @@ export default class Popup extends SmartView {
    * @param {Object} evt - объект событий
    */
   _editClickHandler(evt) {
-    // evt.preventDefault();
     const type = evt.target.dataset.type;
     this._callback.editClick(evt, this._film);
     this.updateData({
