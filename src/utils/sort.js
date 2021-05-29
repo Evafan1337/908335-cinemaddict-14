@@ -1,4 +1,4 @@
-import {SortOrder} from './const';
+import {SortOrder, FilterByParam} from './const';
 
 /**
  * Функция сравнения значений ( используется в sort())
@@ -36,7 +36,9 @@ export const compareValues = (key, order = SortOrder.ASC) => {
  * @return {Object} filmsInfo
  */
 export const groupFilms = (filmsData) => {
-  const fieldList = ['isFavorite', 'isViewed', 'isWatchlist'];
+
+  const fieldList = [FilterByParam.FAVORITE, FilterByParam.VIEWED, FilterByParam.WATCHLIST];
+
   const filmsInfo = filmsData.reduce((filmsDataResult, film) => {
     for (const filmDataField in film) {
       if (fieldList.indexOf(filmDataField) !== -1) {
