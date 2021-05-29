@@ -33,7 +33,7 @@ export const compareValues = (key, order = 'asc') => {
  * @param {Array} filmsData - массив фильмов
  * @return {Object} filmsInfo
  */
-export const makeFilmsSort = (filmsData) => {
+export const groupFilms = (filmsData) => {
   const fieldList = ['isFavorite', 'isViewed', 'isWatchlist'];
   const filmsInfo = filmsData.reduce((filmsDataResult, film) => {
     for (const filmDataField in film) {

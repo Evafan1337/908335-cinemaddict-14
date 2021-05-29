@@ -10,7 +10,7 @@ import {
 
 import {
   getFilmsInfoSortLength,
-  makeFilmsSort}
+  groupFilms}
   from '../utils/sort';
 import {UpdateType} from '../utils/const';
 
@@ -52,7 +52,7 @@ export default class FilterPresenter {
   }
 
   _handleModelEvent() {
-    const filmsInfoSortLength = getFilmsInfoSortLength(makeFilmsSort(this._filmsModel.getFilms()));
+    const filmsInfoSortLength = getFilmsInfoSortLength(groupFilms(this._filmsModel.getFilms()));
     this._filterModel.setFilterFilmsCount(filmsInfoSortLength);
     this.init();
   }
