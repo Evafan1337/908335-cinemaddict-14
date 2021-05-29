@@ -39,14 +39,14 @@ export const SortByParam = {
   DEFAULT: 'default',
   RATING: 'rating',
   COMMENTS: 'comments',
-}
+};
 
 export const FilterByParam = {
   FAVORITE: 'isFavorite',
   VIEWED: 'isViewed',
   WATCHLIST: 'isWatchlist',
   ALL: 'all',
-}
+};
 
 /**
  * Метод выборки звания пользователя
