@@ -15,4 +15,5 @@ RUN cd docker_project && npm install --force && npm run build
 RUN ls -la /docker_project
 RUN ls -la /docker_project/src
 WORKDIR /docker_project/public
-CMD npm run start
+#CMD npm run start
+CMD (npm run start&)
